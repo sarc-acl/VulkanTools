@@ -1,0 +1,79 @@
+name: Sokatoa create release from tag
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag'
+        default: 'v1.4.361'
+        required: true
+        type: string
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.event.inputs.release_tag }}
+          tag_name: ${{ github.event.inputs.release_tag }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-android:
+    name: android-${{ matrix.abi }}
+    needs: create_release
+    strategy:
+      fail-fast: false
+      matrix:
+        # Android NDK/SDK is preinstalled on the macos-latest runner image.
+        abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
+
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_tag }}
+
+      - uses: lukka/get-cmake@latest
+
+      - name: Build
+        shell: bash
+        run: |
+          cmake -S . -B build --toolchain $ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake \
+          -D ANDROID_PLATFORM=29 \
+          -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }} \
+          -D CMAKE_ANDROID_STL_TYPE=c++_static \
+          -D ANDROID_USE_LEGACY_TOOLCHAIN_FILE=NO \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D UPDATE_DEPS=ON \
+          -G "Ninja"
+          cmake --build build
+          cmake --install build --prefix build/install
+
+      - name: Archive results
+        shell: bash
+        run: |
+          mkdir -p ${{ github.event.inputs.release_tag }}/${{ matrix.abi }}
+          cp build/install/lib/*.so ${{ github.event.inputs.release_tag }}/${{ matrix.abi }}
+          tar -czvf ${{ github.event.inputs.release_tag }}_Android_${{ matrix.abi }}.tar.gz -C ${{ github.event.inputs.release_tag }} ${{ matrix.abi }}
+
+      - name: Upload artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.release_tag }}
+          files: ${{ github.event.inputs.release_tag }}_Android_${{ matrix.abi }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
