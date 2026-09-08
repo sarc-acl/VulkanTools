@@ -560,6 +560,10 @@ class ApiDumpSettings {
     bool usingCaptureTrigger() const { return use_capture_trigger; }
 
     // Re-read the trigger property. Called once per frame, before the frame's dump state is decided.
+    //
+    // The property is read outright each time rather than checked against __system_property_serial
+    // first: that function only appears in the NDK headers from r28 on, and one property read per
+    // frame is not worth a version dependency in a layer that serializes every call it dumps.
     void refreshCaptureTrigger() {
         if (!use_capture_trigger) {
             return;
@@ -569,11 +573,6 @@ class ApiDumpSettings {
         if (capture_trigger_prop == nullptr) {
             return;
         }
-        uint32_t serial = __system_property_serial(capture_trigger_prop);
-        if (serial == capture_trigger_serial) {
-            return;
-        }
-        capture_trigger_serial = serial;
         capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
 #endif
     }
@@ -733,7 +732,6 @@ class ApiDumpSettings {
 #ifdef ANDROID
             capture_trigger_prop = __system_property_find(kCaptureTriggerProperty);
             if (capture_trigger_prop != nullptr) {
-                capture_trigger_serial = __system_property_serial(capture_trigger_prop);
                 capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
             }
 #endif
@@ -928,10 +926,9 @@ class ApiDumpSettings {
     // actually emitted then rather than what the trigger says now.
     std::atomic<bool> previous_frame_dumped{false};
 #ifdef ANDROID
-    // Resolved once. Reading the property outright on every frame shows up in a layer this hot, so
-    // the serial is compared first and the value only re-read when it actually changed.
+    // Resolved once, so that the per frame refresh only pays for reading the value and not for
+    // looking the property up by name again.
     const prop_info *capture_trigger_prop = nullptr;
-    uint32_t capture_trigger_serial = 0;
 #endif
 
     int tab_size;  // equal to the indent size if using spaces, otherwise is equal to 1
