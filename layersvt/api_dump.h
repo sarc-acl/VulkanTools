@@ -46,6 +46,7 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <atomic>
 #include <cassert>
 #include <chrono>
 #include <fstream>
@@ -117,6 +118,15 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyUseSpaces "use_spaces"
 #define kSettingsKeyShowShader "show_shader"
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
+#define kSettingsKeyCaptureTrigger "capture_trigger"
+
+// The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
+// property once at instance creation, so the trigger has to be polled directly to be able to change
+// while the app runs.
+// Note the layer settings library would also accept the compatibility spelling
+// debug.apidump.capture_trigger, which is not polled here: a trigger set under that name would
+// enable triggered mode but then never appear to change.
+#define kCaptureTriggerProperty "debug.vulkan.lunarg_api_dump.capture_trigger"
 
 // We want to dump all extensions even beta extensions.
 #ifndef VK_ENABLE_BETA_EXTENSIONS
@@ -429,9 +439,9 @@ class ApiDumpSettings {
         switch (format()) {
             case (ApiDumpFormat::Html):
                 if (frame_count > 0) {
-                    if (condFrameOutput.isFrameInRange(frame_count - 1)) output_stream << "</details>";
+                    if (wasPreviousFrameDumped(frame_count)) output_stream << "</details>";
                 }
-                if (condFrameOutput.isFrameInRange(frame_count)) {
+                if (isFrameInRange(frame_count)) {
                     output_stream << "<details class='frm'><summary>Frame ";
                     if (show_thread_and_frame) {
                         output_stream << frame_count;
@@ -443,9 +453,9 @@ class ApiDumpSettings {
             case (ApiDumpFormat::Json):
 
                 if (frame_count > 0) {
-                    if (condFrameOutput.isFrameInRange(frame_count - 1)) output_stream << "\n" << indentation(1) << "]\n}";
+                    if (wasPreviousFrameDumped(frame_count)) output_stream << "\n" << indentation(1) << "]\n}";
                 }
-                if (condFrameOutput.isFrameInRange(frame_count)) {
+                if (isFrameInRange(frame_count)) {
                     if (!hasPrintedAFrame) {
                         hasPrintedAFrame = true;
                     } else {
@@ -527,7 +537,46 @@ class ApiDumpSettings {
     // Since basically every function in this struct is const, we have to work around that.
     std::ostream &stream() const { return output_stream; }
 
-    bool isFrameInRange(uint64_t frame) const { return condFrameOutput.isFrameInRange(frame); }
+    // Whether the given frame should be dumped. Every caller must go through here rather than
+    // reaching for condFrameOutput directly, otherwise the trigger and the range can disagree and
+    // the per-frame markup stops matching the calls it wraps.
+    bool isFrameInRange(uint64_t frame) const {
+        if (use_capture_trigger) {
+            return capture_triggered.load(std::memory_order_relaxed);
+        }
+        return condFrameOutput.isFrameInRange(frame);
+    }
+
+    // Whether the frame before `frame` was dumped, i.e. whether there is open markup to close.
+    // Under a trigger this cannot be derived from the current state: the trigger being off now is
+    // exactly the case where the previous frame was dumped and still needs closing.
+    bool wasPreviousFrameDumped(uint64_t frame) const {
+        if (use_capture_trigger) {
+            return previous_frame_dumped.load(std::memory_order_relaxed);
+        }
+        return condFrameOutput.isFrameInRange(frame - 1);
+    }
+
+    bool usingCaptureTrigger() const { return use_capture_trigger; }
+
+    // Re-read the trigger property. Called once per frame, before the frame's dump state is decided.
+    void refreshCaptureTrigger() {
+        if (!use_capture_trigger) {
+            return;
+        }
+        previous_frame_dumped.store(capture_triggered.load(std::memory_order_relaxed), std::memory_order_relaxed);
+#ifdef ANDROID
+        if (capture_trigger_prop == nullptr) {
+            return;
+        }
+        uint32_t serial = __system_property_serial(capture_trigger_prop);
+        if (serial == capture_trigger_serial) {
+            return;
+        }
+        capture_trigger_serial = serial;
+        capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
+#endif
+    }
 
     void init(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator) {
         VkuLayerSettingSet layerSettingSet = VK_NULL_HANDLE;
@@ -673,6 +722,23 @@ class ApiDumpSettings {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyOutputRange, cond_range_string);
         }
 
+        // The trigger is opt-in by presence: when set, it governs dumping outright and output_range
+        // is ignored. Callers pick one or the other, never both.
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTrigger)) {
+            use_capture_trigger = true;
+            bool initial_trigger = false;
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTrigger, initial_trigger);
+            capture_triggered.store(initial_trigger, std::memory_order_relaxed);
+            previous_frame_dumped.store(false, std::memory_order_relaxed);
+#ifdef ANDROID
+            capture_trigger_prop = __system_property_find(kCaptureTriggerProperty);
+            if (capture_trigger_prop != nullptr) {
+                capture_trigger_serial = __system_property_serial(capture_trigger_prop);
+                capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
+            }
+#endif
+        }
+
         if (cond_range_string == "" || cond_range_string == "0-0") {  //"0-0" is every frame, no need to check
             use_conditional_output = false;
         } else {
@@ -805,6 +871,21 @@ class ApiDumpSettings {
     }
 
    private:
+#ifdef ANDROID
+    // Read the already-resolved trigger property. Only called when the serial says it changed.
+    bool readCaptureTriggerProp() const {
+        bool value = false;
+        __system_property_read_callback(
+            capture_trigger_prop,
+            [](void *cookie, const char *, const char *prop_value, uint32_t) {
+                std::string lower = ToLowerString(prop_value);
+                *static_cast<bool *>(cookie) = (lower == "true" || lower == "1");
+            },
+            &value);
+        return value;
+    }
+#endif
+
     // Utility member to enable easier comparison by forcing a string to all lower-case
     static std::string ToLowerString(const std::string &value) {
         std::string lower_value = value;
@@ -837,6 +918,22 @@ class ApiDumpSettings {
     bool use_conditional_output = false;
     ConditionalFrameOutput condFrameOutput;
 
+    // When the capture_trigger setting is present, the trigger replaces the output_range check
+    // entirely rather than combining with it. An output_range of "" or "0-0" means "every frame"
+    // (see init), so there is no range value that could express "nothing until triggered".
+    bool use_capture_trigger = false;
+    std::atomic<bool> capture_triggered{false};
+    // State the trigger had while the previous frame was being dumped. setupInterFrameOutputFormatting
+    // has to close the markup it opened for that frame, which is only correct if it is told what was
+    // actually emitted then rather than what the trigger says now.
+    std::atomic<bool> previous_frame_dumped{false};
+#ifdef ANDROID
+    // Resolved once. Reading the property outright on every frame shows up in a layer this hot, so
+    // the serial is compared first and the value only re-read when it actually changed.
+    const prop_info *capture_trigger_prop = nullptr;
+    uint32_t capture_trigger_serial = 0;
+#endif
+
     int tab_size;  // equal to the indent size if using spaces, otherwise is equal to 1
 };
 
@@ -867,12 +964,20 @@ class ApiDumpInstance {
         std::lock_guard<std::mutex> lg(frame_mutex);
         ++frame_count;
 
+        // Pick up any trigger change before deciding this frame, so the decision and the markup
+        // setupInterFrameOutputFormatting emits below are taken from the same state.
+        settings().refreshCaptureTrigger();
         should_dump_output = settings().isFrameInRange(frame_count);
         settings().setupInterFrameOutputFormatting(frame_count);
         first_func_call_on_frame = true;
     }
 
     bool shouldDumpOutput() {
+        // Under a trigger the answer changes while the app runs, so the one-shot latch below would
+        // pin it to whatever was true before the first frame boundary.
+        if (settings().usingCaptureTrigger()) {
+            return should_dump_output;
+        }
         if (!conditional_initialized) {
             should_dump_output = settings().isFrameInRange(frame_count);
             conditional_initialized = true;

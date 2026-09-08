@@ -105,6 +105,16 @@ lunarg_api_dump.indent_size = 4
 # Show the thread and frame of each function called
 lunarg_api_dump.show_thread_and_frame = true
 
+# Capture Trigger
+# =====================
+# <LayerIdentifier>.capture_trigger
+# Dump only while this is true. Unlike every other setting it is polled once per frame, so it can be
+# toggled while the application runs - on Android by setting the
+# debug.vulkan.lunarg_api_dump.capture_trigger property.
+# Merely defining this setting switches the layer into triggered mode and output_range is then
+# ignored, so it is left commented out here rather than defaulted.
+# lunarg_api_dump.capture_trigger = false
+
 
 # VK_LAYER_LUNARG_screenshot
 

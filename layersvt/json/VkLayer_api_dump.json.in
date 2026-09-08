@@ -327,6 +327,13 @@
                     "description": "Show the thread and frame of each function called",
                     "type": "BOOL",
                     "default": true
+                },
+                {
+                    "key": "capture_trigger",
+                    "label": "Capture Trigger",
+                    "description": "Dump only while this is true, polled once per frame so it can be toggled while the application runs. When set, it replaces output_range rather than combining with it.",
+                    "type": "BOOL",
+                    "default": false
                 }
             ]
         }
