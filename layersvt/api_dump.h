@@ -754,6 +754,16 @@ class ApiDumpSettings {
             indent_size = 1;  // setting this allows indentation to not need a branch on use_spaces
         }
 
+        // A process may create more than one VkInstance, which runs init again on this same settings
+        // object. The document header and the opening frame belong to the output file rather than to
+        // an instance, so writing them again would concatenate a second document into the same file
+        // and leave it unparseable.
+        if (document_opened) {
+            vkuDestroyLayerSettingSet(layerSettingSet, pAllocator);
+            return;
+        }
+        document_opened = true;
+
         // Generate HTML heading if specified
         if (output_format == ApiDumpFormat::Html) {
             // clang-format off
@@ -919,6 +929,8 @@ class ApiDumpSettings {
     // When the capture_trigger setting is present, the trigger replaces the output_range check
     // entirely rather than combining with it. An output_range of "" or "0-0" means "every frame"
     // (see init), so there is no range value that could express "nothing until triggered".
+    // Whether the document header has already been written to the output file. See init.
+    bool document_opened = false;
     bool use_capture_trigger = false;
     std::atomic<bool> capture_triggered{false};
     // State the trigger had while the previous frame was being dumped. setupInterFrameOutputFormatting
