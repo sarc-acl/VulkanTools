@@ -334,6 +334,13 @@
                     "description": "Dump only while this is true, polled once per frame so it can be toggled while the application runs. When set, it replaces output_range rather than combining with it.",
                     "type": "BOOL",
                     "default": false
+                },
+                {
+                    "key": "always_dump_setup",
+                    "label": "Always Dump Setup Commands",
+                    "description": "Dump object creation and destruction, command buffer recording, and the commands that produce handles, even when they occur outside the dumped frames. Without them the calls inside those frames refer to handles that cannot be resolved.",
+                    "type": "BOOL",
+                    "default": false
                 }
             ]
         }

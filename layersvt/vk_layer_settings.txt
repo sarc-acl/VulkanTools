@@ -115,6 +115,16 @@ lunarg_api_dump.show_thread_and_frame = true
 # ignored, so it is left commented out here rather than defaulted.
 # lunarg_api_dump.capture_trigger = false
 
+# Always Dump Setup Commands
+# =====================
+# <LayerIdentifier>.always_dump_setup
+# Dump object creation and destruction, command buffer recording, and the commands that produce
+# handles, even when they occur outside the frames selected by output_range or capture_trigger.
+# Calls inside those frames refer to objects by handle, and without the commands that produced
+# those handles there is nothing to resolve them against.
+# Frames outside the selection are still written, holding only these commands, or none at all.
+lunarg_api_dump.always_dump_setup = false
+
 
 # VK_LAYER_LUNARG_screenshot
 

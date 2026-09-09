@@ -119,6 +119,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowShader "show_shader"
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
 #define kSettingsKeyCaptureTrigger "capture_trigger"
+#define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
 
 // The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
 // property once at instance creation, so the trigger has to be polled directly to be able to change
@@ -439,9 +440,9 @@ class ApiDumpSettings {
         switch (format()) {
             case (ApiDumpFormat::Html):
                 if (frame_count > 0) {
-                    if (wasPreviousFrameDumped(frame_count)) output_stream << "</details>";
+                    if (wasPreviousFrameRecorded(frame_count)) output_stream << "</details>";
                 }
-                if (isFrameInRange(frame_count)) {
+                if (isFrameRecorded(frame_count)) {
                     output_stream << "<details class='frm'><summary>Frame ";
                     if (show_thread_and_frame) {
                         output_stream << frame_count;
@@ -453,9 +454,9 @@ class ApiDumpSettings {
             case (ApiDumpFormat::Json):
 
                 if (frame_count > 0) {
-                    if (wasPreviousFrameDumped(frame_count)) output_stream << "\n" << indentation(1) << "]\n}";
+                    if (wasPreviousFrameRecorded(frame_count)) output_stream << "\n" << indentation(1) << "]\n}";
                 }
-                if (isFrameInRange(frame_count)) {
+                if (isFrameRecorded(frame_count)) {
                     if (!hasPrintedAFrame) {
                         hasPrintedAFrame = true;
                     } else {
@@ -558,6 +559,72 @@ class ApiDumpSettings {
     }
 
     bool usingCaptureTrigger() const { return use_capture_trigger; }
+
+    bool alwaysDumpSetup() const { return always_dump_setup; }
+
+    // Whether a frame object is written for this frame at all, as opposed to whether the frame's
+    // calls are dumped. With always_dump_setup a setup command can occur in any frame, including
+    // frames outside the captured range, and it needs a frame object to live in or the document is
+    // malformed. Such a frame simply ends up holding only its setup commands, or none at all.
+    bool isFrameRecorded(uint64_t frame) const { return always_dump_setup || isFrameInRange(frame); }
+
+    bool wasPreviousFrameRecorded(uint64_t frame) const { return always_dump_setup || wasPreviousFrameDumped(frame); }
+
+    // Whether a command is one the captured frames depend on to be interpretable.
+    //
+    // Calls inside the range refer to objects by handle, and a handle on its own says nothing about
+    // what it refers to. Dumping the commands that create, destroy or record those objects - even
+    // from outside the range - is what lets a reader resolve them.
+    //
+    // Classified by name because that is what the entry points have to hand. The prefixes cover
+    // instance and device lifetime (vkCreateInstance and friends are all vkCreate/vkDestroy) as
+    // well as general object lifetime and command buffer recording; the named commands are the
+    // handle producers that do not follow the vkCreate/vkAllocate naming, and are where to add any
+    // that turn out to be missing.
+    static bool isSetupCommand(const char *funcName) {
+        static const char *const kSetupPrefixes[] = {
+            "vkCreate",    // object creation, including vkCreateInstance and vkCreateDevice
+            "vkDestroy",   // object destruction, including vkDestroyInstance and vkDestroyDevice
+            "vkAllocate",  // vkAllocateMemory, vkAllocateCommandBuffers, vkAllocateDescriptorSets
+            "vkFree",      // vkFreeMemory, vkFreeCommandBuffers, vkFreeDescriptorSets
+            "vkCmd",       // command buffer recording
+        };
+        for (const char *prefix : kSetupPrefixes) {
+            if (strncmp(funcName, prefix, strlen(prefix)) == 0) {
+                return true;
+            }
+        }
+
+        static const char *const kSetupCommands[] = {
+            // Command buffer recording, which vkCmd does not cover.
+            "vkBeginCommandBuffer",
+            "vkEndCommandBuffer",
+            "vkResetCommandBuffer",
+            "vkResetCommandPool",  // implicitly resets every command buffer in the pool
+            // Handles that are produced rather than created.
+            "vkGetDeviceQueue",
+            "vkGetDeviceQueue2",
+            "vkGetSwapchainImagesKHR",
+            "vkEnumeratePhysicalDevices",
+            "vkEnumeratePhysicalDeviceGroups",
+            "vkEnumeratePhysicalDeviceGroupsKHR",
+            "vkRegisterDeviceEventEXT",
+            "vkRegisterDisplayEventEXT",
+            // Display handles, which only exist off Android but cost nothing to cover.
+            "vkGetDisplayPlaneSupportedDisplaysKHR",
+            "vkGetDrmDisplayEXT",
+            "vkGetRandROutputDisplayEXT",
+            "vkGetWinrtDisplayNV",
+            // Frees the pool's descriptor sets without naming them.
+            "vkResetDescriptorPool",
+        };
+        for (const char *command : kSetupCommands) {
+            if (strcmp(funcName, command) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // Re-read the trigger property. Called once per frame, before the frame's dump state is decided.
     //
@@ -721,6 +788,11 @@ class ApiDumpSettings {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyOutputRange, cond_range_string);
         }
 
+        always_dump_setup = false;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyAlwaysDumpSetup)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyAlwaysDumpSetup, always_dump_setup);
+        }
+
         // The trigger is opt-in by presence: when set, it governs dumping outright and output_range
         // is ignored. Callers pick one or the other, never both.
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTrigger)) {
@@ -871,7 +943,7 @@ class ApiDumpSettings {
             output_stream << "[\n";
         }
 
-        if (isFrameInRange(0)) {
+        if (isFrameRecorded(0)) {
             setupInterFrameOutputFormatting(0);
         }
 
@@ -931,6 +1003,7 @@ class ApiDumpSettings {
     // (see init), so there is no range value that could express "nothing until triggered".
     // Whether the document header has already been written to the output file. See init.
     bool document_opened = false;
+    bool always_dump_setup = false;
     bool use_capture_trigger = false;
     std::atomic<bool> capture_triggered{false};
     // State the trigger had while the previous frame was being dumped. setupInterFrameOutputFormatting
@@ -956,7 +1029,10 @@ class ApiDumpInstance {
     ApiDumpInstance &operator=(ApiDumpInstance &&) = delete;
 
     ~ApiDumpInstance() {
-        if (!first_func_call_on_frame) settings().closeFrameOutput();
+        // Closing depends on whether a frame object was opened, not on whether anything was dumped
+        // into it. A recorded frame that ends up empty - which always_dump_setup makes common, since
+        // every frame is recorded but most hold no setup commands - still has markup to close.
+        if (settings().isFrameRecorded(frame_count)) settings().closeFrameOutput();
     }
 
     void initLayerSettings(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator) {
@@ -981,7 +1057,8 @@ class ApiDumpInstance {
         first_func_call_on_frame = true;
     }
 
-    bool shouldDumpOutput() {
+    // Whether the current frame is being dumped in its entirety.
+    bool frameIsDumped() {
         // Under a trigger the answer changes while the app runs, so the one-shot latch below would
         // pin it to whatever was true before the first frame boundary.
         if (settings().usingCaptureTrigger()) {
@@ -993,6 +1070,22 @@ class ApiDumpInstance {
         }
         return should_dump_output;
     }
+
+    // Record which command the calling entry point is, so that shouldDumpOutput can answer for that
+    // command rather than only for the frame.
+    //
+    // Called from dump_function_head, which every entry point invokes before it dumps anything and
+    // while holding the output mutex - hence a plain member rather than anything thread local, and
+    // hence no need to thread the name through the generated dispatch's many call sites.
+    void setCurrentCommand(const char *funcName) {
+        // Classifying costs a few string compares, so it is skipped whenever it cannot change the
+        // answer: with the setting off nothing extra is dumped, and inside the range everything is
+        // dumped already.
+        current_command_is_setup =
+            settings().alwaysDumpSetup() && !frameIsDumped() && ApiDumpSettings::isSetupCommand(funcName);
+    }
+
+    bool shouldDumpOutput() { return frameIsDumped() || current_command_is_setup; }
 
     bool firstFunctionCallOnFrame() {
         if (first_func_call_on_frame) {
@@ -1150,6 +1243,9 @@ class ApiDumpInstance {
     bool conditional_initialized = false;
     bool should_dump_output = true;
     bool first_func_call_on_frame = true;
+    // Whether the entry point currently executing is dumped despite its frame not being. Guarded by
+    // the output mutex, which every entry point holds for its whole body. See setCurrentCommand.
+    bool current_command_is_setup = false;
 
     std::chrono::system_clock::time_point program_start;
 
@@ -1885,6 +1981,7 @@ inline void dump_json_UNUSED(const ApiDumpSettings &settings, const char *type_s
 
 inline void dump_function_head(ApiDumpInstance &dump_inst, const char *funcName, const char *funcNamedParams,
                                const char *funcReturn) {
+    dump_inst.setCurrentCommand(funcName);
     if (dump_inst.shouldDumpOutput()) {
         switch (dump_inst.settings().format()) {
             case ApiDumpFormat::Text:
