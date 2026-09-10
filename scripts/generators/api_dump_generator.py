@@ -661,7 +661,7 @@ class ApiDumpGenerator(BaseGenerator):
                     // what it does to enums, and that is where most of its size saving comes from.
                     const bool dump_bit_names = !settings.showEnumValue();
                     bool is_first = true;
-                    if (dump_bit_names) {''')
+                    if (dump_bit_names) {{''')
             for field in bitmask.flags:
                 self.write(f'if(object {"==" if  field.zero or field.multiBit else "&"} {field.name}) {{')
                 self.write(f'settings.stream() << (is_first ? \" (\" : \" | \") << "{field.name}"; is_first = false;')
