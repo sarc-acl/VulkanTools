@@ -11047,134 +11047,140 @@ void dump_VkFormatFeatureFlagBits(const VkFormatFeatureFlagBits object, const Ap
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_BLIT_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_BLIT_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_BLIT_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_BLIT_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_TRANSFER_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_TRANSFER_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_DISJOINT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_DISJOINT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_VIDEO_DECODE_OUTPUT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_DECODE_OUTPUT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_VIDEO_DECODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_DECODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_VIDEO_ENCODE_INPUT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_ENCODE_INPUT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_VIDEO_ENCODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_ENCODE_DPB_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_BLIT_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_BLIT_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_BLIT_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_BLIT_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_TRANSFER_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_TRANSFER_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_DISJOINT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_DISJOINT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_VIDEO_DECODE_OUTPUT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_DECODE_OUTPUT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_VIDEO_DECODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_DECODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_VIDEO_ENCODE_INPUT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_ENCODE_INPUT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_VIDEO_ENCODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_VIDEO_ENCODE_DPB_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11184,94 +11190,100 @@ void dump_VkImageCreateFlagBits(const VkImageCreateFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_CREATE_SPARSE_BINDING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_BINDING_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_SPARSE_ALIASED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_ALIASED_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_ALIAS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_ALIAS_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_EXTENDED_USAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_EXTENDED_USAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_PROTECTED_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_DISJOINT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_DISJOINT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_CREATE_SPARSE_BINDING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_BINDING_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_SPARSE_ALIASED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPARSE_ALIASED_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_ALIAS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_ALIAS_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_EXTENDED_USAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_EXTENDED_USAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_PROTECTED_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_DISJOINT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_DISJOINT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11281,38 +11293,44 @@ void dump_VkSampleCountFlagBits(const VkSampleCountFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SAMPLE_COUNT_1_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_1_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_2_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_2_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_4_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_4_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_8_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_8_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_16_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_16_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_32_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_32_BIT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLE_COUNT_64_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_64_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SAMPLE_COUNT_1_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_1_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_2_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_2_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_4_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_4_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_8_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_8_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_16_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_16_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_32_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_32_BIT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLE_COUNT_64_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLE_COUNT_64_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11322,110 +11340,116 @@ void dump_VkImageUsageFlagBits(const VkImageUsageFlagBits object, const ApiDumpS
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSFER_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_TRANSFER_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSFER_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_SAMPLED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLED_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_STORAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_STORAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_HOST_TRANSFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_HOST_TRANSFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_TENSOR_ALIASING_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TENSOR_ALIASING_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_TILE_MEMORY_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TILE_MEMORY_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSFER_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_TRANSFER_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSFER_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_SAMPLED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLED_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_STORAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_STORAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_HOST_TRANSFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_HOST_TRANSFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_TENSOR_ALIASING_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TENSOR_ALIASING_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_TILE_MEMORY_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_TILE_MEMORY_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11435,14 +11459,20 @@ void dump_VkInstanceCreateFlagBits(const VkInstanceCreateFlagBits object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11452,22 +11482,28 @@ void dump_VkMemoryHeapFlagBits(const VkMemoryHeapFlagBits object, const ApiDumpS
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_HEAP_TILE_MEMORY_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_TILE_MEMORY_BIT_QCOM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_HEAP_TILE_MEMORY_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_HEAP_TILE_MEMORY_BIT_QCOM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11477,46 +11513,52 @@ void dump_VkMemoryPropertyFlagBits(const VkMemoryPropertyFlagBits object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_PROTECTED_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_PROTECTED_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11526,46 +11568,52 @@ void dump_VkQueueFlagBits(const VkQueueFlagBits object, const ApiDumpSettings& s
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_QUEUE_GRAPHICS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_GRAPHICS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_COMPUTE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_COMPUTE_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_TRANSFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_TRANSFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_SPARSE_BINDING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_SPARSE_BINDING_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_PROTECTED_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_VIDEO_DECODE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_VIDEO_DECODE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_VIDEO_ENCODE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_OPTICAL_FLOW_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_OPTICAL_FLOW_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_QUEUE_DATA_GRAPH_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_DATA_GRAPH_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_QUEUE_GRAPHICS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_GRAPHICS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_COMPUTE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_COMPUTE_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_TRANSFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_TRANSFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_SPARSE_BINDING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_SPARSE_BINDING_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_PROTECTED_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_VIDEO_DECODE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_VIDEO_DECODE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_VIDEO_ENCODE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_OPTICAL_FLOW_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_OPTICAL_FLOW_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_QUEUE_DATA_GRAPH_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUEUE_DATA_GRAPH_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11575,82 +11623,88 @@ void dump_VkShaderStageFlagBits(const VkShaderStageFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SHADER_STAGE_VERTEX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_VERTEX_BIT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_GEOMETRY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_GEOMETRY_BIT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_FRAGMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_FRAGMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_COMPUTE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_COMPUTE_BIT";
-        is_first = false;
-    }
-    if (object == VK_SHADER_STAGE_ALL_GRAPHICS) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ALL_GRAPHICS";
-        is_first = false;
-    }
-    if (object == VK_SHADER_STAGE_ALL) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ALL";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_RAYGEN_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_RAYGEN_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_ANY_HIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ANY_HIT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_MISS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_MISS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_INTERSECTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_INTERSECTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_CALLABLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CALLABLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_TASK_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TASK_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_MESH_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_MESH_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SHADER_STAGE_VERTEX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_VERTEX_BIT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_GEOMETRY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_GEOMETRY_BIT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_FRAGMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_FRAGMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_COMPUTE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_COMPUTE_BIT";
+            is_first = false;
+        }
+        if (object == VK_SHADER_STAGE_ALL_GRAPHICS) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ALL_GRAPHICS";
+            is_first = false;
+        }
+        if (object == VK_SHADER_STAGE_ALL) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ALL";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_RAYGEN_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_RAYGEN_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_ANY_HIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_ANY_HIT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_MISS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_MISS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_INTERSECTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_INTERSECTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_CALLABLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CALLABLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_TASK_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_TASK_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_MESH_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_MESH_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11660,18 +11714,24 @@ void dump_VkDeviceQueueCreateFlagBits(const VkDeviceQueueCreateFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_QUEUE_CREATE_INTERNALLY_SYNCHRONIZED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_QUEUE_CREATE_INTERNALLY_SYNCHRONIZED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_QUEUE_CREATE_INTERNALLY_SYNCHRONIZED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_QUEUE_CREATE_INTERNALLY_SYNCHRONIZED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11681,118 +11741,124 @@ void dump_VkPipelineStageFlagBits(const VkPipelineStageFlagBits object, const Ap
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_VERTEX_INPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_VERTEX_INPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_VERTEX_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_VERTEX_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_TRANSFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TRANSFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_HOST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_HOST_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_ALL_COMMANDS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ALL_COMMANDS_BIT";
-        is_first = false;
-    }
-    if (object == VK_PIPELINE_STAGE_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_NONE";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_VERTEX_INPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_VERTEX_INPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_VERTEX_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_VERTEX_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_TRANSFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TRANSFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_HOST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_HOST_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_ALL_COMMANDS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ALL_COMMANDS_BIT";
+            is_first = false;
+        }
+        if (object == VK_PIPELINE_STAGE_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_NONE";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11802,14 +11868,20 @@ void dump_VkMemoryMapFlagBits(const VkMemoryMapFlagBits object, const ApiDumpSet
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_MAP_PLACED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_MAP_PLACED_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_MAP_PLACED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_MAP_PLACED_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11819,58 +11891,64 @@ void dump_VkImageAspectFlagBits(const VkImageAspectFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_ASPECT_COLOR_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_COLOR_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_DEPTH_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_DEPTH_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_STENCIL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_STENCIL_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_METADATA_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_METADATA_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_PLANE_0_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_0_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_PLANE_1_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_1_BIT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_PLANE_2_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_2_BIT";
-        is_first = false;
-    }
-    if (object == VK_IMAGE_ASPECT_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_NONE";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_ASPECT_COLOR_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_COLOR_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_DEPTH_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_DEPTH_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_STENCIL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_STENCIL_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_METADATA_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_METADATA_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_PLANE_0_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_0_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_PLANE_1_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_1_BIT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_PLANE_2_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_PLANE_2_BIT";
+            is_first = false;
+        }
+        if (object == VK_IMAGE_ASPECT_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_NONE";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11880,22 +11958,28 @@ void dump_VkSparseImageFormatFlagBits(const VkSparseImageFormatFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT";
-        is_first = false;
-    }
-    if (object & VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT";
-        is_first = false;
-    }
-    if (object & VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT";
+            is_first = false;
+        }
+        if (object & VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT";
+            is_first = false;
+        }
+        if (object & VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11905,14 +11989,20 @@ void dump_VkSparseMemoryBindFlagBits(const VkSparseMemoryBindFlagBits object, co
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SPARSE_MEMORY_BIND_METADATA_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_MEMORY_BIND_METADATA_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SPARSE_MEMORY_BIND_METADATA_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPARSE_MEMORY_BIND_METADATA_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11922,14 +12012,20 @@ void dump_VkFenceCreateFlagBits(const VkFenceCreateFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FENCE_CREATE_SIGNALED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FENCE_CREATE_SIGNALED_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FENCE_CREATE_SIGNALED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FENCE_CREATE_SIGNALED_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11939,14 +12035,20 @@ void dump_VkQueryPoolCreateFlagBits(const VkQueryPoolCreateFlagBits object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_QUERY_POOL_CREATE_RESET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_POOL_CREATE_RESET_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_QUERY_POOL_CREATE_RESET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_POOL_CREATE_RESET_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -11956,66 +12058,72 @@ void dump_VkQueryPipelineStatisticFlagBits(const VkQueryPipelineStatisticFlagBit
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12025,30 +12133,36 @@ void dump_VkQueryResultFlagBits(const VkQueryResultFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_QUERY_RESULT_64_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_64_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_RESULT_WAIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WAIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_RESULT_WITH_AVAILABILITY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WITH_AVAILABILITY_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_RESULT_PARTIAL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_PARTIAL_BIT";
-        is_first = false;
-    }
-    if (object & VK_QUERY_RESULT_WITH_STATUS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WITH_STATUS_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_QUERY_RESULT_64_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_64_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_RESULT_WAIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WAIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_RESULT_WITH_AVAILABILITY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WITH_AVAILABILITY_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_RESULT_PARTIAL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_PARTIAL_BIT";
+            is_first = false;
+        }
+        if (object & VK_QUERY_RESULT_WITH_STATUS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_RESULT_WITH_STATUS_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12058,38 +12172,44 @@ void dump_VkBufferCreateFlagBits(const VkBufferCreateFlagBits object, const ApiD
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_BUFFER_CREATE_SPARSE_BINDING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_BINDING_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_SPARSE_ALIASED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_ALIASED_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_PROTECTED_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_BUFFER_CREATE_SPARSE_BINDING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_BINDING_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_SPARSE_ALIASED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_SPARSE_ALIASED_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_PROTECTED_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12099,122 +12219,128 @@ void dump_VkBufferUsageFlagBits(const VkBufferUsageFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_BUFFER_USAGE_TRANSFER_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFER_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_TRANSFER_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFER_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_STORAGE_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_INDEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VERTEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_VIDEO_DECODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_DECODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_EXECUTION_GRAPH_SCRATCH_BIT_AMDX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_EXECUTION_GRAPH_SCRATCH_BIT_AMDX";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_DESCRIPTOR_HEAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_DESCRIPTOR_HEAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_BUFFER_USAGE_TRANSFER_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFER_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_TRANSFER_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFER_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_STORAGE_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_INDEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VERTEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_VIDEO_DECODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_DECODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_EXECUTION_GRAPH_SCRATCH_BIT_AMDX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_EXECUTION_GRAPH_SCRATCH_BIT_AMDX";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_DESCRIPTOR_HEAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_DESCRIPTOR_HEAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12224,22 +12350,28 @@ void dump_VkImageViewCreateFlagBits(const VkImageViewCreateFlagBits object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12249,126 +12381,132 @@ void dump_VkAccessFlagBits(const VkAccessFlagBits object, const ApiDumpSettings&
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_ACCESS_INDIRECT_COMMAND_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INDIRECT_COMMAND_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_INDEX_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INDEX_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_UNIFORM_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_UNIFORM_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_INPUT_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INPUT_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_SHADER_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_SHADER_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_SHADER_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_SHADER_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_COLOR_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_TRANSFER_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFER_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_TRANSFER_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFER_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_HOST_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_HOST_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_HOST_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_HOST_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_MEMORY_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_MEMORY_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_MEMORY_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_MEMORY_WRITE_BIT";
-        is_first = false;
-    }
-    if (object == VK_ACCESS_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_NONE";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_ACCESS_INDIRECT_COMMAND_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INDIRECT_COMMAND_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_INDEX_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INDEX_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_UNIFORM_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_UNIFORM_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_INPUT_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_INPUT_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_SHADER_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_SHADER_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_SHADER_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_SHADER_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_COLOR_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_TRANSFER_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFER_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_TRANSFER_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFER_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_HOST_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_HOST_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_HOST_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_HOST_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_MEMORY_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_MEMORY_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_MEMORY_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_MEMORY_WRITE_BIT";
+            is_first = false;
+        }
+        if (object == VK_ACCESS_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_NONE";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12378,34 +12516,40 @@ void dump_VkDependencyFlagBits(const VkDependencyFlagBits object, const ApiDumpS
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEPENDENCY_BY_REGION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_BY_REGION_BIT";
-        is_first = false;
-    }
-    if (object & VK_DEPENDENCY_DEVICE_GROUP_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_DEVICE_GROUP_BIT";
-        is_first = false;
-    }
-    if (object & VK_DEPENDENCY_VIEW_LOCAL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_VIEW_LOCAL_BIT";
-        is_first = false;
-    }
-    if (object & VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEPENDENCY_QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEPENDENCY_ASYMMETRIC_EVENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_ASYMMETRIC_EVENT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEPENDENCY_BY_REGION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_BY_REGION_BIT";
+            is_first = false;
+        }
+        if (object & VK_DEPENDENCY_DEVICE_GROUP_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_DEVICE_GROUP_BIT";
+            is_first = false;
+        }
+        if (object & VK_DEPENDENCY_VIEW_LOCAL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_VIEW_LOCAL_BIT";
+            is_first = false;
+        }
+        if (object & VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEPENDENCY_QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEPENDENCY_ASYMMETRIC_EVENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEPENDENCY_ASYMMETRIC_EVENT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12415,22 +12559,28 @@ void dump_VkCommandPoolCreateFlagBits(const VkCommandPoolCreateFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COMMAND_POOL_CREATE_TRANSIENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_TRANSIENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_COMMAND_POOL_CREATE_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_PROTECTED_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COMMAND_POOL_CREATE_TRANSIENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_TRANSIENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_COMMAND_POOL_CREATE_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_CREATE_PROTECTED_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12440,14 +12590,20 @@ void dump_VkCommandPoolResetFlagBits(const VkCommandPoolResetFlagBits object, co
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12457,14 +12613,20 @@ void dump_VkQueryControlFlagBits(const VkQueryControlFlagBits object, const ApiD
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_QUERY_CONTROL_PRECISE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_CONTROL_PRECISE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_QUERY_CONTROL_PRECISE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_QUERY_CONTROL_PRECISE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12474,22 +12636,28 @@ void dump_VkCommandBufferUsageFlagBits(const VkCommandBufferUsageFlagBits object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT";
-        is_first = false;
-    }
-    if (object & VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT";
+            is_first = false;
+        }
+        if (object & VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12499,14 +12667,20 @@ void dump_VkCommandBufferResetFlagBits(const VkCommandBufferResetFlagBits object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12516,14 +12690,20 @@ void dump_VkEventCreateFlagBits(const VkEventCreateFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EVENT_CREATE_DEVICE_ONLY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EVENT_CREATE_DEVICE_ONLY_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EVENT_CREATE_DEVICE_ONLY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EVENT_CREATE_DEVICE_ONLY_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12533,18 +12713,24 @@ void dump_VkPipelineCacheCreateFlagBits(const VkPipelineCacheCreateFlagBits obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CACHE_CREATE_INTERNALLY_SYNCHRONIZED_MERGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CACHE_CREATE_INTERNALLY_SYNCHRONIZED_MERGE_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CACHE_CREATE_INTERNALLY_SYNCHRONIZED_MERGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CACHE_CREATE_INTERNALLY_SYNCHRONIZED_MERGE_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12554,134 +12740,140 @@ void dump_VkPipelineCreateFlagBits(const VkPipelineCreateFlagBits object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_DERIVATIVE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DERIVATIVE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_DISPATCH_BASE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DISPATCH_BASE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_LIBRARY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_LIBRARY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_DERIVATIVE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DERIVATIVE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_DISPATCH_BASE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DISPATCH_BASE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_LIBRARY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_LIBRARY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12691,18 +12883,24 @@ void dump_VkPipelineLayoutCreateFlagBits(const VkPipelineLayoutCreateFlagBits ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_LAYOUT_CREATE_NO_TASK_SHADER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_LAYOUT_CREATE_NO_TASK_SHADER_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_LAYOUT_CREATE_NO_TASK_SHADER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_LAYOUT_CREATE_NO_TASK_SHADER_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12712,18 +12910,24 @@ void dump_VkPipelineShaderStageCreateFlagBits(const VkPipelineShaderStageCreateF
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12733,30 +12937,36 @@ void dump_VkSamplerCreateFlagBits(const VkSamplerCreateFlagBits object, const Ap
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12766,30 +12976,36 @@ void dump_VkDescriptorPoolCreateFlagBits(const VkDescriptorPoolCreateFlagBits ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12799,38 +13015,44 @@ void dump_VkDescriptorSetLayoutCreateFlagBits(const VkDescriptorSetLayoutCreateF
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_EMBEDDED_IMMUTABLE_SAMPLERS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_EMBEDDED_IMMUTABLE_SAMPLERS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_INDIRECT_BINDABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_INDIRECT_BINDABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PER_STAGE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_PER_STAGE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_EMBEDDED_IMMUTABLE_SAMPLERS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_EMBEDDED_IMMUTABLE_SAMPLERS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_INDIRECT_BINDABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_INDIRECT_BINDABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PER_STAGE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_SET_LAYOUT_CREATE_PER_STAGE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12840,26 +13062,32 @@ void dump_VkColorComponentFlagBits(const VkColorComponentFlagBits object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COLOR_COMPONENT_R_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_R_BIT";
-        is_first = false;
-    }
-    if (object & VK_COLOR_COMPONENT_G_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_G_BIT";
-        is_first = false;
-    }
-    if (object & VK_COLOR_COMPONENT_B_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_B_BIT";
-        is_first = false;
-    }
-    if (object & VK_COLOR_COMPONENT_A_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_A_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COLOR_COMPONENT_R_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_R_BIT";
+            is_first = false;
+        }
+        if (object & VK_COLOR_COMPONENT_G_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_G_BIT";
+            is_first = false;
+        }
+        if (object & VK_COLOR_COMPONENT_B_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_B_BIT";
+            is_first = false;
+        }
+        if (object & VK_COLOR_COMPONENT_A_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COLOR_COMPONENT_A_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12869,26 +13097,32 @@ void dump_VkCullModeFlagBits(const VkCullModeFlagBits object, const ApiDumpSetti
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_CULL_MODE_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_NONE";
-        is_first = false;
-    }
-    if (object & VK_CULL_MODE_FRONT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_FRONT_BIT";
-        is_first = false;
-    }
-    if (object & VK_CULL_MODE_BACK_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_BACK_BIT";
-        is_first = false;
-    }
-    if (object == VK_CULL_MODE_FRONT_AND_BACK) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_FRONT_AND_BACK";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_CULL_MODE_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_NONE";
+            is_first = false;
+        }
+        if (object & VK_CULL_MODE_FRONT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_FRONT_BIT";
+            is_first = false;
+        }
+        if (object & VK_CULL_MODE_BACK_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_BACK_BIT";
+            is_first = false;
+        }
+        if (object == VK_CULL_MODE_FRONT_AND_BACK) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CULL_MODE_FRONT_AND_BACK";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12898,14 +13132,20 @@ void dump_VkPipelineColorBlendStateCreateFlagBits(const VkPipelineColorBlendStat
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12915,18 +13155,24 @@ void dump_VkPipelineDepthStencilStateCreateFlagBits(const VkPipelineDepthStencil
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12936,22 +13182,28 @@ void dump_VkAttachmentDescriptionFlagBits(const VkAttachmentDescriptionFlagBits 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT";
-        is_first = false;
-    }
-    if (object & VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ATTACHMENT_DESCRIPTION_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT";
+            is_first = false;
+        }
+        if (object & VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ATTACHMENT_DESCRIPTION_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ATTACHMENT_DESCRIPTION_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12961,14 +13213,20 @@ void dump_VkFramebufferCreateFlagBits(const VkFramebufferCreateFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12978,18 +13236,24 @@ void dump_VkRenderPassCreateFlagBits(const VkRenderPassCreateFlagBits object, co
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_RENDER_PASS_CREATE_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDER_PASS_CREATE_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_RENDER_PASS_CREATE_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDER_PASS_CREATE_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -12999,46 +13263,52 @@ void dump_VkSubpassDescriptionFlagBits(const VkSubpassDescriptionFlagBits object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13048,22 +13318,28 @@ void dump_VkStencilFaceFlagBits(const VkStencilFaceFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_STENCIL_FACE_FRONT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_FRONT_BIT";
-        is_first = false;
-    }
-    if (object & VK_STENCIL_FACE_BACK_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_BACK_BIT";
-        is_first = false;
-    }
-    if (object == VK_STENCIL_FACE_FRONT_AND_BACK) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_FRONT_AND_BACK";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_STENCIL_FACE_FRONT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_FRONT_BIT";
+            is_first = false;
+        }
+        if (object & VK_STENCIL_FACE_BACK_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_BACK_BIT";
+            is_first = false;
+        }
+        if (object == VK_STENCIL_FACE_FRONT_AND_BACK) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_STENCIL_FACE_FRONT_AND_BACK";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13073,54 +13349,60 @@ void dump_VkSubgroupFeatureFlagBits(const VkSubgroupFeatureFlagBits object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SUBGROUP_FEATURE_BASIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_BASIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_VOTE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_VOTE_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ARITHMETIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_BALLOT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_BALLOT_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_SHUFFLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_CLUSTERED_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_QUAD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_QUAD_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_ROTATE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ROTATE_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT";
-        is_first = false;
-    }
-    if (object & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SUBGROUP_FEATURE_BASIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_BASIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_VOTE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_VOTE_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ARITHMETIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_BALLOT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_BALLOT_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_SHUFFLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_CLUSTERED_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_QUAD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_QUAD_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_ROTATE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ROTATE_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT";
+            is_first = false;
+        }
+        if (object & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13130,26 +13412,32 @@ void dump_VkPeerMemoryFeatureFlagBits(const VkPeerMemoryFeatureFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_PEER_MEMORY_FEATURE_COPY_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_COPY_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_PEER_MEMORY_FEATURE_COPY_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_COPY_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13159,26 +13447,32 @@ void dump_VkMemoryAllocateFlagBits(const VkMemoryAllocateFlagBits object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
-        is_first = false;
-    }
-    if (object & VK_MEMORY_ALLOCATE_ZERO_INITIALIZE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_ZERO_INITIALIZE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
+            is_first = false;
+        }
+        if (object & VK_MEMORY_ALLOCATE_ZERO_INITIALIZE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_ALLOCATE_ZERO_INITIALIZE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13188,82 +13482,88 @@ void dump_VkExternalMemoryHandleTypeFlagBits(const VkExternalMemoryHandleTypeFla
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OH_NATIVE_BUFFER_BIT_OHOS) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OH_NATIVE_BUFFER_BIT_OHOS";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLHEAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLHEAP_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OH_NATIVE_BUFFER_BIT_OHOS) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OH_NATIVE_BUFFER_BIT_OHOS";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLHEAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLHEAP_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13273,22 +13573,28 @@ void dump_VkExternalMemoryFeatureFlagBits(const VkExternalMemoryFeatureFlagBits 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13298,26 +13604,32 @@ void dump_VkExternalFenceHandleTypeFlagBits(const VkExternalFenceHandleTypeFlagB
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13327,18 +13639,24 @@ void dump_VkExternalFenceFeatureFlagBits(const VkExternalFenceFeatureFlagBits ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13348,14 +13666,20 @@ void dump_VkFenceImportFlagBits(const VkFenceImportFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FENCE_IMPORT_TEMPORARY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FENCE_IMPORT_TEMPORARY_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FENCE_IMPORT_TEMPORARY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FENCE_IMPORT_TEMPORARY_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13365,14 +13689,20 @@ void dump_VkSemaphoreImportFlagBits(const VkSemaphoreImportFlagBits object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SEMAPHORE_IMPORT_TEMPORARY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SEMAPHORE_IMPORT_TEMPORARY_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SEMAPHORE_IMPORT_TEMPORARY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SEMAPHORE_IMPORT_TEMPORARY_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13382,34 +13712,40 @@ void dump_VkExternalSemaphoreHandleTypeFlagBits(const VkExternalSemaphoreHandleT
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13419,18 +13755,24 @@ void dump_VkExternalSemaphoreFeatureFlagBits(const VkExternalSemaphoreFeatureFla
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13440,38 +13782,44 @@ void dump_VkResolveModeFlagBits(const VkResolveModeFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_RESOLVE_MODE_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_NONE";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_SAMPLE_ZERO_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_SAMPLE_ZERO_BIT";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_AVERAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_AVERAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_MIN_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_MIN_BIT";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_MAX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_MAX_BIT";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_MODE_CUSTOM_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_CUSTOM_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_RESOLVE_MODE_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_NONE";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_SAMPLE_ZERO_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_SAMPLE_ZERO_BIT";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_AVERAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_AVERAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_MIN_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_MIN_BIT";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_MAX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_MAX_BIT";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_MODE_CUSTOM_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_MODE_CUSTOM_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13481,14 +13829,20 @@ void dump_VkSemaphoreWaitFlagBits(const VkSemaphoreWaitFlagBits object, const Ap
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SEMAPHORE_WAIT_ANY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SEMAPHORE_WAIT_ANY_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SEMAPHORE_WAIT_ANY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SEMAPHORE_WAIT_ANY_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13498,26 +13852,32 @@ void dump_VkDescriptorBindingFlagBits(const VkDescriptorBindingFlagBits object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT";
-        is_first = false;
-    }
-    if (object & VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT";
+            is_first = false;
+        }
+        if (object & VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13527,38 +13887,44 @@ void dump_VkToolPurposeFlagBits(const VkToolPurposeFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_TOOL_PURPOSE_VALIDATION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_VALIDATION_BIT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_PROFILING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_PROFILING_BIT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_TRACING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_TRACING_BIT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_TOOL_PURPOSE_VALIDATION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_VALIDATION_BIT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_PROFILING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_PROFILING_BIT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_TRACING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_TRACING_BIT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13568,14 +13934,20 @@ void dump_VkPrivateDataSlotCreateFlagBits(const VkPrivateDataSlotCreateFlagBits 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PRIVATE_DATA_SLOT_CREATE_BASE_OBJECT_HANDLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRIVATE_DATA_SLOT_CREATE_BASE_OBJECT_HANDLE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PRIVATE_DATA_SLOT_CREATE_BASE_OBJECT_HANDLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRIVATE_DATA_SLOT_CREATE_BASE_OBJECT_HANDLE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13585,194 +13957,200 @@ void dump_VkPipelineStageFlagBits2(const VkPipelineStageFlagBits2 object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_PIPELINE_STAGE_2_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_NONE";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_VERTEX_INPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_INPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_HOST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_HOST_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_COPY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COPY_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_RESOLVE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_RESOLVE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_BLIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_BLIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_CLEAR_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CLEAR_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_PRE_RASTERIZATION_SHADERS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_PRE_RASTERIZATION_SHADERS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_VIDEO_DECODE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VIDEO_DECODE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_VIDEO_ENCODE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VIDEO_ENCODE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_TRANSFORM_FEEDBACK_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TRANSFORM_FEEDBACK_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_FRAGMENT_DENSITY_PROCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_DENSITY_PROCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_SUBPASS_SHADER_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_SUBPASS_SHADER_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_COPY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_COPY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_MICROMAP_BUILD_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MICROMAP_BUILD_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_CONVERT_COOPERATIVE_VECTOR_MATRIX_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CONVERT_COOPERATIVE_VECTOR_MATRIX_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_COPY_INDIRECT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COPY_INDIRECT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_STAGE_2_MEMORY_DECOMPRESSION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MEMORY_DECOMPRESSION_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_PIPELINE_STAGE_2_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_NONE";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_VERTEX_INPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_INPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_HOST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_HOST_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_COPY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COPY_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_RESOLVE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_RESOLVE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_BLIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_BLIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_CLEAR_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CLEAR_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_PRE_RASTERIZATION_SHADERS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_PRE_RASTERIZATION_SHADERS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_VIDEO_DECODE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VIDEO_DECODE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_VIDEO_ENCODE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_VIDEO_ENCODE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_TRANSFORM_FEEDBACK_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TRANSFORM_FEEDBACK_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_FRAGMENT_DENSITY_PROCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_FRAGMENT_DENSITY_PROCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_SUBPASS_SHADER_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_SUBPASS_SHADER_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_COPY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_COPY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_MICROMAP_BUILD_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MICROMAP_BUILD_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_CONVERT_COOPERATIVE_VECTOR_MATRIX_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_CONVERT_COOPERATIVE_VECTOR_MATRIX_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_COPY_INDIRECT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_COPY_INDIRECT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_STAGE_2_MEMORY_DECOMPRESSION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_STAGE_2_MEMORY_DECOMPRESSION_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13782,214 +14160,220 @@ void dump_VkAccessFlagBits2(const VkAccessFlagBits2 object, const ApiDumpSetting
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_ACCESS_2_NONE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_NONE";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_INDIRECT_COMMAND_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INDIRECT_COMMAND_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_INDEX_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INDEX_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_UNIFORM_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_UNIFORM_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_INPUT_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INPUT_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_TRANSFER_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFER_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_TRANSFER_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFER_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_HOST_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_HOST_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_HOST_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_HOST_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MEMORY_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MEMORY_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_SAMPLED_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_SAMPLED_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_STORAGE_READ_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_STORAGE_READ_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_VIDEO_DECODE_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_DECODE_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SAMPLER_HEAP_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SAMPLER_HEAP_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_RESOURCE_HEAP_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_RESOURCE_HEAP_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_VIDEO_ENCODE_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_ENCODE_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_VIDEO_ENCODE_WRITE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_ENCODE_WRITE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_TILE_ATTACHMENT_READ_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_TILE_ATTACHMENT_READ_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_TILE_ATTACHMENT_WRITE_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_TILE_ATTACHMENT_WRITE_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_DESCRIPTOR_BUFFER_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DESCRIPTOR_BUFFER_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_SHADER_BINDING_TABLE_READ_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_BINDING_TABLE_READ_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MICROMAP_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MICROMAP_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MICROMAP_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MICROMAP_WRITE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_OPTICAL_FLOW_READ_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_OPTICAL_FLOW_READ_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_OPTICAL_FLOW_WRITE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_OPTICAL_FLOW_WRITE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_DATA_GRAPH_READ_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DATA_GRAPH_READ_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_DATA_GRAPH_WRITE_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DATA_GRAPH_WRITE_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MEMORY_DECOMPRESSION_READ_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_DECOMPRESSION_READ_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCESS_2_MEMORY_DECOMPRESSION_WRITE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_DECOMPRESSION_WRITE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_ACCESS_2_NONE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_NONE";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_INDIRECT_COMMAND_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INDIRECT_COMMAND_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_INDEX_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INDEX_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_UNIFORM_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_UNIFORM_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_INPUT_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INPUT_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_TRANSFER_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFER_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_TRANSFER_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFER_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_HOST_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_HOST_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_HOST_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_HOST_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MEMORY_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MEMORY_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_SAMPLED_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_SAMPLED_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_STORAGE_READ_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_STORAGE_READ_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_VIDEO_DECODE_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_DECODE_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SAMPLER_HEAP_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SAMPLER_HEAP_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_RESOURCE_HEAP_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_RESOURCE_HEAP_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_VIDEO_ENCODE_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_ENCODE_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_VIDEO_ENCODE_WRITE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_VIDEO_ENCODE_WRITE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_TILE_ATTACHMENT_READ_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_TILE_ATTACHMENT_READ_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_TILE_ATTACHMENT_WRITE_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_TILE_ATTACHMENT_WRITE_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_DESCRIPTOR_BUFFER_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DESCRIPTOR_BUFFER_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_SHADER_BINDING_TABLE_READ_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_SHADER_BINDING_TABLE_READ_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MICROMAP_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MICROMAP_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MICROMAP_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MICROMAP_WRITE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_OPTICAL_FLOW_READ_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_OPTICAL_FLOW_READ_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_OPTICAL_FLOW_WRITE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_OPTICAL_FLOW_WRITE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_DATA_GRAPH_READ_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DATA_GRAPH_READ_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_DATA_GRAPH_WRITE_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_DATA_GRAPH_WRITE_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MEMORY_DECOMPRESSION_READ_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_DECOMPRESSION_READ_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCESS_2_MEMORY_DECOMPRESSION_WRITE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_2_MEMORY_DECOMPRESSION_WRITE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -13999,14 +14383,20 @@ void dump_VkSubmitFlagBits(const VkSubmitFlagBits object, const ApiDumpSettings&
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SUBMIT_PROTECTED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SUBMIT_PROTECTED_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SUBMIT_PROTECTED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SUBMIT_PROTECTED_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14016,246 +14406,252 @@ void dump_VkFormatFeatureFlagBits2(const VkFormatFeatureFlagBits2 object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_IMAGE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_IMAGE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_IMAGE_ATOMIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_IMAGE_ATOMIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_UNIFORM_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_UNIFORM_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_ATOMIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_ATOMIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VERTEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VERTEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BLEND_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BLEND_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DEPTH_STENCIL_ATTACHMENT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_STENCIL_ATTACHMENT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_BLIT_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLIT_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_BLIT_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLIT_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_MINMAX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_MINMAX_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_MIDPOINT_CHROMA_SAMPLES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_MIDPOINT_CHROMA_SAMPLES_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DISJOINT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DISJOINT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_COSITED_CHROMA_SAMPLES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COSITED_CHROMA_SAMPLES_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STORAGE_WRITE_WITHOUT_FORMAT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_WRITE_WITHOUT_FORMAT_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_HOST_IMAGE_TRANSFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_HOST_IMAGE_TRANSFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_DECODE_OUTPUT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_DECODE_OUTPUT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_DECODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_DECODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_INPUT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_INPUT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_BLOCK_MATCHING_SXD_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLOCK_MATCHING_SXD_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_RADIUS_BUFFER_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_RADIUS_BUFFER_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_WEIGHT_IMAGE_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_WEIGHT_IMAGE_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_WEIGHT_SAMPLED_IMAGE_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_WEIGHT_SAMPLED_IMAGE_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_BLOCK_MATCHING_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLOCK_MATCHING_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_BOX_FILTER_SAMPLED_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BOX_FILTER_SAMPLED_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_TENSOR_SHADER_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_SHADER_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_TENSOR_IMAGE_ALIASING_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_IMAGE_ALIASING_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_IMAGE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_IMAGE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_VECTOR_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_VECTOR_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_COST_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_COST_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_TENSOR_DATA_GRAPH_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_DATA_GRAPH_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_2D_BIT_IMG) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_2D_BIT_IMG";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_COMPUTE_QUEUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_COMPUTE_QUEUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_TRANSFER_QUEUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_TRANSFER_QUEUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_COMPUTE_QUEUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_COMPUTE_QUEUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_IMAGE_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_IMAGE_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_VECTOR_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_VECTOR_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_COST_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_COST_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_IMAGE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_IMAGE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_IMAGE_ATOMIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_IMAGE_ATOMIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_UNIFORM_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_UNIFORM_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_ATOMIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_ATOMIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VERTEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VERTEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BLEND_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BLEND_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_STENCIL_ATTACHMENT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_BLIT_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLIT_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_BLIT_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLIT_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_MINMAX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_MINMAX_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_MIDPOINT_CHROMA_SAMPLES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_MIDPOINT_CHROMA_SAMPLES_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DISJOINT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DISJOINT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_COSITED_CHROMA_SAMPLES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COSITED_CHROMA_SAMPLES_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STORAGE_WRITE_WITHOUT_FORMAT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STORAGE_WRITE_WITHOUT_FORMAT_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_HOST_IMAGE_TRANSFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_HOST_IMAGE_TRANSFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_DECODE_OUTPUT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_DECODE_OUTPUT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_DECODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_DECODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_INPUT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_INPUT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_BLOCK_MATCHING_SXD_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLOCK_MATCHING_SXD_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_RADIUS_BUFFER_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_RADIUS_BUFFER_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_WEIGHT_IMAGE_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_WEIGHT_IMAGE_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_WEIGHT_SAMPLED_IMAGE_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_WEIGHT_SAMPLED_IMAGE_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_BLOCK_MATCHING_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BLOCK_MATCHING_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_BOX_FILTER_SAMPLED_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_BOX_FILTER_SAMPLED_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_TENSOR_SHADER_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_SHADER_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_TENSOR_IMAGE_ALIASING_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_IMAGE_ALIASING_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_IMAGE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_IMAGE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_VECTOR_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_VECTOR_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_OPTICAL_FLOW_COST_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_OPTICAL_FLOW_COST_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_TENSOR_DATA_GRAPH_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_TENSOR_DATA_GRAPH_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_2D_BIT_IMG) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_2D_BIT_IMG";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_COMPUTE_QUEUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_COMPUTE_QUEUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_TRANSFER_QUEUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_TRANSFER_QUEUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_COMPUTE_QUEUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_COMPUTE_QUEUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_IMAGE_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_IMAGE_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_VECTOR_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_VECTOR_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_COST_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_COST_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14265,22 +14661,28 @@ void dump_VkPipelineCreationFeedbackFlagBits(const VkPipelineCreationFeedbackFla
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14290,46 +14692,52 @@ void dump_VkRenderingFlagBits(const VkRenderingFlagBits object, const ApiDumpSet
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_SUSPENDING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_SUSPENDING_BIT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_RESUMING_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_RESUMING_BIT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_CONTENTS_INLINE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CONTENTS_INLINE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_FRAGMENT_REGION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_FRAGMENT_REGION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_SUSPENDING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_SUSPENDING_BIT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_RESUMING_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_RESUMING_BIT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_CONTENTS_INLINE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CONTENTS_INLINE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_FRAGMENT_REGION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_FRAGMENT_REGION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14339,14 +14747,20 @@ void dump_VkMemoryUnmapFlagBits(const VkMemoryUnmapFlagBits object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_UNMAP_RESERVE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_UNMAP_RESERVE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_UNMAP_RESERVE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_UNMAP_RESERVE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14356,138 +14770,144 @@ void dump_VkBufferUsageFlagBits2(const VkBufferUsageFlagBits2 object, const ApiD
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_TRANSFER_DST_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFER_DST_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_DESCRIPTOR_HEAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_DESCRIPTOR_HEAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_COMPRESSED_DATA_DGF1_BIT_AMDX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_COMPRESSED_DATA_DGF1_BIT_AMDX";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_MEMORY_DECOMPRESSION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MEMORY_DECOMPRESSION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_TRANSFER_DST_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFER_DST_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_DESCRIPTOR_HEAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_DESCRIPTOR_HEAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_COMPRESSED_DATA_DGF1_BIT_AMDX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_COMPRESSED_DATA_DGF1_BIT_AMDX";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_MEMORY_DECOMPRESSION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_MEMORY_DECOMPRESSION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14497,14 +14917,20 @@ void dump_VkHostImageCopyFlagBits(const VkHostImageCopyFlagBits object, const Ap
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_HOST_IMAGE_COPY_MEMCPY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_HOST_IMAGE_COPY_MEMCPY_BIT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_HOST_IMAGE_COPY_MEMCPY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_HOST_IMAGE_COPY_MEMCPY_BIT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14514,178 +14940,184 @@ void dump_VkPipelineCreateFlagBits2(const VkPipelineCreateFlagBits2 object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DERIVATIVE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DERIVATIVE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_EARLY_RETURN_ON_FAILURE_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_EARLY_RETURN_ON_FAILURE_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_NO_PROTECTED_ACCESS_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_NO_PROTECTED_ACCESS_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_PROTECTED_ACCESS_ONLY_BIT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_PROTECTED_ACCESS_ONLY_BIT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_EXECUTION_GRAPH_BIT_AMDX) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_EXECUTION_GRAPH_BIT_AMDX";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DESCRIPTOR_HEAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DESCRIPTOR_HEAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DEFER_COMPILE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DEFER_COMPILE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_CAPTURE_STATISTICS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_STATISTICS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_LINK_TIME_OPTIMIZATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_LINK_TIME_OPTIMIZATION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_LIBRARY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_LIBRARY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_AABBS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_AABBS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_MOTION_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_MOTION_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DESCRIPTOR_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DESCRIPTOR_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_DISALLOW_OPACITY_MICROMAP_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISALLOW_OPACITY_MICROMAP_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_INSTRUMENT_SHADERS_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INSTRUMENT_SHADERS_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_CAPTURE_DATA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_DATA_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PIPELINE_CREATE_2_64_BIT_INDEXING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_64_BIT_INDEXING_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DERIVATIVE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DERIVATIVE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_EARLY_RETURN_ON_FAILURE_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_EARLY_RETURN_ON_FAILURE_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_NO_PROTECTED_ACCESS_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_NO_PROTECTED_ACCESS_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_PROTECTED_ACCESS_ONLY_BIT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_PROTECTED_ACCESS_ONLY_BIT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_EXECUTION_GRAPH_BIT_AMDX) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_EXECUTION_GRAPH_BIT_AMDX";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DESCRIPTOR_HEAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DESCRIPTOR_HEAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DEFER_COMPILE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DEFER_COMPILE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_CAPTURE_STATISTICS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_STATISTICS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_LINK_TIME_OPTIMIZATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_LINK_TIME_OPTIMIZATION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_LIBRARY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_LIBRARY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_AABBS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_AABBS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_MOTION_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_ALLOW_MOTION_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DESCRIPTOR_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DESCRIPTOR_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_DISALLOW_OPACITY_MICROMAP_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_DISALLOW_OPACITY_MICROMAP_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_INSTRUMENT_SHADERS_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INSTRUMENT_SHADERS_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_CAPTURE_DATA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_CAPTURE_DATA_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_RAY_TRACING_OPACITY_MICROMAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PIPELINE_CREATE_2_64_BIT_INDEXING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PIPELINE_CREATE_2_64_BIT_INDEXING_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14695,46 +15127,52 @@ void dump_VkSurfaceTransformFlagBitsKHR(const VkSurfaceTransformFlagBitsKHR obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14744,26 +15182,32 @@ void dump_VkCompositeAlphaFlagBitsKHR(const VkCompositeAlphaFlagBitsKHR object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14773,42 +15217,48 @@ void dump_VkSwapchainCreateFlagBitsKHR(const VkSwapchainCreateFlagBitsKHR object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_SWAPCHAIN_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_SWAPCHAIN_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SWAPCHAIN_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14818,26 +15268,32 @@ void dump_VkDeviceGroupPresentModeFlagBitsKHR(const VkDeviceGroupPresentModeFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14847,26 +15303,32 @@ void dump_VkDisplayPlaneAlphaFlagBitsKHR(const VkDisplayPlaneAlphaFlagBitsKHR ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14876,42 +15338,48 @@ void dump_VkVideoCodecOperationFlagBitsKHR(const VkVideoCodecOperationFlagBitsKH
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_CODEC_OPERATION_NONE_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_NONE_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_DECODE_AV1_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_AV1_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_AV1_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_AV1_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODEC_OPERATION_DECODE_VP9_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_VP9_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_CODEC_OPERATION_NONE_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_NONE_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_DECODE_AV1_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_AV1_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_ENCODE_AV1_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_ENCODE_AV1_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODEC_OPERATION_DECODE_VP9_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODEC_OPERATION_DECODE_VP9_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14921,30 +15389,36 @@ void dump_VkVideoChromaSubsamplingFlagBitsKHR(const VkVideoChromaSubsamplingFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_CHROMA_SUBSAMPLING_INVALID_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_INVALID_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CHROMA_SUBSAMPLING_MONOCHROME_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_MONOCHROME_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CHROMA_SUBSAMPLING_420_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_420_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CHROMA_SUBSAMPLING_422_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_422_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_CHROMA_SUBSAMPLING_INVALID_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_INVALID_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CHROMA_SUBSAMPLING_MONOCHROME_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_MONOCHROME_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CHROMA_SUBSAMPLING_420_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_420_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CHROMA_SUBSAMPLING_422_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_422_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14954,26 +15428,32 @@ void dump_VkVideoComponentBitDepthFlagBitsKHR(const VkVideoComponentBitDepthFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_COMPONENT_BIT_DEPTH_INVALID_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_INVALID_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_8_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_8_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_10_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_10_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_COMPONENT_BIT_DEPTH_INVALID_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_INVALID_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_8_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_8_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_10_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_10_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -14983,18 +15463,24 @@ void dump_VkVideoCapabilityFlagBitsKHR(const VkVideoCapabilityFlagBitsKHR object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15004,34 +15490,40 @@ void dump_VkVideoSessionCreateFlagBitsKHR(const VkVideoSessionCreateFlagBitsKHR 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_PARAMETER_OPTIMIZATIONS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_PARAMETER_OPTIMIZATIONS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_SESSION_CREATE_INLINE_QUERIES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_INLINE_QUERIES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_SESSION_CREATE_INLINE_SESSION_PARAMETERS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_INLINE_SESSION_PARAMETERS_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_PARAMETER_OPTIMIZATIONS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_PARAMETER_OPTIMIZATIONS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_SESSION_CREATE_INLINE_QUERIES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_INLINE_QUERIES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_SESSION_CREATE_INLINE_SESSION_PARAMETERS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_CREATE_INLINE_SESSION_PARAMETERS_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15041,14 +15533,20 @@ void dump_VkVideoSessionParametersCreateFlagBitsKHR(const VkVideoSessionParamete
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_SESSION_PARAMETERS_CREATE_QUANTIZATION_MAP_COMPATIBLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_PARAMETERS_CREATE_QUANTIZATION_MAP_COMPATIBLE_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_SESSION_PARAMETERS_CREATE_QUANTIZATION_MAP_COMPATIBLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_SESSION_PARAMETERS_CREATE_QUANTIZATION_MAP_COMPATIBLE_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15058,22 +15556,28 @@ void dump_VkVideoCodingControlFlagBitsKHR(const VkVideoCodingControlFlagBitsKHR 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODING_CONTROL_ENCODE_RATE_CONTROL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_ENCODE_RATE_CONTROL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_CODING_CONTROL_ENCODE_QUALITY_LEVEL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_ENCODE_QUALITY_LEVEL_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODING_CONTROL_ENCODE_RATE_CONTROL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_ENCODE_RATE_CONTROL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_CODING_CONTROL_ENCODE_QUALITY_LEVEL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_CODING_CONTROL_ENCODE_QUALITY_LEVEL_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15083,18 +15587,24 @@ void dump_VkVideoDecodeCapabilityFlagBitsKHR(const VkVideoDecodeCapabilityFlagBi
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15104,26 +15614,32 @@ void dump_VkVideoDecodeUsageFlagBitsKHR(const VkVideoDecodeUsageFlagBitsKHR obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_DECODE_USAGE_DEFAULT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_DEFAULT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_USAGE_TRANSCODING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_TRANSCODING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_USAGE_OFFLINE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_OFFLINE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_USAGE_STREAMING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_STREAMING_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_DECODE_USAGE_DEFAULT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_DEFAULT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_USAGE_TRANSCODING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_TRANSCODING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_USAGE_OFFLINE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_OFFLINE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_USAGE_STREAMING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_USAGE_STREAMING_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15133,54 +15649,60 @@ void dump_VkVideoEncodeH264CapabilityFlagBitsKHR(const VkVideoEncodeH264Capabili
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_HRD_COMPLIANCE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_HRD_COMPLIANCE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PER_SLICE_CONSTANT_QP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PER_SLICE_CONSTANT_QP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_GENERATE_PREFIX_NALU_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_GENERATE_PREFIX_NALU_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_MB_QP_DIFF_WRAPAROUND_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_MB_QP_DIFF_WRAPAROUND_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_HRD_COMPLIANCE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_HRD_COMPLIANCE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_PER_SLICE_CONSTANT_QP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_PER_SLICE_CONSTANT_QP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_GENERATE_PREFIX_NALU_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_GENERATE_PREFIX_NALU_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_CAPABILITY_MB_QP_DIFF_WRAPAROUND_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_CAPABILITY_MB_QP_DIFF_WRAPAROUND_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15190,90 +15712,96 @@ void dump_VkVideoEncodeH264StdFlagBitsKHR(const VkVideoEncodeH264StdFlagBitsKHR 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H264_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_SCALING_MATRIX_PRESENT_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SCALING_MATRIX_PRESENT_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_CHROMA_QP_INDEX_OFFSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_CHROMA_QP_INDEX_OFFSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_SECOND_CHROMA_QP_INDEX_OFFSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SECOND_CHROMA_QP_INDEX_OFFSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_PIC_INIT_QP_MINUS26_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_PIC_INIT_QP_MINUS26_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_EXPLICIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_EXPLICIT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_IMPLICIT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_IMPLICIT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_TRANSFORM_8X8_MODE_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_TRANSFORM_8X8_MODE_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DIRECT_SPATIAL_MV_PRED_FLAG_UNSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIRECT_SPATIAL_MV_PRED_FLAG_UNSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_UNSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_UNSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DIRECT_8X8_INFERENCE_FLAG_UNSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIRECT_8X8_INFERENCE_FLAG_UNSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_DISABLED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_DISABLED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_ENABLED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_ENABLED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_SLICE_QP_DELTA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SLICE_QP_DELTA_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H264_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_SCALING_MATRIX_PRESENT_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SCALING_MATRIX_PRESENT_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_CHROMA_QP_INDEX_OFFSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_CHROMA_QP_INDEX_OFFSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_SECOND_CHROMA_QP_INDEX_OFFSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SECOND_CHROMA_QP_INDEX_OFFSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_PIC_INIT_QP_MINUS26_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_PIC_INIT_QP_MINUS26_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_EXPLICIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_EXPLICIT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_IMPLICIT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_WEIGHTED_BIPRED_IDC_IMPLICIT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_TRANSFORM_8X8_MODE_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_TRANSFORM_8X8_MODE_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DIRECT_SPATIAL_MV_PRED_FLAG_UNSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIRECT_SPATIAL_MV_PRED_FLAG_UNSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_UNSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_UNSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_ENTROPY_CODING_MODE_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DIRECT_8X8_INFERENCE_FLAG_UNSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIRECT_8X8_INFERENCE_FLAG_UNSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_DISABLED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_DISABLED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_ENABLED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_ENABLED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_SLICE_QP_DELTA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_SLICE_QP_DELTA_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15283,30 +15811,36 @@ void dump_VkVideoEncodeH264RateControlFlagBitsKHR(const VkVideoEncodeH264RateCon
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H264_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H264_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15316,58 +15850,64 @@ void dump_VkVideoEncodeH265CapabilityFlagBitsKHR(const VkVideoEncodeH265Capabili
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_HRD_COMPLIANCE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_HRD_COMPLIANCE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_ROW_UNALIGNED_SLICE_SEGMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_ROW_UNALIGNED_SLICE_SEGMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_DIFFERENT_SLICE_SEGMENT_TYPE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_DIFFERENT_SLICE_SEGMENT_TYPE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PER_SLICE_SEGMENT_CONSTANT_QP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PER_SLICE_SEGMENT_CONSTANT_QP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILES_PER_SLICE_SEGMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILES_PER_SLICE_SEGMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_SEGMENTS_PER_TILE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_SEGMENTS_PER_TILE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_CU_QP_DIFF_WRAPAROUND_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_CU_QP_DIFF_WRAPAROUND_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_HRD_COMPLIANCE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_HRD_COMPLIANCE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PREDICTION_WEIGHT_TABLE_GENERATED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_ROW_UNALIGNED_SLICE_SEGMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_ROW_UNALIGNED_SLICE_SEGMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_DIFFERENT_SLICE_SEGMENT_TYPE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_DIFFERENT_SLICE_SEGMENT_TYPE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L0_LIST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PER_PICTURE_TYPE_MIN_MAX_QP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_PER_SLICE_SEGMENT_CONSTANT_QP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_PER_SLICE_SEGMENT_CONSTANT_QP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILES_PER_SLICE_SEGMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILES_PER_SLICE_SEGMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_SEGMENTS_PER_TILE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_SEGMENTS_PER_TILE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_B_PICTURE_INTRA_REFRESH_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CAPABILITY_CU_QP_DIFF_WRAPAROUND_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CAPABILITY_CU_QP_DIFF_WRAPAROUND_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15377,94 +15917,100 @@ void dump_VkVideoEncodeH265StdFlagBitsKHR(const VkVideoEncodeH265StdFlagBitsKHR 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H265_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_SAMPLE_ADAPTIVE_OFFSET_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SAMPLE_ADAPTIVE_OFFSET_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_SCALING_LIST_DATA_PRESENT_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SCALING_LIST_DATA_PRESENT_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_PCM_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_PCM_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_SPS_TEMPORAL_MVP_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SPS_TEMPORAL_MVP_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_INIT_QP_MINUS26_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_INIT_QP_MINUS26_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_WEIGHTED_BIPRED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_WEIGHTED_BIPRED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_LOG2_PARALLEL_MERGE_LEVEL_MINUS2_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_LOG2_PARALLEL_MERGE_LEVEL_MINUS2_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_SIGN_DATA_HIDING_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SIGN_DATA_HIDING_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_UNSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_UNSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_TRANSQUANT_BYPASS_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSQUANT_BYPASS_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_ENTROPY_CODING_SYNC_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_ENTROPY_CODING_SYNC_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_DEBLOCKING_FILTER_OVERRIDE_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEBLOCKING_FILTER_OVERRIDE_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENTS_ENABLED_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENTS_ENABLED_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_SLICE_QP_DELTA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SLICE_QP_DELTA_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H265_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SEPARATE_COLOR_PLANE_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_SAMPLE_ADAPTIVE_OFFSET_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SAMPLE_ADAPTIVE_OFFSET_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_SCALING_LIST_DATA_PRESENT_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SCALING_LIST_DATA_PRESENT_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_PCM_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_PCM_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_SPS_TEMPORAL_MVP_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SPS_TEMPORAL_MVP_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_INIT_QP_MINUS26_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_INIT_QP_MINUS26_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_WEIGHTED_PRED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_WEIGHTED_BIPRED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_WEIGHTED_BIPRED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_LOG2_PARALLEL_MERGE_LEVEL_MINUS2_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_LOG2_PARALLEL_MERGE_LEVEL_MINUS2_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_SIGN_DATA_HIDING_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SIGN_DATA_HIDING_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_UNSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSFORM_SKIP_ENABLED_FLAG_UNSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_TRANSQUANT_BYPASS_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_TRANSQUANT_BYPASS_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_ENTROPY_CODING_SYNC_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_ENTROPY_CODING_SYNC_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_DEBLOCKING_FILTER_OVERRIDE_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEBLOCKING_FILTER_OVERRIDE_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENTS_ENABLED_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENTS_ENABLED_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_SLICE_QP_DELTA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_SLICE_QP_DELTA_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_STD_DIFFERENT_SLICE_QP_DELTA_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15474,22 +16020,28 @@ void dump_VkVideoEncodeH265CtbSizeFlagBitsKHR(const VkVideoEncodeH265CtbSizeFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_16_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_16_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_32_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_32_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_16_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_16_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_32_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_32_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15499,26 +16051,32 @@ void dump_VkVideoEncodeH265TransformBlockSizeFlagBitsKHR(const VkVideoEncodeH265
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_4_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_4_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_8_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_8_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_16_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_16_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_4_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_4_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_8_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_8_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_16_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_16_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15528,30 +16086,36 @@ void dump_VkVideoEncodeH265RateControlFlagBitsKHR(const VkVideoEncodeH265RateCon
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_TEMPORAL_SUB_LAYER_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_TEMPORAL_SUB_LAYER_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_ATTEMPT_HRD_COMPLIANCE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_H265_RATE_CONTROL_TEMPORAL_SUB_LAYER_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_H265_RATE_CONTROL_TEMPORAL_SUB_LAYER_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15561,22 +16125,28 @@ void dump_VkVideoDecodeH264PictureLayoutFlagBitsKHR(const VkVideoDecodeH264Pictu
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15586,18 +16156,24 @@ void dump_VkPerformanceCounterDescriptionFlagBitsKHR(const VkPerformanceCounterD
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15607,10 +16183,15 @@ void dump_VkAcquireProfilingLockFlagBitsKHR(const VkAcquireProfilingLockFlagBits
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-
-    if (!is_first)
-        settings.stream() << ")";
+    if (dump_bit_names) {
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15620,22 +16201,28 @@ void dump_VkVideoEncodeFlagBitsKHR(const VkVideoEncodeFlagBitsKHR object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_WITH_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_WITH_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_WITH_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_WITH_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_WITH_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_WITH_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_WITH_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_WITH_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15645,26 +16232,32 @@ void dump_VkVideoEncodeCapabilityFlagBitsKHR(const VkVideoEncodeCapabilityFlagBi
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CAPABILITY_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_DETECTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_DETECTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CAPABILITY_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CAPABILITY_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CAPABILITY_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_DETECTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_DETECTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CAPABILITY_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CAPABILITY_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CAPABILITY_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15674,26 +16267,32 @@ void dump_VkVideoEncodeRateControlModeFlagBitsKHR(const VkVideoEncodeRateControl
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DEFAULT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DEFAULT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DISABLED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DISABLED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_CBR_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_CBR_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DEFAULT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DEFAULT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DISABLED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_DISABLED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_CBR_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_CBR_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15703,50 +16302,56 @@ void dump_VkVideoEncodeFeedbackFlagBitsKHR(const VkVideoEncodeFeedbackFlagBitsKH
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_HAS_OVERRIDES_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_HAS_OVERRIDES_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_AVERAGE_QUANTIZATION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_AVERAGE_QUANTIZATION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_MIN_QUANTIZATION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_MIN_QUANTIZATION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_MAX_QUANTIZATION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_MAX_QUANTIZATION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_INTRA_PIXELS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_INTRA_PIXELS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_INTER_PIXELS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_INTER_PIXELS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_SKIPPED_PIXELS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_SKIPPED_PIXELS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_FEEDBACK_PICTURE_PARTITION_COUNT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_PICTURE_PARTITION_COUNT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_HAS_OVERRIDES_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_BITSTREAM_HAS_OVERRIDES_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_AVERAGE_QUANTIZATION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_AVERAGE_QUANTIZATION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_MIN_QUANTIZATION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_MIN_QUANTIZATION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_MAX_QUANTIZATION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_MAX_QUANTIZATION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_INTRA_PIXELS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_INTRA_PIXELS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_INTER_PIXELS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_INTER_PIXELS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_SKIPPED_PIXELS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_SKIPPED_PIXELS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_FEEDBACK_PICTURE_PARTITION_COUNT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_FEEDBACK_PICTURE_PARTITION_COUNT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15756,30 +16361,36 @@ void dump_VkVideoEncodeUsageFlagBitsKHR(const VkVideoEncodeUsageFlagBitsKHR obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_ENCODE_USAGE_DEFAULT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_DEFAULT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_USAGE_TRANSCODING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_TRANSCODING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_USAGE_STREAMING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_STREAMING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_USAGE_RECORDING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_RECORDING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_USAGE_CONFERENCING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_CONFERENCING_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_ENCODE_USAGE_DEFAULT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_DEFAULT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_USAGE_TRANSCODING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_TRANSCODING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_USAGE_STREAMING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_STREAMING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_USAGE_RECORDING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_RECORDING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_USAGE_CONFERENCING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_USAGE_CONFERENCING_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15789,26 +16400,32 @@ void dump_VkVideoEncodeContentFlagBitsKHR(const VkVideoEncodeContentFlagBitsKHR 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_ENCODE_CONTENT_DEFAULT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_DEFAULT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CONTENT_CAMERA_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_CAMERA_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CONTENT_DESKTOP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_DESKTOP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_CONTENT_RENDERED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_RENDERED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_ENCODE_CONTENT_DEFAULT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_DEFAULT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CONTENT_CAMERA_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_CAMERA_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CONTENT_DESKTOP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_DESKTOP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_CONTENT_RENDERED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_CONTENT_RENDERED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15818,34 +16435,40 @@ void dump_VkAddressCommandFlagBitsKHR(const VkAddressCommandFlagBitsKHR object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_ADDRESS_COMMAND_PROTECTED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_PROTECTED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COMMAND_FULLY_BOUND_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_FULLY_BOUND_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COMMAND_STORAGE_BUFFER_USAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_STORAGE_BUFFER_USAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COMMAND_UNKNOWN_STORAGE_BUFFER_USAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_UNKNOWN_STORAGE_BUFFER_USAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COMMAND_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COMMAND_UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_ADDRESS_COMMAND_PROTECTED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_PROTECTED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COMMAND_FULLY_BOUND_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_FULLY_BOUND_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COMMAND_STORAGE_BUFFER_USAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_STORAGE_BUFFER_USAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COMMAND_UNKNOWN_STORAGE_BUFFER_USAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_UNKNOWN_STORAGE_BUFFER_USAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COMMAND_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COMMAND_UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COMMAND_UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15855,14 +16478,20 @@ void dump_VkConditionalRenderingFlagBitsEXT(const VkConditionalRenderingFlagBits
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15872,22 +16501,28 @@ void dump_VkAccelerationStructureCreateFlagBitsKHR(const VkAccelerationStructure
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ACCELERATION_STRUCTURE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ACCELERATION_STRUCTURE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15897,22 +16532,28 @@ void dump_VkPresentScalingFlagBitsKHR(const VkPresentScalingFlagBitsKHR object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PRESENT_SCALING_ONE_TO_ONE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_ONE_TO_ONE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_SCALING_ASPECT_RATIO_STRETCH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_ASPECT_RATIO_STRETCH_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_SCALING_STRETCH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_STRETCH_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PRESENT_SCALING_ONE_TO_ONE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_ONE_TO_ONE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_SCALING_ASPECT_RATIO_STRETCH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_ASPECT_RATIO_STRETCH_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_SCALING_STRETCH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_SCALING_STRETCH_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15922,22 +16563,28 @@ void dump_VkPresentGravityFlagBitsKHR(const VkPresentGravityFlagBitsKHR object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PRESENT_GRAVITY_MIN_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_MIN_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_GRAVITY_MAX_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_MAX_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_GRAVITY_CENTERED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_CENTERED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PRESENT_GRAVITY_MIN_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_MIN_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_GRAVITY_MAX_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_MAX_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_GRAVITY_CENTERED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_GRAVITY_CENTERED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15947,34 +16594,40 @@ void dump_VkVideoEncodeAV1CapabilityFlagBitsKHR(const VkVideoEncodeAV1Capability
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_PER_RATE_CONTROL_GROUP_MIN_MAX_Q_INDEX_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_PER_RATE_CONTROL_GROUP_MIN_MAX_Q_INDEX_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_GENERATE_OBU_EXTENSION_HEADER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_GENERATE_OBU_EXTENSION_HEADER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_PRIMARY_REFERENCE_CDF_ONLY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_PRIMARY_REFERENCE_CDF_ONLY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_FRAME_SIZE_OVERRIDE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_FRAME_SIZE_OVERRIDE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_MOTION_VECTOR_SCALING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_MOTION_VECTOR_SCALING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_COMPOUND_PREDICTION_INTRA_REFRESH_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_COMPOUND_PREDICTION_INTRA_REFRESH_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_PER_RATE_CONTROL_GROUP_MIN_MAX_Q_INDEX_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_PER_RATE_CONTROL_GROUP_MIN_MAX_Q_INDEX_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_GENERATE_OBU_EXTENSION_HEADER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_GENERATE_OBU_EXTENSION_HEADER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_PRIMARY_REFERENCE_CDF_ONLY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_PRIMARY_REFERENCE_CDF_ONLY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_FRAME_SIZE_OVERRIDE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_FRAME_SIZE_OVERRIDE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_MOTION_VECTOR_SCALING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_MOTION_VECTOR_SCALING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_CAPABILITY_COMPOUND_PREDICTION_INTRA_REFRESH_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_CAPABILITY_COMPOUND_PREDICTION_INTRA_REFRESH_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -15984,26 +16637,32 @@ void dump_VkVideoEncodeAV1StdFlagBitsKHR(const VkVideoEncodeAV1StdFlagBitsKHR ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_AV1_STD_UNIFORM_TILE_SPACING_FLAG_SET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_UNIFORM_TILE_SPACING_FLAG_SET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_STD_SKIP_MODE_PRESENT_UNSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_SKIP_MODE_PRESENT_UNSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_STD_PRIMARY_REF_FRAME_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_PRIMARY_REF_FRAME_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_STD_DELTA_Q_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_DELTA_Q_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_AV1_STD_UNIFORM_TILE_SPACING_FLAG_SET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_UNIFORM_TILE_SPACING_FLAG_SET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_STD_SKIP_MODE_PRESENT_UNSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_SKIP_MODE_PRESENT_UNSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_STD_PRIMARY_REF_FRAME_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_PRIMARY_REF_FRAME_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_STD_DELTA_Q_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_STD_DELTA_Q_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16013,18 +16672,24 @@ void dump_VkVideoEncodeAV1SuperblockSizeFlagBitsKHR(const VkVideoEncodeAV1Superb
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_64_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_64_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_128_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_128_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_64_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_64_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_128_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_SUPERBLOCK_SIZE_128_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16034,26 +16699,32 @@ void dump_VkVideoEncodeAV1RateControlFlagBitsKHR(const VkVideoEncodeAV1RateContr
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REGULAR_GOP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REGULAR_GOP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_TEMPORAL_LAYER_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_FLAT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_AV1_RATE_CONTROL_REFERENCE_PATTERN_DYADIC_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16063,22 +16734,28 @@ void dump_VkAddressCopyFlagBitsKHR(const VkAddressCopyFlagBitsKHR object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COPY_SPARSE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_SPARSE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_ADDRESS_COPY_PROTECTED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_PROTECTED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COPY_SPARSE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_SPARSE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_ADDRESS_COPY_PROTECTED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ADDRESS_COPY_PROTECTED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16088,30 +16765,36 @@ void dump_VkVideoEncodeIntraRefreshModeFlagBitsKHR(const VkVideoEncodeIntraRefre
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_NONE_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_NONE_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_PER_PICTURE_PARTITION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_PER_PICTURE_PARTITION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_BASED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_BASED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_ROW_BASED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_ROW_BASED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_COLUMN_BASED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_COLUMN_BASED_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_NONE_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_NONE_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_PER_PICTURE_PARTITION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_PER_PICTURE_PARTITION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_BASED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_BASED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_ROW_BASED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_ROW_BASED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_COLUMN_BASED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_INTRA_REFRESH_MODE_BLOCK_COLUMN_BASED_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16121,34 +16804,40 @@ void dump_VkDeviceFaultFlagBitsKHR(const VkDeviceFaultFlagBitsKHR object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEVICE_FAULT_FLAG_DEVICE_LOST_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_DEVICE_LOST_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_FAULT_FLAG_MEMORY_ADDRESS_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_MEMORY_ADDRESS_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_FAULT_FLAG_INSTRUCTION_ADDRESS_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_INSTRUCTION_ADDRESS_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_FAULT_FLAG_VENDOR_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_VENDOR_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_FAULT_FLAG_WATCHDOG_TIMEOUT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_WATCHDOG_TIMEOUT_KHR";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_FAULT_FLAG_OVERFLOW_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_OVERFLOW_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEVICE_FAULT_FLAG_DEVICE_LOST_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_DEVICE_LOST_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_FAULT_FLAG_MEMORY_ADDRESS_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_MEMORY_ADDRESS_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_FAULT_FLAG_INSTRUCTION_ADDRESS_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_INSTRUCTION_ADDRESS_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_FAULT_FLAG_VENDOR_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_VENDOR_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_FAULT_FLAG_WATCHDOG_TIMEOUT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_WATCHDOG_TIMEOUT_KHR";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_FAULT_FLAG_OVERFLOW_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_FAULT_FLAG_OVERFLOW_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16158,14 +16847,20 @@ void dump_VkAccessFlagBits3KHR(const VkAccessFlagBits3KHR object, const ApiDumpS
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_ACCESS_3_NONE_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_3_NONE_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_ACCESS_3_NONE_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_ACCESS_3_NONE_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16175,22 +16870,28 @@ void dump_VkVideoEncodePerPartitionFeedbackFlagBitsKHR(const VkVideoEncodePerPar
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_STATUS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_STATUS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_STATUS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_STATUS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BUFFER_OFFSET_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_PER_PARTITION_FEEDBACK_BITSTREAM_BYTES_WRITTEN_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16200,22 +16901,28 @@ void dump_VkRenderingAttachmentFlagBitsKHR(const VkRenderingAttachmentFlagBitsKH
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_RENDERING_ATTACHMENT_INPUT_ATTACHMENT_FEEDBACK_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_INPUT_ATTACHMENT_FEEDBACK_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_RENDERING_ATTACHMENT_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_RENDERING_ATTACHMENT_INPUT_ATTACHMENT_FEEDBACK_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_INPUT_ATTACHMENT_FEEDBACK_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_RENDERING_ATTACHMENT_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RENDERING_ATTACHMENT_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16225,18 +16932,24 @@ void dump_VkResolveImageFlagBitsKHR(const VkResolveImageFlagBitsKHR object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_RESOLVE_IMAGE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_IMAGE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_RESOLVE_IMAGE_ENABLE_TRANSFER_FUNCTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_RESOLVE_IMAGE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16246,10 +16959,15 @@ void dump_VkFormatFeatureFlagBits4KHR(const VkFormatFeatureFlagBits4KHR object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-
-    if (!is_first)
-        settings.stream() << ")";
+    if (dump_bit_names) {
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16259,110 +16977,116 @@ void dump_VkImageUsageFlagBits2KHR(const VkImageUsageFlagBits2KHR object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_USAGE_2_TRANSFER_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSFER_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_TRANSFER_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSFER_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_SAMPLED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_STORAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_STORAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_COLOR_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_COLOR_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_DEPTH_STENCIL_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_DEPTH_STENCIL_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_TRANSIENT_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSIENT_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_INPUT_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_INPUT_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_FRAGMENT_DENSITY_MAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_FRAGMENT_DENSITY_MAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_DPB_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_DPB_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_INVOCATION_MASK_BIT_HUAWEI) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_INVOCATION_MASK_BIT_HUAWEI";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_SAMPLE_WEIGHT_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLE_WEIGHT_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_SAMPLE_BLOCK_MATCH_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLE_BLOCK_MATCH_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_HOST_TRANSFER_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_HOST_TRANSFER_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_TENSOR_ALIASING_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TENSOR_ALIASING_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_USAGE_2_TILE_MEMORY_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TILE_MEMORY_BIT_QCOM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_USAGE_2_TRANSFER_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSFER_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_TRANSFER_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSFER_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_SAMPLED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_STORAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_STORAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_COLOR_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_COLOR_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_DEPTH_STENCIL_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_DEPTH_STENCIL_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_TRANSIENT_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TRANSIENT_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_INPUT_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_INPUT_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_FRAGMENT_DENSITY_MAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_FRAGMENT_DENSITY_MAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_DECODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_DECODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_DPB_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_DPB_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_INVOCATION_MASK_BIT_HUAWEI) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_INVOCATION_MASK_BIT_HUAWEI";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_SAMPLE_WEIGHT_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLE_WEIGHT_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_SAMPLE_BLOCK_MATCH_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_SAMPLE_BLOCK_MATCH_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_HOST_TRANSFER_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_HOST_TRANSFER_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_TENSOR_ALIASING_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TENSOR_ALIASING_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_USAGE_2_TILE_MEMORY_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_USAGE_2_TILE_MEMORY_BIT_QCOM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16372,94 +17096,100 @@ void dump_VkImageCreateFlagBits2KHR(const VkImageCreateFlagBits2KHR object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_CREATE_2_SPARSE_BINDING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_BINDING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_SPARSE_RESIDENCY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_RESIDENCY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_SPARSE_ALIASED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_ALIASED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_MUTABLE_FORMAT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_MUTABLE_FORMAT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_CUBE_COMPATIBLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_CUBE_COMPATIBLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_2D_ARRAY_COMPATIBLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_2D_ARRAY_COMPATIBLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_EXTENDED_USAGE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_EXTENDED_USAGE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_DISJOINT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_DISJOINT_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_ALIAS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_ALIAS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_PROTECTED_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_PROTECTED_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_CORNER_SAMPLED_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_CORNER_SAMPLED_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_SUBSAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SUBSAMPLED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_2D_VIEW_COMPATIBLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_2D_VIEW_COMPATIBLE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CREATE_2_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_CREATE_2_SPARSE_BINDING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_BINDING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_SPARSE_RESIDENCY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_RESIDENCY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_SPARSE_ALIASED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPARSE_ALIASED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_MUTABLE_FORMAT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_MUTABLE_FORMAT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_CUBE_COMPATIBLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_CUBE_COMPATIBLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_2D_ARRAY_COMPATIBLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_2D_ARRAY_COMPATIBLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_EXTENDED_USAGE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_EXTENDED_USAGE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_DISJOINT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_DISJOINT_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_ALIAS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_ALIAS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_PROTECTED_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_PROTECTED_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_CORNER_SAMPLED_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_CORNER_SAMPLED_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_SUBSAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_SUBSAMPLED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_2D_VIEW_COMPATIBLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_2D_VIEW_COMPATIBLE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CREATE_2_VIDEO_PROFILE_INDEPENDENT_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CREATE_2_VIDEO_PROFILE_INDEPENDENT_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16469,30 +17199,36 @@ void dump_VkDebugReportFlagBitsEXT(const VkDebugReportFlagBitsEXT object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_INFORMATION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_REPORT_WARNING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_WARNING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_REPORT_ERROR_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_ERROR_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_REPORT_DEBUG_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_DEBUG_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_INFORMATION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_REPORT_WARNING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_WARNING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_REPORT_ERROR_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_ERROR_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_REPORT_DEBUG_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_REPORT_DEBUG_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16502,26 +17238,32 @@ void dump_VkExternalMemoryHandleTypeFlagBitsNV(const VkExternalMemoryHandleTypeF
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16531,22 +17273,28 @@ void dump_VkExternalMemoryFeatureFlagBitsNV(const VkExternalMemoryFeatureFlagBit
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16556,14 +17304,20 @@ void dump_VkSurfaceCounterFlagBitsEXT(const VkSurfaceCounterFlagBitsEXT object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SURFACE_COUNTER_VBLANK_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_COUNTER_VBLANK_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SURFACE_COUNTER_VBLANK_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SURFACE_COUNTER_VBLANK_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16573,26 +17327,32 @@ void dump_VkDebugUtilsMessageSeverityFlagBitsEXT(const VkDebugUtilsMessageSeveri
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16602,26 +17362,32 @@ void dump_VkDebugUtilsMessageTypeFlagBitsEXT(const VkDebugUtilsMessageTypeFlagBi
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16631,38 +17397,44 @@ void dump_VkGpaSqShaderStageFlagBitsAMD(const VkGpaSqShaderStageFlagBitsAMD obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD";
-        is_first = false;
-    }
-    if (object & VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD";
+            is_first = false;
+        }
+        if (object & VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16672,14 +17444,20 @@ void dump_VkTensorViewCreateFlagBitsARM(const VkTensorViewCreateFlagBitsARM obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_TENSOR_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_TENSOR_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16689,54 +17467,60 @@ void dump_VkSpirvResourceTypeFlagBitsEXT(const VkSpirvResourceTypeFlagBitsEXT ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_SPIRV_RESOURCE_TYPE_ALL_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_ALL_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_SAMPLER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_SAMPLER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_READ_WRITE_IMAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_WRITE_IMAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_COMBINED_SAMPLED_IMAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_COMBINED_SAMPLED_IMAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_UNIFORM_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_UNIFORM_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_READ_ONLY_STORAGE_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_ONLY_STORAGE_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_READ_WRITE_STORAGE_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_WRITE_STORAGE_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_ACCELERATION_STRUCTURE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_ACCELERATION_STRUCTURE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SPIRV_RESOURCE_TYPE_TENSOR_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_TENSOR_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_SPIRV_RESOURCE_TYPE_ALL_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_ALL_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_SAMPLER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_SAMPLER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_READ_WRITE_IMAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_WRITE_IMAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_COMBINED_SAMPLED_IMAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_COMBINED_SAMPLED_IMAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_UNIFORM_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_UNIFORM_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_READ_ONLY_STORAGE_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_ONLY_STORAGE_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_READ_WRITE_STORAGE_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_READ_WRITE_STORAGE_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_ACCELERATION_STRUCTURE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_ACCELERATION_STRUCTURE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SPIRV_RESOURCE_TYPE_TENSOR_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SPIRV_RESOURCE_TYPE_TENSOR_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16746,18 +17530,24 @@ void dump_VkGeometryFlagBitsKHR(const VkGeometryFlagBitsKHR object, const ApiDum
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_GEOMETRY_OPAQUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_OPAQUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_GEOMETRY_OPAQUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_OPAQUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16767,34 +17557,40 @@ void dump_VkGeometryInstanceFlagBitsKHR(const VkGeometryInstanceFlagBitsKHR obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_INSTANCE_FORCE_OPACITY_MICROMAP_2_STATE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_OPACITY_MICROMAP_2_STATE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_GEOMETRY_INSTANCE_DISABLE_OPACITY_MICROMAPS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_DISABLE_OPACITY_MICROMAPS_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_INSTANCE_FORCE_OPACITY_MICROMAP_2_STATE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_FORCE_OPACITY_MICROMAP_2_STATE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_GEOMETRY_INSTANCE_DISABLE_OPACITY_MICROMAPS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GEOMETRY_INSTANCE_DISABLE_OPACITY_MICROMAPS_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16804,62 +17600,68 @@ void dump_VkBuildAccelerationStructureFlagBitsKHR(const VkBuildAccelerationStruc
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_DATA_UPDATE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_DATA_UPDATE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_UPDATE_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_UPDATE_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISABLE_OPACITY_MICROMAPS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISABLE_OPACITY_MICROMAPS_BIT_KHR";
-        is_first = false;
-    }
-    if (object & VK_BUILD_ACCELERATION_STRUCTURE_MICROMAP_LOSSY_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_MICROMAP_LOSSY_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_DATA_UPDATE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_DATA_UPDATE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_UPDATE_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_UPDATE_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISABLE_OPACITY_MICROMAPS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISABLE_OPACITY_MICROMAPS_BIT_KHR";
+            is_first = false;
+        }
+        if (object & VK_BUILD_ACCELERATION_STRUCTURE_MICROMAP_LOSSY_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_ACCELERATION_STRUCTURE_MICROMAP_LOSSY_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16869,10 +17671,15 @@ void dump_VkPipelineCompilerControlFlagBitsAMD(const VkPipelineCompilerControlFl
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-
-    if (!is_first)
-        settings.stream() << ")";
+    if (dump_bit_names) {
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16882,26 +17689,32 @@ void dump_VkPresentStageFlagBitsEXT(const VkPresentStageFlagBitsEXT object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16911,18 +17724,24 @@ void dump_VkPastPresentationTimingFlagBitsEXT(const VkPastPresentationTimingFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16932,18 +17751,24 @@ void dump_VkPresentTimingInfoFlagBitsEXT(const VkPresentTimingInfoFlagBitsEXT ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16953,10 +17778,15 @@ void dump_VkShaderCorePropertiesFlagBitsAMD(const VkShaderCorePropertiesFlagBits
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-
-    if (!is_first)
-        settings.stream() << ")";
+    if (dump_bit_names) {
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16966,14 +17796,20 @@ void dump_VkIndirectStateFlagBitsNV(const VkIndirectStateFlagBitsNV object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -16983,22 +17819,28 @@ void dump_VkIndirectCommandsLayoutUsageFlagBitsNV(const VkIndirectCommandsLayout
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17008,26 +17850,32 @@ void dump_VkDeviceDiagnosticsConfigFlagBitsNV(const VkDeviceDiagnosticsConfigFla
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17037,18 +17885,24 @@ void dump_VkTileShadingRenderPassFlagBitsQCOM(const VkTileShadingRenderPassFlagB
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_TILE_SHADING_RENDER_PASS_ENABLE_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TILE_SHADING_RENDER_PASS_ENABLE_BIT_QCOM";
-        is_first = false;
-    }
-    if (object & VK_TILE_SHADING_RENDER_PASS_PER_TILE_EXECUTION_BIT_QCOM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TILE_SHADING_RENDER_PASS_PER_TILE_EXECUTION_BIT_QCOM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_TILE_SHADING_RENDER_PASS_ENABLE_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TILE_SHADING_RENDER_PASS_ENABLE_BIT_QCOM";
+            is_first = false;
+        }
+        if (object & VK_TILE_SHADING_RENDER_PASS_PER_TILE_EXECUTION_BIT_QCOM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TILE_SHADING_RENDER_PASS_PER_TILE_EXECUTION_BIT_QCOM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17059,34 +17913,40 @@ void dump_VkExportMetalObjectTypeFlagBitsEXT(const VkExportMetalObjectTypeFlagBi
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_DEVICE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_DEVICE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_COMMAND_QUEUE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_COMMAND_QUEUE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_BUFFER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_BUFFER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_TEXTURE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_TEXTURE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_IOSURFACE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_IOSURFACE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_DEVICE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_DEVICE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_COMMAND_QUEUE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_COMMAND_QUEUE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_BUFFER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_BUFFER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_TEXTURE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_TEXTURE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_IOSURFACE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_IOSURFACE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17097,26 +17957,32 @@ void dump_VkGraphicsPipelineLibraryFlagBitsEXT(const VkGraphicsPipelineLibraryFl
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_GRAPHICS_PIPELINE_LIBRARY_VERTEX_INPUT_INTERFACE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_VERTEX_INPUT_INTERFACE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_GRAPHICS_PIPELINE_LIBRARY_VERTEX_INPUT_INTERFACE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_VERTEX_INPUT_INTERFACE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17126,26 +17992,32 @@ void dump_VkImageCompressionFlagBitsEXT(const VkImageCompressionFlagBitsEXT obje
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_IMAGE_COMPRESSION_DEFAULT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_DEFAULT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_DEFAULT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_DEFAULT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_EXPLICIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_EXPLICIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_DISABLED_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_DISABLED_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_IMAGE_COMPRESSION_DEFAULT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_DEFAULT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_DEFAULT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_DEFAULT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_EXPLICIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_EXPLICIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_DISABLED_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_DISABLED_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17155,110 +18027,116 @@ void dump_VkImageCompressionFixedRateFlagBitsEXT(const VkImageCompressionFixedRa
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_IMAGE_COMPRESSION_FIXED_RATE_NONE_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_NONE_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_1BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_1BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_2BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_2BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_3BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_3BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_4BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_4BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_5BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_5BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_6BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_6BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_7BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_7BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_8BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_8BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_9BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_9BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_10BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_10BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_11BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_11BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_12BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_12BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_13BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_13BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_14BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_14BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_15BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_15BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_16BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_16BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_17BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_17BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_18BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_18BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_19BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_19BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_20BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_20BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_21BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_21BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_22BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_22BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_23BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_23BPC_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_IMAGE_COMPRESSION_FIXED_RATE_NONE_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_NONE_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_1BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_1BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_2BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_2BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_3BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_3BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_4BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_4BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_5BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_5BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_6BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_6BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_7BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_7BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_8BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_8BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_9BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_9BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_10BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_10BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_11BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_11BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_12BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_12BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_13BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_13BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_14BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_14BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_15BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_15BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_16BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_16BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_17BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_17BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_18BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_18BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_19BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_19BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_20BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_20BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_21BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_21BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_22BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_22BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_23BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_23BPC_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17268,14 +18146,20 @@ void dump_VkDeviceAddressBindingFlagBitsEXT(const VkDeviceAddressBindingFlagBits
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DEVICE_ADDRESS_BINDING_INTERNAL_OBJECT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_ADDRESS_BINDING_INTERNAL_OBJECT_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DEVICE_ADDRESS_BINDING_INTERNAL_OBJECT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DEVICE_ADDRESS_BINDING_INTERNAL_OBJECT_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17286,30 +18170,36 @@ void dump_VkImageConstraintsInfoFlagBitsFUCHSIA(const VkImageConstraintsInfoFlag
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_RARELY_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_RARELY_FUCHSIA";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_OFTEN_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_OFTEN_FUCHSIA";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_RARELY_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_RARELY_FUCHSIA";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_OFTEN_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_OFTEN_FUCHSIA";
-        is_first = false;
-    }
-    if (object & VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_RARELY_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_RARELY_FUCHSIA";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_OFTEN_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_OFTEN_FUCHSIA";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_RARELY_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_RARELY_FUCHSIA";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_OFTEN_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_OFTEN_FUCHSIA";
+            is_first = false;
+        }
+        if (object & VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17320,14 +18210,20 @@ void dump_VkFrameBoundaryFlagBitsEXT(const VkFrameBoundaryFlagBitsEXT object, co
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17337,30 +18233,36 @@ void dump_VkVideoEncodeRgbModelConversionFlagBitsVALVE(const VkVideoEncodeRgbMod
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_RGB_IDENTITY_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_RGB_IDENTITY_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_IDENTITY_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_IDENTITY_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_709_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_709_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_601_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_601_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_2020_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_2020_BIT_VALVE";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_RGB_IDENTITY_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_RGB_IDENTITY_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_IDENTITY_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_IDENTITY_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_709_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_709_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_601_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_601_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_2020_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_2020_BIT_VALVE";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17370,18 +18272,24 @@ void dump_VkVideoEncodeRgbRangeCompressionFlagBitsVALVE(const VkVideoEncodeRgbRa
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FULL_RANGE_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FULL_RANGE_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_NARROW_RANGE_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_NARROW_RANGE_BIT_VALVE";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FULL_RANGE_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FULL_RANGE_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_NARROW_RANGE_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_NARROW_RANGE_BIT_VALVE";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17391,18 +18299,24 @@ void dump_VkVideoEncodeRgbChromaOffsetFlagBitsVALVE(const VkVideoEncodeRgbChroma
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_COSITED_EVEN_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_COSITED_EVEN_BIT_VALVE";
-        is_first = false;
-    }
-    if (object & VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_MIDPOINT_BIT_VALVE) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_MIDPOINT_BIT_VALVE";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_COSITED_EVEN_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_COSITED_EVEN_BIT_VALVE";
+            is_first = false;
+        }
+        if (object & VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_MIDPOINT_BIT_VALVE) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_MIDPOINT_BIT_VALVE";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17412,22 +18326,28 @@ void dump_VkBuildMicromapFlagBitsEXT(const VkBuildMicromapFlagBitsEXT object, co
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_BUILD_MICROMAP_PREFER_FAST_TRACE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_PREFER_FAST_TRACE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUILD_MICROMAP_PREFER_FAST_BUILD_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_PREFER_FAST_BUILD_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_BUILD_MICROMAP_ALLOW_COMPACTION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_ALLOW_COMPACTION_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_BUILD_MICROMAP_PREFER_FAST_TRACE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_PREFER_FAST_TRACE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUILD_MICROMAP_PREFER_FAST_BUILD_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_PREFER_FAST_BUILD_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_BUILD_MICROMAP_ALLOW_COMPACTION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_BUILD_MICROMAP_ALLOW_COMPACTION_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17437,14 +18357,20 @@ void dump_VkMicromapCreateFlagBitsEXT(const VkMicromapCreateFlagBitsEXT object, 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MICROMAP_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MICROMAP_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MICROMAP_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MICROMAP_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17454,18 +18380,24 @@ void dump_VkPhysicalDeviceSchedulingControlsFlagBitsARM(const VkPhysicalDeviceSc
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_SHADER_CORE_COUNT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_SHADER_CORE_COUNT_ARM";
-        is_first = false;
-    }
-    if (object & VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_SHADER_CORE_COUNT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_SHADER_CORE_COUNT_ARM";
+            is_first = false;
+        }
+        if (object & VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17475,14 +18407,20 @@ void dump_VkMemoryDecompressionMethodFlagBitsEXT(const VkMemoryDecompressionMeth
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_MEMORY_DECOMPRESSION_METHOD_GDEFLATE_1_0_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_DECOMPRESSION_METHOD_GDEFLATE_1_0_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_MEMORY_DECOMPRESSION_METHOD_GDEFLATE_1_0_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_MEMORY_DECOMPRESSION_METHOD_GDEFLATE_1_0_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17492,26 +18430,32 @@ void dump_VkTensorCreateFlagBitsARM(const VkTensorCreateFlagBitsARM object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_TENSOR_CREATE_MUTABLE_FORMAT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_MUTABLE_FORMAT_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_CREATE_PROTECTED_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_PROTECTED_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_TENSOR_CREATE_MUTABLE_FORMAT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_MUTABLE_FORMAT_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_CREATE_PROTECTED_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_PROTECTED_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_DESCRIPTOR_HEAP_CAPTURE_REPLAY_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17521,30 +18465,36 @@ void dump_VkTensorUsageFlagBitsARM(const VkTensorUsageFlagBitsARM object, const 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_TENSOR_USAGE_SHADER_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_SHADER_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_USAGE_TRANSFER_SRC_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_TRANSFER_SRC_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_USAGE_TRANSFER_DST_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_TRANSFER_DST_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_USAGE_IMAGE_ALIASING_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_IMAGE_ALIASING_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_TENSOR_USAGE_DATA_GRAPH_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_DATA_GRAPH_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_TENSOR_USAGE_SHADER_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_SHADER_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_USAGE_TRANSFER_SRC_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_TRANSFER_SRC_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_USAGE_TRANSFER_DST_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_TRANSFER_DST_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_USAGE_IMAGE_ALIASING_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_IMAGE_ALIASING_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_TENSOR_USAGE_DATA_GRAPH_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_TENSOR_USAGE_DATA_GRAPH_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17554,30 +18504,36 @@ void dump_VkOpticalFlowGridSizeFlagBitsNV(const VkOpticalFlowGridSizeFlagBitsNV 
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17587,34 +18543,40 @@ void dump_VkOpticalFlowUsageFlagBitsNV(const VkOpticalFlowUsageFlagBitsNV object
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_OPTICAL_FLOW_USAGE_UNKNOWN_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_UNKNOWN_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_USAGE_INPUT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_INPUT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_USAGE_OUTPUT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_OUTPUT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_USAGE_HINT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_HINT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_USAGE_COST_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_COST_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_USAGE_GLOBAL_FLOW_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_GLOBAL_FLOW_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_OPTICAL_FLOW_USAGE_UNKNOWN_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_UNKNOWN_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_USAGE_INPUT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_INPUT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_USAGE_OUTPUT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_OUTPUT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_USAGE_HINT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_HINT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_USAGE_COST_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_COST_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_USAGE_GLOBAL_FLOW_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_USAGE_GLOBAL_FLOW_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17624,30 +18586,36 @@ void dump_VkOpticalFlowSessionCreateFlagBitsNV(const VkOpticalFlowSessionCreateF
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_HINT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_HINT_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_COST_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_COST_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_GLOBAL_FLOW_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_GLOBAL_FLOW_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ALLOW_REGIONS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ALLOW_REGIONS_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_OPTICAL_FLOW_SESSION_CREATE_BOTH_DIRECTIONS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_BOTH_DIRECTIONS_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_HINT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_HINT_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_COST_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_COST_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_GLOBAL_FLOW_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ENABLE_GLOBAL_FLOW_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_SESSION_CREATE_ALLOW_REGIONS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_ALLOW_REGIONS_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_OPTICAL_FLOW_SESSION_CREATE_BOTH_DIRECTIONS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_SESSION_CREATE_BOTH_DIRECTIONS_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17657,14 +18625,20 @@ void dump_VkOpticalFlowExecuteFlagBitsNV(const VkOpticalFlowExecuteFlagBitsNV ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17674,62 +18648,68 @@ void dump_VkShaderCreateFlagBitsEXT(const VkShaderCreateFlagBitsEXT object, cons
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_SHADER_CREATE_LINK_STAGE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_LINK_STAGE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_DESCRIPTOR_HEAP_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_DESCRIPTOR_HEAP_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_INSTRUMENT_SHADER_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INSTRUMENT_SHADER_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_NO_TASK_SHADER_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_NO_TASK_SHADER_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_DISPATCH_BASE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_DISPATCH_BASE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_SHADER_CREATE_INDEPENDENT_SETS_BIT_KHR) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INDEPENDENT_SETS_BIT_KHR";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_SHADER_CREATE_LINK_STAGE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_LINK_STAGE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_DESCRIPTOR_HEAP_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_DESCRIPTOR_HEAP_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_INSTRUMENT_SHADER_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INSTRUMENT_SHADER_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_NO_TASK_SHADER_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_NO_TASK_SHADER_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_DISPATCH_BASE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_DISPATCH_BASE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_SHADER_CREATE_INDEPENDENT_SETS_BIT_KHR) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_SHADER_CREATE_INDEPENDENT_SETS_BIT_KHR";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17739,18 +18719,24 @@ void dump_VkDataGraphPipelineSessionCreateFlagBitsARM(const VkDataGraphPipelineS
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_OPTICAL_FLOW_CACHE_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_OPTICAL_FLOW_CACHE_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_OPTICAL_FLOW_CACHE_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_OPTICAL_FLOW_CACHE_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17760,10 +18746,15 @@ void dump_VkDataGraphPipelineDispatchFlagBitsARM(const VkDataGraphPipelineDispat
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-
-    if (!is_first)
-        settings.stream() << ")";
+    if (dump_bit_names) {
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17773,26 +18764,32 @@ void dump_VkDataGraphTOSAQualityFlagBitsARM(const VkDataGraphTOSAQualityFlagBits
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DATA_GRAPH_TOSA_QUALITY_ACCELERATED_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_ACCELERATED_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_TOSA_QUALITY_CONFORMANT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_CONFORMANT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_TOSA_QUALITY_EXPERIMENTAL_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_EXPERIMENTAL_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_TOSA_QUALITY_DEPRECATED_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_DEPRECATED_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DATA_GRAPH_TOSA_QUALITY_ACCELERATED_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_ACCELERATED_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_TOSA_QUALITY_CONFORMANT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_CONFORMANT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_TOSA_QUALITY_EXPERIMENTAL_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_EXPERIMENTAL_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_TOSA_QUALITY_DEPRECATED_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_TOSA_QUALITY_DEPRECATED_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17802,38 +18799,44 @@ void dump_VkClusterAccelerationStructureAddressResolutionFlagBitsNV(const VkClus
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_NONE_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_NONE_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_IMPLICIT_DATA_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_IMPLICIT_DATA_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SCRATCH_DATA_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SCRATCH_DATA_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_ADDRESS_ARRAY_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_ADDRESS_ARRAY_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_SIZES_ARRAY_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_SIZES_ARRAY_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_ARRAY_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_ARRAY_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_COUNT_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_COUNT_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_NONE_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_NONE_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_IMPLICIT_DATA_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_IMPLICIT_DATA_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SCRATCH_DATA_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SCRATCH_DATA_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_ADDRESS_ARRAY_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_ADDRESS_ARRAY_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_SIZES_ARRAY_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_DST_SIZES_ARRAY_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_ARRAY_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_ARRAY_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_COUNT_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_ADDRESS_RESOLUTION_INDIRECTED_SRC_INFOS_COUNT_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17843,14 +18846,20 @@ void dump_VkClusterAccelerationStructureClusterFlagBitsNV(const VkClusterAcceler
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_CLUSTER_ALLOW_DISABLE_OPACITY_MICROMAPS_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_CLUSTER_ALLOW_DISABLE_OPACITY_MICROMAPS_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_CLUSTER_ALLOW_DISABLE_OPACITY_MICROMAPS_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_CLUSTER_ALLOW_DISABLE_OPACITY_MICROMAPS_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17860,22 +18869,28 @@ void dump_VkClusterAccelerationStructureGeometryFlagBitsNV(const VkClusterAccele
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_CULL_DISABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_CULL_DISABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_NO_DUPLICATE_ANYHIT_INVOCATION_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_NO_DUPLICATE_ANYHIT_INVOCATION_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_CULL_DISABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_CULL_DISABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_NO_DUPLICATE_ANYHIT_INVOCATION_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_NO_DUPLICATE_ANYHIT_INVOCATION_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17885,22 +18900,28 @@ void dump_VkClusterAccelerationStructureIndexFormatFlagBitsNV(const VkClusterAcc
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_8BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_8BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_16BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_16BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_32BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_32BIT_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_8BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_8BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_16BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_16BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_32BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_CLUSTER_ACCELERATION_STRUCTURE_INDEX_FORMAT_32BIT_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17910,30 +18931,36 @@ void dump_VkPartitionedAccelerationStructureInstanceFlagBitsNV(const VkPartition
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FACING_CULL_DISABLE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FACING_CULL_DISABLE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FLIP_FACING_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FLIP_FACING_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_OPAQUE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_OPAQUE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_NO_OPAQUE_BIT_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_NO_OPAQUE_BIT_NV";
-        is_first = false;
-    }
-    if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_ENABLE_EXPLICIT_BOUNDING_BOX_NV) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_ENABLE_EXPLICIT_BOUNDING_BOX_NV";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FACING_CULL_DISABLE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FACING_CULL_DISABLE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FLIP_FACING_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_TRIANGLE_FLIP_FACING_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_OPAQUE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_OPAQUE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_NO_OPAQUE_BIT_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_FORCE_NO_OPAQUE_BIT_NV";
+            is_first = false;
+        }
+        if (object & VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_ENABLE_EXPLICIT_BOUNDING_BOX_NV) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCE_FLAG_ENABLE_EXPLICIT_BOUNDING_BOX_NV";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17943,18 +18970,24 @@ void dump_VkIndirectCommandsInputModeFlagBitsEXT(const VkIndirectCommandsInputMo
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_INDIRECT_COMMANDS_INPUT_MODE_VULKAN_INDEX_BUFFER_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_INPUT_MODE_VULKAN_INDEX_BUFFER_EXT";
-        is_first = false;
-    }
-    if (object & VK_INDIRECT_COMMANDS_INPUT_MODE_DXGI_INDEX_BUFFER_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_INPUT_MODE_DXGI_INDEX_BUFFER_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_INDIRECT_COMMANDS_INPUT_MODE_VULKAN_INDEX_BUFFER_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_INPUT_MODE_VULKAN_INDEX_BUFFER_EXT";
+            is_first = false;
+        }
+        if (object & VK_INDIRECT_COMMANDS_INPUT_MODE_DXGI_INDEX_BUFFER_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_INPUT_MODE_DXGI_INDEX_BUFFER_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17964,18 +18997,24 @@ void dump_VkIndirectCommandsLayoutUsageFlagBitsEXT(const VkIndirectCommandsLayou
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_EXT";
-        is_first = false;
-    }
-    if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_EXT";
+            is_first = false;
+        }
+        if (object & VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -17985,30 +19024,36 @@ void dump_VkDataGraphOpticalFlowGridSizeFlagBitsARM(const VkDataGraphOpticalFlow
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -18018,22 +19063,28 @@ void dump_VkDataGraphOpticalFlowCreateFlagBitsARM(const VkDataGraphOpticalFlowCr
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_HINT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_HINT_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_COST_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_COST_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_RESERVED_30_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_RESERVED_30_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_HINT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_HINT_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_COST_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_COST_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_RESERVED_30_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_RESERVED_30_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -18043,30 +19094,36 @@ void dump_VkDataGraphOpticalFlowImageUsageFlagBitsARM(const VkDataGraphOpticalFl
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object == VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_UNKNOWN_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_UNKNOWN_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_INPUT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_INPUT_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_OUTPUT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_OUTPUT_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_HINT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_HINT_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_COST_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_COST_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object == VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_UNKNOWN_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_UNKNOWN_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_INPUT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_INPUT_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_OUTPUT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_OUTPUT_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_HINT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_HINT_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_COST_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_COST_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -18076,30 +19133,36 @@ void dump_VkDataGraphOpticalFlowExecuteFlagBitsARM(const VkDataGraphOpticalFlowE
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_UNCHANGED_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_UNCHANGED_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_UNCHANGED_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_UNCHANGED_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_IS_PREVIOUS_REFERENCE_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_IS_PREVIOUS_REFERENCE_BIT_ARM";
-        is_first = false;
-    }
-    if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_IS_PREVIOUS_INPUT_BIT_ARM) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_IS_PREVIOUS_INPUT_BIT_ARM";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_UNCHANGED_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_UNCHANGED_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_UNCHANGED_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_UNCHANGED_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_IS_PREVIOUS_REFERENCE_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_IS_PREVIOUS_REFERENCE_BIT_ARM";
+            is_first = false;
+        }
+        if (object & VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_IS_PREVIOUS_INPUT_BIT_ARM) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_IS_PREVIOUS_INPUT_BIT_ARM";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
@@ -18109,14 +19172,20 @@ void dump_VkCooperativeMatrixFlagBitsEXT(const VkCooperativeMatrixFlagBitsEXT ob
     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
     dump_value_start<Format>(settings);
     settings.stream() << object;
+    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+    // only for a human reader. show_enum_value drops it in every format, matching
+    // what it does to enums, and that is where most of its size saving comes from.
+    const bool dump_bit_names = !settings.showEnumValue();
     bool is_first = true;
-    if (object & VK_COOPERATIVE_MATRIX_SATURATING_ACCUMULATION_BIT_EXT) {
-        settings.stream() << (is_first ? " (" : " | ") << "VK_COOPERATIVE_MATRIX_SATURATING_ACCUMULATION_BIT_EXT";
-        is_first = false;
-    }
+    if (dump_bit_names) {
+        if (object & VK_COOPERATIVE_MATRIX_SATURATING_ACCUMULATION_BIT_EXT) {
+            settings.stream() << (is_first ? " (" : " | ") << "VK_COOPERATIVE_MATRIX_SATURATING_ACCUMULATION_BIT_EXT";
+            is_first = false;
+        }
 
-    if (!is_first)
-        settings.stream() << ")";
+        if (!is_first)
+            settings.stream() << ")";
+    }
     dump_value_end<Format>(settings);
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
