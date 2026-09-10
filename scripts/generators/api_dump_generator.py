@@ -656,7 +656,12 @@ class ApiDumpGenerator(BaseGenerator):
                     dump_start<Format>(settings, OutputConstruct::value, type_name, var_name, indents, address);
                     dump_value_start<Format>(settings);
                     settings.stream() << object;
-                    bool is_first = true;''')
+                    // A bitmask always leads with its numeric value, so the trailing " (A | B)" is
+                    // only for a human reader. show_enum_value drops it in every format, matching
+                    // what it does to enums, and that is where most of its size saving comes from.
+                    const bool dump_bit_names = !settings.showEnumValue();
+                    bool is_first = true;
+                    if (dump_bit_names) {''')
             for field in bitmask.flags:
                 self.write(f'if(object {"==" if  field.zero or field.multiBit else "&"} {field.name}) {{')
                 self.write(f'settings.stream() << (is_first ? \" (\" : \" | \") << "{field.name}"; is_first = false;')
@@ -664,6 +669,7 @@ class ApiDumpGenerator(BaseGenerator):
             self.write('''
                 if(!is_first)
                 settings.stream() << ")";
+                }
                 dump_value_end<Format>(settings);
                 dump_end<Format>(settings, OutputConstruct::value, indents);
                 }''')

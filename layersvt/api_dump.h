@@ -120,6 +120,8 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
 #define kSettingsKeyCaptureTrigger "capture_trigger"
 #define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
+#define kSettingsKeyShowEnumValue "show_enum_value"
+#define kSettingsKeyFloatPrecision "float_precision"
 
 // The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
 // property once at instance creation, so the trigger has to be polled directly to be able to change
@@ -562,6 +564,11 @@ class ApiDumpSettings {
 
     bool alwaysDumpSetup() const { return always_dump_setup; }
 
+    // Sokatoa specific. Json output is consumed by gfxr-sqlite rather than read by eye, so it can
+    // trade legibility for exactness and size.
+    bool showEnumValue() const { return show_enum_value; }
+    int floatPrecision() const { return float_precision; }
+
     // Whether a frame object is written for this frame at all, as opposed to whether the frame's
     // calls are dumped. With always_dump_setup a setup command can occur in any frame, including
     // frames outside the captured range, and it needs a frame object to live in or the document is
@@ -793,6 +800,17 @@ class ApiDumpSettings {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyAlwaysDumpSetup, always_dump_setup);
         }
 
+        show_enum_value = false;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyShowEnumValue)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyShowEnumValue, show_enum_value);
+        }
+
+        float_precision = 0;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyFloatPrecision)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyFloatPrecision, float_precision);
+            float_precision = std::max(float_precision, 0);
+        }
+
         // The trigger is opt-in by presence: when set, it governs dumping outright and output_range
         // is ignored. Callers pick one or the other, never both.
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTrigger)) {
@@ -1004,6 +1022,8 @@ class ApiDumpSettings {
     // Whether the document header has already been written to the output file. See init.
     bool document_opened = false;
     bool always_dump_setup = false;
+    bool show_enum_value = false;
+    int float_precision = 0;
     bool use_capture_trigger = false;
     std::atomic<bool> capture_triggered{false};
     // State the trigger had while the previous frame was being dumped. setupInterFrameOutputFormatting
@@ -1336,7 +1356,21 @@ void dump_value_end(const ApiDumpSettings &settings) {
 template <ApiDumpFormat Format, typename... T>
 void dump_value(const ApiDumpSettings &settings, T &&...values) {
     dump_value_start<Format>(settings);
-    (settings.stream() << ... << values);
+    // A lone floating point value is the only case worth widening: the default ostream precision
+    // of 6 significant digits silently rounds, and a consumer that parses this file back cannot
+    // recover the lost bits. Composite output is left alone so text and html are unaffected.
+    if constexpr (sizeof...(T) == 1 && (std::is_floating_point_v<std::decay_t<T>> && ...)) {
+        const int precision = settings.floatPrecision();
+        if (precision > 0) {
+            const std::streamsize previous = settings.stream().precision(precision);
+            (settings.stream() << ... << values);
+            settings.stream().precision(previous);
+        } else {
+            (settings.stream() << ... << values);
+        }
+    } else {
+        (settings.stream() << ... << values);
+    }
     dump_value_end<Format>(settings);
 }
 
@@ -1361,6 +1395,17 @@ void dump_enum_with_value(const ApiDumpSettings &settings, const char *name, T v
 
 template <ApiDumpFormat Format, typename T>
 void dump_enum(const ApiDumpSettings &settings, const char *name, T value) {
+    // The number replaces the name rather than joining it. A consumer resolving names needs a
+    // table generated from some particular set of Vulkan headers and cannot resolve an enumerant
+    // newer than those, whereas the number is always exact.
+    //
+    // This applies to every output format. Leaving it off preserves what each format writes
+    // today: name and value for text and html, name alone for json.
+    if (settings.showEnumValue()) {
+        dump_value<Format>(settings, value);
+        return;
+    }
+
     if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
         dump_value<Format>(settings, name, " (", value, ")");
     } else if constexpr (Format == ApiDumpFormat::Json) {

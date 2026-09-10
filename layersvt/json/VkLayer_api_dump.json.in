@@ -341,6 +341,20 @@
                     "description": "Dump object creation and destruction, command buffer recording, and the commands that produce handles, even when they occur outside the dumped frames. Without them the calls inside those frames refer to handles that cannot be resolved.",
                     "type": "BOOL",
                     "default": false
+                },
+                {
+                    "key": "show_enum_value",
+                    "label": "Numeric Enum Values",
+                    "description": "Write enums as their numeric value instead of their name, and drop the trailing names from bitmasks, in every output format. Intended for output that is parsed rather than read: the number is exact even for enumerants newer than the reader's Vulkan headers, and it is smaller. Leaving this off preserves what each format writes today.",
+                    "type": "BOOL",
+                    "default": false
+                },
+                {
+                    "key": "float_precision",
+                    "label": "Float Precision",
+                    "description": "Significant digits used for floating point values. 0 keeps the stream default of 6, which silently rounds; 9 round trips a float and 17 a double.",
+                    "type": "INT",
+                    "default": 0
                 }
             ]
         }

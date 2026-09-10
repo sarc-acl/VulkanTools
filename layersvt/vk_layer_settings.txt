@@ -125,6 +125,25 @@ lunarg_api_dump.show_thread_and_frame = true
 # Frames outside the selection are still written, holding only these commands, or none at all.
 lunarg_api_dump.always_dump_setup = false
 
+# Numeric Enum Values
+# =====================
+# <LayerIdentifier>.show_enum_value
+# Write enums as their numeric value instead of their name, and drop the trailing names from
+# bitmasks, which already lead with their number. Applies to every output format. Intended for
+# output that is parsed rather than read by eye: the number is exact even for an enumerant newer
+# than the reader's Vulkan headers, where a name would not resolve.
+# Leaving this off preserves what each format writes today: name and value for text and html,
+# name alone for json.
+lunarg_api_dump.show_enum_value = false
+
+# Float Precision
+# =====================
+# <LayerIdentifier>.float_precision
+# Significant digits used when writing floating point values. 0 leaves the stream default of 6,
+# which rounds silently: 15.99609375 is written as 15.9961 and the lost bits cannot be recovered.
+# 9 round trips a float, 17 a double.
+lunarg_api_dump.float_precision = 0
+
 
 # VK_LAYER_LUNARG_screenshot
 
