@@ -468,6 +468,11 @@ class ApiDumpSettings {
                     if (show_thread_and_frame) {
                         output_stream << indentation(1) << "\"frameNumber\" : \"" << frame_count << "\",\n";
                     }
+                    if (!isFrameInRange(frame_count)) {
+                        // The only way this frame object exists at all while being out of range is
+                        // always_dump_setup, so this frame holds setup commands only.
+                        output_stream << indentation(1) << "\"isSetupFrame\" : true,\n";
+                    }
                     output_stream << indentation(1) << "\"apiCalls\" :\n";
                     output_stream << indentation(1) << "[\n";
                 }
