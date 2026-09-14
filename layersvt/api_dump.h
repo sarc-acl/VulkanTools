@@ -1266,7 +1266,8 @@ class ApiDumpInstance {
     std::unordered_map<VkCommandBuffer, VkCommandBufferLevel> cmd_buffer_level;
 
     bool conditional_initialized = false;
-    bool should_dump_output = true;
+    // This must default to false, matching capture_triggered's own default.
+    bool should_dump_output = false;
     bool first_func_call_on_frame = true;
     // Whether the entry point currently executing is dumped despite its frame not being. Guarded by
     // the output mutex, which every entry point holds for its whole body. See setCurrentCommand.
