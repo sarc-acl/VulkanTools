@@ -355,6 +355,13 @@
                     "description": "Significant digits used for floating point values. 0 keeps the stream default of 6, which silently rounds; 9 round trips a float and 17 a double.",
                     "type": "INT",
                     "default": 0
+                },
+                {
+                    "key": "show_command_numbers",
+                    "label": "Show Command Numbers",
+                    "description": "Write a commandNumber field for each command, counting from 0 in the order commands are written to the dump, matching frame number indexing.",
+                    "type": "BOOL",
+                    "default": false
                 }
             ]
         }

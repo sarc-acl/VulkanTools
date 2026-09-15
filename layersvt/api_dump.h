@@ -122,6 +122,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
 #define kSettingsKeyShowEnumValue "show_enum_value"
 #define kSettingsKeyFloatPrecision "float_precision"
+#define kSettingsKeyShowCommandNumbers "show_command_numbers"
 
 // The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
 // property once at instance creation, so the trigger has to be polled directly to be able to change
@@ -541,6 +542,8 @@ class ApiDumpSettings {
 
     bool showThreadAndFrame() const { return show_thread_and_frame; }
 
+    bool showCommandNumbers() const { return show_command_numbers; }
+
     // The const cast is necessary because everyone who 'writes' to the stream necessarily must be able to modify it.
     // Since basically every function in this struct is const, we have to work around that.
     std::ostream &stream() const { return output_stream; }
@@ -795,6 +798,11 @@ class ApiDumpSettings {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyShowThreadAndFrame, show_thread_and_frame);
         }
 
+        show_command_numbers = false;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyShowCommandNumbers)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyShowCommandNumbers, show_command_numbers);
+        }
+
         std::string cond_range_string;
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyOutputRange)) {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyOutputRange, cond_range_string);
@@ -950,6 +958,9 @@ class ApiDumpSettings {
                         ".thd {"
                             "color: #888;"
                         "}"
+                        ".cmd {"
+                            "color: #888;"
+                        "}"
                         ".time {"
                             "color: #888;"
                         "}"
@@ -1017,6 +1028,7 @@ class ApiDumpSettings {
     bool use_spaces;
     bool show_shader;
     bool show_thread_and_frame;
+    bool show_command_numbers;
 
     bool use_conditional_output = false;
     ConditionalFrameOutput condFrameOutput;
@@ -1046,7 +1058,7 @@ class ApiDumpSettings {
 
 class ApiDumpInstance {
    public:
-    ApiDumpInstance() noexcept : frame_count(0) { program_start = std::chrono::system_clock::now(); }
+    ApiDumpInstance() noexcept : frame_count(0), command_count(0) { program_start = std::chrono::system_clock::now(); }
     // Can't copy or move this type
     ApiDumpInstance(const ApiDumpInstance &) = delete;
     ApiDumpInstance &operator=(const ApiDumpInstance &) = delete;
@@ -1081,6 +1093,19 @@ class ApiDumpInstance {
         settings().setupInterFrameOutputFormatting(frame_count);
         first_func_call_on_frame = true;
     }
+
+    // The number assigned to the command currently being dumped. Only advanced in dump_function_head
+    // once a command is actually written, so numbering stays contiguous within the dump rather than
+    // counting commands that filtering left out. Guarded by the output mutex like setCurrentCommand,
+    // for the same reason: every entry point holds it for its whole body.
+    uint64_t commandCount() const { return command_count; }
+
+    void nextCommand() { ++command_count; }
+
+    // The commandNumber of the most recently dumped command, for other layers to poll via
+    // vkGetCommandNumberAPIDUMP. commandCount() is the number the *next* dumped command will get,
+    // so this is one behind it; before anything has been dumped it reads 0, same as commandCount().
+    uint64_t lastCommandNumber() const { return command_count > 0 ? command_count - 1 : 0; }
 
     // Whether the current frame is being dumped in its entirety.
     bool frameIsDumped() {
@@ -1257,6 +1282,7 @@ class ApiDumpInstance {
     std::mutex output_mutex;
     std::mutex frame_mutex;
     uint64_t frame_count;
+    uint64_t command_count;
 
     std::mutex thread_mutex;
     std::unordered_map<std::thread::id, uint64_t> thread_map;
@@ -1953,16 +1979,22 @@ void dump_post_function_formatting(const ApiDumpSettings &settings) {
 inline void dump_text_function_head(ApiDumpInstance &dump_inst, const char *funcName, const char *funcNamedParams,
                                     const char *funcReturn) {
     const ApiDumpSettings &settings(dump_inst.settings());
+    bool wrote_header = false;
     if (settings.showThreadAndFrame()) {
         settings.stream() << "Thread " << dump_inst.threadID() << ", Frame " << dump_inst.frameCount();
+        wrote_header = true;
     }
-    if (settings.showTimestamp() && settings.showThreadAndFrame()) {
-        settings.stream() << ", ";
+    if (settings.showCommandNumbers()) {
+        if (wrote_header) settings.stream() << ", ";
+        settings.stream() << "Command " << dump_inst.commandCount();
+        wrote_header = true;
     }
     if (settings.showTimestamp()) {
+        if (wrote_header) settings.stream() << ", ";
         settings.stream() << "Time " << dump_inst.current_time_since_start().count() << " us";
+        wrote_header = true;
     }
-    if (settings.showTimestamp() || settings.showThreadAndFrame()) {
+    if (wrote_header) {
         settings.stream() << ":\n";
     }
     settings.stream() << funcName << "(" << funcNamedParams << ") returns " << funcReturn;
@@ -1977,6 +2009,9 @@ inline void dump_html_function_head(ApiDumpInstance &dump_inst, const char *func
     const ApiDumpSettings &settings(dump_inst.settings());
     if (settings.showThreadAndFrame()) {
         settings.stream() << "<div class='thd'>Thread: " << dump_inst.threadID() << "</div>";
+    }
+    if (settings.showCommandNumbers()) {
+        settings.stream() << "<div class='cmd'>Command: " << dump_inst.commandCount() << "</div>";
     }
     if (settings.showTimestamp())
         settings.stream() << "<div class='time'>Time: " << dump_inst.current_time_since_start().count() << " us</div>";
@@ -1997,6 +2032,12 @@ inline void dump_json_function_head(ApiDumpInstance &dump_inst, const char *func
     // Display api call name
     dump_json_start_object(settings, 2);
     dump_json_key_value(settings, 3, "name", funcName);
+
+    // Display command number
+    if (settings.showCommandNumbers()) {
+        dump_separate_members<ApiDumpFormat::Json>(settings);
+        dump_json_key_value(settings, 3, "commandNumber", dump_inst.commandCount());
+    }
 
     // Display thread info
     if (settings.showThreadAndFrame()) {
@@ -2045,5 +2086,14 @@ inline void dump_function_head(ApiDumpInstance &dump_inst, const char *funcName,
                 dump_json_function_head(dump_inst, funcName, funcReturn);
                 break;
         }
+        dump_inst.nextCommand();
     }
 }
+
+//==================================== Exposed Query Functions ======================================//
+
+// Lets other layers poll the commandNumber of the last command api_dump wrote, to correlate their
+// own records against a specific entry in the dump. Mirrors gfxreconstruct's vkGetBlockIndexGFXR:
+// not a real Vulkan command, so it is resolved only through vkGetInstanceProcAddr and queried by
+// name without the leading "vk" - "GetCommandNumberAPIDUMP" - so a caller cannot mistake it for one.
+inline VKAPI_ATTR uint64_t VKAPI_CALL vkGetCommandNumberAPIDUMP() { return ApiDumpInstance::current().lastCommandNumber(); }

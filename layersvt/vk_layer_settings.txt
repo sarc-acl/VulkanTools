@@ -144,6 +144,14 @@ lunarg_api_dump.show_enum_value = false
 # 9 round trips a float, 17 a double.
 lunarg_api_dump.float_precision = 0
 
+# Show Command Numbers
+# =====================
+# <LayerIdentifier>.show_command_numbers
+# Write a commandNumber field for each command, counting from 0 in the order commands are written
+# to the dump. Matches frame number indexing: the first command dumped is 0, and the count only
+# advances for commands that are actually written, so it stays contiguous with the file's contents.
+lunarg_api_dump.show_command_numbers = false
+
 
 # VK_LAYER_LUNARG_screenshot
 

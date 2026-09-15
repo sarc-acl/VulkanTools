@@ -59,6 +59,12 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetInstanceProcAddr(VkInstance 
     // Make sure that device functions queried through GIPA works
     if (device_func) return device_func;
 
+    // A custom, non-Vulkan function exposed for other layers to poll. Not a real Vulkan command, so
+    // the driver/next layer below would not know it either; it has to be caught here.
+    if (strcmp(pName, "GetCommandNumberAPIDUMP") == 0) {
+        return reinterpret_cast<PFN_vkVoidFunction>(vkGetCommandNumberAPIDUMP);
+    }
+
     // Haven't created an instance yet, exit now since there is no instance_dispatch_table
     if (instance == VK_NULL_HANDLE) return nullptr;
     if (instance_dispatch_table(instance)->GetInstanceProcAddr == NULL) return nullptr;
