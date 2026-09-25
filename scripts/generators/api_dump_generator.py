@@ -217,6 +217,12 @@ BLOCKING_API_CALLS = [
     'vkQueueWaitIdle', 'vkAcquireNextImageKHR', 'vkGetQueryPoolResults', 'vkWaitSemaphoresKHR'
 ]
 
+# Advances ApiDumpInstance's frame counter the same way vkQueuePresentKHR does, but only when the
+# layer is configured to count queue submissions instead of frames (capture_trigger_boundary =
+# queue_submits) - see ApiDumpInstance::notifyQueueSubmit. Needed for compute-only workloads that
+# never call vkQueuePresentKHR.
+QUEUE_SUBMIT_API_CALLS = ['vkQueueSubmit', 'vkQueueSubmit2', 'vkQueueSubmit2KHR']
+
 FUNCTION_IMPLEMENTATION_IGNORE_LIST = ['vkGetDeviceProcAddr', 'vkGetInstanceProcAddr', 'vkEnumerateInstanceVersion']
 
 # Types that contain pointer like data but are just integers - useful for NoAddr outputs
@@ -507,6 +513,8 @@ class ApiDumpGenerator(BaseGenerator):
 
             if command.name == 'vkQueuePresentKHR':
                 self.write('ApiDumpInstance::current().nextFrame();')
+            if command.name in QUEUE_SUBMIT_API_CALLS:
+                self.write('ApiDumpInstance::current().notifyQueueSubmit();')
             if command.returnType != 'void':
                 self.write('return result;')
             self.write('}')

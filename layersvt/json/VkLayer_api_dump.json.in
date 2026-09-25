@@ -143,6 +143,14 @@
                     "default": "0-0"
                 },
                 {
+                    "key": "output_range_queue_submits",
+                    "env": "VK_APIDUMP_OUTPUT_RANGE_QUEUE_SUBMITS",
+                    "label": "Output Range (Queue Submissions)",
+                    "description": "Same syntax as output_range, but counts queue submissions (vkQueueSubmit, vkQueueSubmit2, vkQueueSubmit2KHR) instead of frames. Only consulted when capture_trigger_boundary is queue_submits. Useful for compute-only workloads that never call vkQueuePresentKHR.",
+                    "type": "STRING",
+                    "default": "0-0"
+                },
+                {
                     "key": "output_format",
                     "env": "VK_APIDUMP_OUTPUT_FORMAT",
                     "label": "Output Format",
@@ -334,6 +342,25 @@
                     "description": "Dump only while this is true, polled once per frame so it can be toggled while the application runs. When set, it replaces output_range rather than combining with it.",
                     "type": "BOOL",
                     "default": false
+                },
+                {
+                    "key": "capture_trigger_boundary",
+                    "label": "Capture Trigger Boundary",
+                    "description": "Whether output_range/output_range_queue_submits and capture_trigger count frames (advanced by vkQueuePresentKHR) or queue submissions (advanced by vkQueueSubmit, vkQueueSubmit2, and vkQueueSubmit2KHR). Set to queue_submits for compute-only workloads that never present.",
+                    "type": "ENUM",
+                    "flags": [
+                        {
+                            "key": "frames",
+                            "label": "Frames",
+                            "description": "Advanced by vkQueuePresentKHR"
+                        },
+                        {
+                            "key": "queue_submits",
+                            "label": "Queue Submissions",
+                            "description": "Advanced by vkQueueSubmit, vkQueueSubmit2, and vkQueueSubmit2KHR"
+                        }
+                    ],
+                    "default": "frames"
                 },
                 {
                     "key": "always_dump_setup",

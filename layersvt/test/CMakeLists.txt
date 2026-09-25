@@ -56,4 +56,10 @@ foreach(test_item ${LAYER_TEST_FILES})
     endif()
 
     LayerTest(${test_item})
+
+    if(test_item STREQUAL "api_dump")
+        # test_api_dump.cpp includes api_dump.h directly to unit test its pure logic
+        # (ConditionalFrameOutput, ApiDumpSettings::captureBoundary) without a device.
+        target_compile_definitions(test_api_dump_layer PRIVATE VK_ENABLE_BETA_EXTENSIONS)
+    endif()
 endforeach()

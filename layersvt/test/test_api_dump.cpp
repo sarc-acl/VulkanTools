@@ -25,6 +25,10 @@
 
 #include <filesystem>
 
+// Included directly (rather than only loaded as a layer) to unit test the pure range/boundary
+// logic - ConditionalFrameOutput and ApiDumpSettings::captureBoundary - without needing a device.
+#include "../api_dump.h"
+
 static const char* kLayerName = "VK_LAYER_LUNARG_api_dump";
 
 class ApiDumpTests : public VkTestFramework {
@@ -65,4 +69,83 @@ TEST_F(ApiDumpTests, init_layer) {
     fclose(file);
 
     EXPECT_STREQ(file_start_content_read.c_str(), file_start_content_expected);
+}
+
+// ConditionalFrameOutput parses output_range/output_range_queue_submits strings and answers
+// isFrameInRange for them. Neither needs a Vulkan device, so these test it directly rather than
+// through a full capture.
+TEST(ConditionalFrameOutputTests, DefaultAllowsEveryFrame) {
+    ConditionalFrameOutput output;
+    EXPECT_TRUE(output.isFrameInRange(0));
+    EXPECT_TRUE(output.isFrameInRange(1234));
+}
+
+TEST(ConditionalFrameOutputTests, RejectsEmptyString) {
+    ConditionalFrameOutput output;
+    EXPECT_FALSE(output.parseConditionalFrameRange(""));
+}
+
+TEST(ConditionalFrameOutputTests, ParsesSingleFrames) {
+    ConditionalFrameOutput output;
+    ASSERT_TRUE(output.parseConditionalFrameRange("2,3,5"));
+    EXPECT_TRUE(output.isFrameInRange(2));
+    EXPECT_TRUE(output.isFrameInRange(3));
+    EXPECT_FALSE(output.isFrameInRange(4));
+    EXPECT_TRUE(output.isFrameInRange(5));
+}
+
+TEST(ConditionalFrameOutputTests, ParsesFrameRangeWithInterval) {
+    // "4-4-2": starting at frame 4, a span of 4 frames (4-7), dumping every other one.
+    ConditionalFrameOutput output;
+    ASSERT_TRUE(output.parseConditionalFrameRange("4-4-2"));
+    EXPECT_FALSE(output.isFrameInRange(3));
+    EXPECT_TRUE(output.isFrameInRange(4));
+    EXPECT_FALSE(output.isFrameInRange(5));
+    EXPECT_TRUE(output.isFrameInRange(6));
+    EXPECT_FALSE(output.isFrameInRange(7));
+    EXPECT_FALSE(output.isFrameInRange(8));
+}
+
+TEST(ConditionalFrameOutputTests, ParsesMultipleRanges) {
+    // "3-6,10-2": a span of 6 frames starting at 3 (3-8), plus a span of 2 starting at 10 (10-11).
+    ConditionalFrameOutput output;
+    ASSERT_TRUE(output.parseConditionalFrameRange("3-6,10-2"));
+    for (uint64_t frame = 3; frame <= 8; ++frame) {
+        EXPECT_TRUE(output.isFrameInRange(frame)) << "frame " << frame;
+    }
+    EXPECT_FALSE(output.isFrameInRange(9));
+    EXPECT_TRUE(output.isFrameInRange(10));
+    EXPECT_TRUE(output.isFrameInRange(11));
+    EXPECT_FALSE(output.isFrameInRange(12));
+}
+
+// ApiDumpSettings::init only needs a VkInstanceCreateInfo with a VkLayerSettingsCreateInfoEXT
+// chain to parse settings from - it never touches a device or the Vulkan loader - so these
+// construct one directly rather than going through VulkanInstanceBuilder/vkCreateInstance.
+TEST_F(ApiDumpTests, CaptureTriggerBoundaryDefaultsToFrames) {
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    EXPECT_EQ(settings.captureBoundary(), ApiDumpCaptureBoundary::Frames);
+}
+
+TEST_F(ApiDumpTests, CaptureTriggerBoundarySelectsQueueSubmits) {
+    const char* boundary_value = "queue_submits";
+    const std::vector<VkLayerSettingEXT> settings_values = {
+        {kLayerName, "capture_trigger_boundary", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &boundary_value}};
+    const VkLayerSettingsCreateInfoEXT layer_settings_create_info{VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT, nullptr,
+                                                                    static_cast<uint32_t>(settings_values.size()),
+                                                                    settings_values.data()};
+
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pNext = &layer_settings_create_info;
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    EXPECT_EQ(settings.captureBoundary(), ApiDumpCaptureBoundary::QueueSubmits);
 }

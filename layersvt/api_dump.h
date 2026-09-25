@@ -110,6 +110,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyFlush "flush"
 #define kSettingsKeyPreDump "pre_dump"
 #define kSettingsKeyOutputRange "output_range"
+#define kSettingsKeyOutputRangeQueueSubmits "output_range_queue_submits"
 #define kSettingsKeyTimestamp "timestamp"
 #define kSettingsKeyIndentSize "indent_size"
 #define kSettingsKeyShowTypes "show_types"
@@ -119,6 +120,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowShader "show_shader"
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
 #define kSettingsKeyCaptureTrigger "capture_trigger"
+#define kSettingsKeyCaptureTriggerBoundary "capture_trigger_boundary"
 #define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
 #define kSettingsKeyShowEnumValue "show_enum_value"
 #define kSettingsKeyFloatPrecision "float_precision"
@@ -175,6 +177,15 @@ enum class ApiDumpFormat {
     Text,
     Html,
     Json,
+};
+
+// What advances and checks the frame counter used by output_range/output_range_queue_submits and
+// capture_trigger: vkQueuePresentKHR for Frames (the default, matching prior behavior), or
+// vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR for QueueSubmits, needed for compute-only
+// workloads that never present.
+enum class ApiDumpCaptureBoundary {
+    Frames,
+    QueueSubmits,
 };
 
 static const uint64_t OUTPUT_RANGE_UNLIMITED = 0;
@@ -570,6 +581,10 @@ class ApiDumpSettings {
 
     bool usingCaptureTrigger() const { return use_capture_trigger; }
 
+    // What the frame counter tracked by output_range/output_range_queue_submits and capture_trigger
+    // is actually counting; see notifyQueueSubmit/nextFrame.
+    ApiDumpCaptureBoundary captureBoundary() const { return capture_trigger_boundary; }
+
     bool alwaysDumpSetup() const { return always_dump_setup; }
 
     // Sokatoa specific. Json output is consumed by gfxr-sqlite rather than read by eye, so it can
@@ -803,9 +818,26 @@ class ApiDumpSettings {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyShowCommandNumbers, show_command_numbers);
         }
 
+        // Whether output_range/output_range_queue_submits and capture_trigger count frames
+        // (advanced by vkQueuePresentKHR) or queue submissions (advanced by vkQueueSubmit and
+        // friends) - the latter needed for compute-only workloads that never present.
+        capture_trigger_boundary = ApiDumpCaptureBoundary::Frames;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTriggerBoundary)) {
+            std::string boundary_value;
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTriggerBoundary, boundary_value);
+            if (ToLowerString(boundary_value) == "queue_submits") {
+                capture_trigger_boundary = ApiDumpCaptureBoundary::QueueSubmits;
+            }
+        }
+
+        // Only one boundary kind is ever active per process, so a single ConditionalFrameOutput is
+        // reused for whichever range setting matches it rather than keeping two in sync.
+        const char *output_range_key = capture_trigger_boundary == ApiDumpCaptureBoundary::QueueSubmits
+                                            ? kSettingsKeyOutputRangeQueueSubmits
+                                            : kSettingsKeyOutputRange;
         std::string cond_range_string;
-        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyOutputRange)) {
-            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyOutputRange, cond_range_string);
+        if (vkuHasLayerSetting(layerSettingSet, output_range_key)) {
+            vkuGetLayerSettingValue(layerSettingSet, output_range_key, cond_range_string);
         }
 
         always_dump_setup = false;
@@ -1032,6 +1064,7 @@ class ApiDumpSettings {
 
     bool use_conditional_output = false;
     ConditionalFrameOutput condFrameOutput;
+    ApiDumpCaptureBoundary capture_trigger_boundary = ApiDumpCaptureBoundary::Frames;
 
     // When the capture_trigger setting is present, the trigger replaces the output_range check
     // entirely rather than combining with it. An output_range of "" or "0-0" means "every frame"
@@ -1082,16 +1115,20 @@ class ApiDumpInstance {
         return count;
     }
 
+    // Called from vkQueuePresentKHR. Only advances the counter when the layer is configured to
+    // count frames (the default) - see advanceCaptureBoundary/notifyQueueSubmit.
     void nextFrame() {
-        std::lock_guard<std::mutex> lg(frame_mutex);
-        ++frame_count;
+        if (settings().captureBoundary() != ApiDumpCaptureBoundary::Frames) return;
+        advanceCaptureBoundary();
+    }
 
-        // Pick up any trigger change before deciding this frame, so the decision and the markup
-        // setupInterFrameOutputFormatting emits below are taken from the same state.
-        settings().refreshCaptureTrigger();
-        should_dump_output = settings().isFrameInRange(frame_count);
-        settings().setupInterFrameOutputFormatting(frame_count);
-        first_func_call_on_frame = true;
+    // Called from vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR. Only advances the counter when the
+    // layer is configured to count queue submissions instead of frames, which compute-only workloads
+    // that never call vkQueuePresentKHR need in order to get more than a single frame's worth of
+    // range/trigger granularity.
+    void notifyQueueSubmit() {
+        if (settings().captureBoundary() != ApiDumpCaptureBoundary::QueueSubmits) return;
+        advanceCaptureBoundary();
     }
 
     // The number assigned to the command currently being dumped. Only advanced in dump_function_head
@@ -1278,6 +1315,22 @@ class ApiDumpInstance {
     }
 
    private:
+    // Shared by nextFrame/notifyQueueSubmit, whichever of the two is actually configured to advance
+    // the counter. Every call site that reaches here is already serialized via outputMutex (every
+    // generated dispatch entry point that dumps output holds it for its whole body), so frame_mutex
+    // guards this state against nothing more than that invariant ever slipping.
+    void advanceCaptureBoundary() {
+        std::lock_guard<std::mutex> lg(frame_mutex);
+        ++frame_count;
+
+        // Pick up any trigger change before deciding this frame, so the decision and the markup
+        // setupInterFrameOutputFormatting emits below are taken from the same state.
+        settings().refreshCaptureTrigger();
+        should_dump_output = settings().isFrameInRange(frame_count);
+        settings().setupInterFrameOutputFormatting(frame_count);
+        first_func_call_on_frame = true;
+    }
+
     ApiDumpSettings dump_settings;
     std::mutex output_mutex;
     std::mutex frame_mutex;

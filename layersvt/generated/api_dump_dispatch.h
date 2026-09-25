@@ -2383,6 +2383,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(VkQueue queue, uint32_t submitCount
         dump_post_function_formatting<Format>(ApiDumpInstance::current().settings());
         flush(ApiDumpInstance::current().settings());
     }
+    ApiDumpInstance::current().notifyQueueSubmit();
     return result;
 }
 template <ApiDumpFormat Format>
@@ -5381,6 +5382,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit2(VkQueue queue, uint32_t submitCoun
         dump_post_function_formatting<Format>(ApiDumpInstance::current().settings());
         flush(ApiDumpInstance::current().settings());
     }
+    ApiDumpInstance::current().notifyQueueSubmit();
     return result;
 }
 template <ApiDumpFormat Format>
@@ -8063,6 +8065,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit2KHR(VkQueue queue, uint32_t submitC
         dump_post_function_formatting<Format>(ApiDumpInstance::current().settings());
         flush(ApiDumpInstance::current().settings());
     }
+    ApiDumpInstance::current().notifyQueueSubmit();
     return result;
 }
 template <ApiDumpFormat Format>
