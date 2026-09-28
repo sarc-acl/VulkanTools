@@ -164,6 +164,28 @@ EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceExtensionPrope
     }
 }
 
+// Bootstrap-level device extension query, dlsym'd directly by the loader during layer discovery -
+// before any instance or physical device exists, so unlike layer_vkEnumerateDeviceExtensionProperties
+// below (the dispatch-chain version resolved via vkGetInstanceProcAddr once an instance is live) this
+// cannot forward to a dispatch table for a name it does not recognize. Without this correctly-named
+// export the loader's dlsym lookup fails and it treats the layer as absent - harmless for a
+// per-package layer, since Android's per-package GPU debug layer mechanism does not call it, but
+// fatal for installing this layer globally, which does.
+EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice,
+                                                                                     const char* pLayerName,
+                                                                                     uint32_t* pPropertyCount,
+                                                                                     VkExtensionProperties* pProperties) {
+    static const VkExtensionProperties extensionProperties[] = {{
+        "VK_EXT_tooling_info",
+        1,
+    }};
+    if (pLayerName && strcmp(pLayerName, "VK_LAYER_LUNARG_api_dump") == 0) {
+        return util_GetExtensionProperties(ARRAY_SIZE(extensionProperties), extensionProperties, pPropertyCount, pProperties);
+    } else {
+        return VK_ERROR_LAYER_NOT_PRESENT;
+    }
+}
+
 EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL layer_vkEnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice,
                                                                                           const char* pLayerName,
                                                                                           uint32_t* pPropertyCount,
