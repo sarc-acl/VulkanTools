@@ -27,6 +27,7 @@
 
 #include "vulkan/vk_layer.h"
 #include "vk_layer_table.h"
+#include "VK_ANDROID_frame_boundary.h"
 #include <vulkan/utility/vk_dispatch_table.h>
 
 #include <vulkan/layer/vk_layer_settings.hpp>
@@ -198,6 +199,19 @@ enum class ApiDumpCaptureBoundary {
     Frames,
     QueueSubmits,
 };
+
+// Walks a pNext chain looking for a VkFrameBoundaryEXT (VK_EXT_frame_boundary) marking the end of a
+// frame, so vkQueueSubmit/vkQueueSubmit2 can advance the real frame counter for compute/off-screen
+// workloads that submit through a frame boundary chained onto the submission instead of presenting.
+static bool IsFrameBoundaryEnd(const void *pNext) {
+    for (const VkBaseInStructure *current = static_cast<const VkBaseInStructure *>(pNext); current != nullptr;
+         current = current->pNext) {
+        if (current->sType == VK_STRUCTURE_TYPE_FRAME_BOUNDARY_EXT) {
+            return reinterpret_cast<const VkFrameBoundaryEXT *>(current)->flags & VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT;
+        }
+    }
+    return false;
+}
 
 static const uint64_t OUTPUT_RANGE_UNLIMITED = 0;
 static const uint64_t OUTPUT_RANGE_INTERVAL_DEFAULT = 1;
@@ -653,9 +667,6 @@ class ApiDumpSettings {
     bool processMatchesCaptureName() const { return process_matches_capture_name; }
 
     bool alwaysDumpSetup() const { return process_matches_capture_name && always_dump_setup; }
-
-    // Sokatoa specific. Json output is consumed by gfxr-sqlite rather than read by eye, so it can
-    // trade legibility for exactness and size.
     bool showEnumValue() const { return show_enum_value; }
     int floatPrecision() const { return float_precision; }
 
@@ -728,6 +739,16 @@ class ApiDumpSettings {
             }
         }
         return false;
+    }
+
+    // vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR - the commands that advance
+    // queue_submit_count. Named distinctly from isSetupCommand above: these are never setup content
+    // in Frames boundary mode, only in QueueSubmits mode, where a pre-range submission needs to be
+    // force-dumped the same way any other setup command is - see setCurrentCommand and
+    // dump_json_function_head's isSetupSubmission field.
+    static bool isQueueSubmitFunction(const char *funcName) {
+        return strcmp(funcName, "vkQueueSubmit") == 0 || strcmp(funcName, "vkQueueSubmit2") == 0 ||
+               strcmp(funcName, "vkQueueSubmit2KHR") == 0;
     }
 
     // Re-read the trigger property. Called once per frame, before the frame's dump state is decided.
@@ -1193,7 +1214,9 @@ class ApiDumpSettings {
 
 class ApiDumpInstance {
    public:
-    ApiDumpInstance() noexcept : frame_count(0), command_count(0) { program_start = std::chrono::system_clock::now(); }
+    ApiDumpInstance() noexcept : frame_count(0), queue_submit_count(0), command_count(0) {
+        program_start = std::chrono::system_clock::now();
+    }
     // Can't copy or move this type
     ApiDumpInstance(const ApiDumpInstance &) = delete;
     ApiDumpInstance &operator=(const ApiDumpInstance &) = delete;
@@ -1217,20 +1240,74 @@ class ApiDumpInstance {
         return count;
     }
 
-    // Called from vkQueuePresentKHR. Only advances the counter when the layer is configured to
-    // count frames (the default) - see advanceCaptureBoundary/notifyQueueSubmit.
-    void nextFrame() {
-        if (settings().captureBoundary() != ApiDumpCaptureBoundary::Frames) return;
-        advanceCaptureBoundary();
+    // Independent of frameCount - see notifyQueueSubmit. Exposed mainly for tests.
+    uint64_t queueSubmitCount() {
+        std::lock_guard<std::mutex> lg(frame_mutex);
+        uint64_t count = queue_submit_count;
+        return count;
     }
 
-    // Called from vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR. Only advances the counter when the
-    // layer is configured to count queue submissions instead of frames, which compute-only workloads
-    // that never call vkQueuePresentKHR need in order to get more than a single frame's worth of
-    // range/trigger granularity.
+    // Called from vkQueuePresentKHR, from vkQueueSubmit/vkQueueSubmit2 when a chained
+    // VkFrameBoundaryEXT marks the end of a frame (see checkFrameBoundaryInSubmit), and from
+    // vkFrameBoundaryANDROID. Always advances frame_count and the frame's own JSON markup,
+    // regardless of capture_trigger_boundary - a frame boundary is a frame boundary independent of
+    // what output_range/capture_trigger is currently counting. See notifyQueueSubmit for the
+    // independent counter used for range/trigger decisions when the boundary is queue_submits.
+    void nextFrame() {
+        std::lock_guard<std::mutex> lg(frame_mutex);
+        ++frame_count;
+        settings().setupInterFrameOutputFormatting(frame_count);
+        first_func_call_on_frame = true;
+        if (settings().captureBoundary() == ApiDumpCaptureBoundary::Frames) {
+            refreshShouldDumpOutput(frame_count);
+        }
+    }
+
+    // Called from every vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR. Always advances
+    // queue_submit_count, regardless of capture_trigger_boundary - mirrors frame_count always
+    // advancing on real frame boundaries no matter what the active boundary is. Only feeds the
+    // dump-eligibility decision (should_dump_output) when the layer is configured to count queue
+    // submissions instead of frames; never touches the frame's own JSON markup - see nextFrame for
+    // that, driven independently by real frame-boundary signals only.
     void notifyQueueSubmit() {
-        if (settings().captureBoundary() != ApiDumpCaptureBoundary::QueueSubmits) return;
-        advanceCaptureBoundary();
+        std::lock_guard<std::mutex> lg(frame_mutex);
+        ++queue_submit_count;
+        if (settings().captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits) {
+            refreshShouldDumpOutput(queue_submit_count);
+        }
+    }
+
+    // Scans each submission for a chained VkFrameBoundaryEXT (VK_EXT_frame_boundary) marking the
+    // end of a frame, advancing the real frame counter through nextFrame() when found - regardless
+    // of capture_trigger_boundary. Called from vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR
+    // alongside notifyQueueSubmit, not instead of it: one counts frames, the other queue
+    // submissions, independently.
+    void checkFrameBoundaryInSubmit(uint32_t submitCount, const VkSubmitInfo *pSubmits) {
+        for (uint32_t i = 0; i < submitCount; ++i) {
+            if (IsFrameBoundaryEnd(pSubmits[i].pNext)) nextFrame();
+        }
+    }
+    void checkFrameBoundaryInSubmit(uint32_t submitCount, const VkSubmitInfo2 *pSubmits) {
+        for (uint32_t i = 0; i < submitCount; ++i) {
+            if (IsFrameBoundaryEnd(pSubmits[i].pNext)) nextFrame();
+        }
+    }
+
+    // VK_ANDROID_frame_boundary is not in the official registry, so there is no generated
+    // dispatch-table slot to resolve the next layer/driver's real implementation through. Resolved
+    // once at CreateDevice via a direct GetDeviceProcAddr call instead (see
+    // api_dump_handwritten_functions.h) and stored here - the same pattern this codebase already
+    // uses elsewhere for a function with no dispatch-table slot
+    // (GetCommandNumberAPIDUMP via GetInstanceProcAddr).
+    void setFrameBoundaryAndroidFunction(PFN_vkFrameBoundaryANDROID fp) { next_frame_boundary_android = fp; }
+
+    // Hand-written interception for vkFrameBoundaryANDROID. Forwards to the resolved pointer so the
+    // app's call still reaches the driver - it is void, so there is nothing to fail even if no
+    // driver below actually implements it - then advances the real frame counter the same way any
+    // other genuine frame-boundary signal does.
+    void frameBoundaryAndroid(VkDevice device, VkSemaphore semaphore, VkImage image) {
+        if (next_frame_boundary_android) next_frame_boundary_android(device, semaphore, image);
+        nextFrame();
     }
 
     // The number assigned to the command currently being dumped. Only advanced in dump_function_head
@@ -1246,7 +1323,8 @@ class ApiDumpInstance {
     // so this is one behind it; before anything has been dumped it reads 0, same as commandCount().
     uint64_t lastCommandNumber() const { return command_count > 0 ? command_count - 1 : 0; }
 
-    // Whether the current frame is being dumped in its entirety.
+    // Whether the current frame/queue submission is being dumped in its entirety - whichever of the
+    // two output_range/capture_trigger is actually counting; see activeBoundaryCount.
     bool frameIsDumped() {
         // Under a trigger the answer changes while the app runs, so the one-shot latch below would
         // pin it to whatever was true before the first frame boundary.
@@ -1254,7 +1332,7 @@ class ApiDumpInstance {
             return should_dump_output;
         }
         if (!conditional_initialized) {
-            should_dump_output = settings().isFrameInRange(frame_count);
+            should_dump_output = settings().isFrameInRange(activeBoundaryCount());
             conditional_initialized = true;
         }
         return should_dump_output;
@@ -1271,10 +1349,18 @@ class ApiDumpInstance {
         // answer: with the setting off nothing extra is dumped, and inside the range everything is
         // dumped already.
         current_command_is_setup =
-            settings().alwaysDumpSetup() && !frameIsDumped() && ApiDumpSettings::isSetupCommand(funcName);
+            settings().alwaysDumpSetup() && !frameIsDumped() &&
+            (ApiDumpSettings::isSetupCommand(funcName) ||
+             (settings().captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits &&
+              ApiDumpSettings::isQueueSubmitFunction(funcName)));
     }
 
     bool shouldDumpOutput() { return frameIsDumped() || current_command_is_setup; }
+
+    // Whether the command currently being dumped is being force-dumped as setup content despite its
+    // frame/queue submission not being in range - see setCurrentCommand. Distinct from
+    // shouldDumpOutput(), which is also true for content that is in range on its own merits.
+    bool currentCommandIsSetup() const { return current_command_is_setup; }
 
     bool firstFunctionCallOnFrame() {
         if (first_func_call_on_frame) {
@@ -1417,27 +1503,43 @@ class ApiDumpInstance {
     }
 
    private:
-    // Shared by nextFrame/notifyQueueSubmit, whichever of the two is actually configured to advance
-    // the counter. Every call site that reaches here is already serialized via outputMutex (every
-    // generated dispatch entry point that dumps output holds it for its whole body), so frame_mutex
-    // guards this state against nothing more than that invariant ever slipping.
-    void advanceCaptureBoundary() {
-        std::lock_guard<std::mutex> lg(frame_mutex);
-        ++frame_count;
+    // Which of the two independent counters output_range/output_range_queue_submits and
+    // capture_trigger are actually meant to consult, per capture_trigger_boundary. Never used for
+    // the frame's own JSON markup, which always tracks frame_count regardless - see nextFrame.
+    uint64_t activeBoundaryCount() const {
+        return settings().captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits ? queue_submit_count : frame_count;
+    }
 
-        // Pick up any trigger change before deciding this frame, so the decision and the markup
-        // setupInterFrameOutputFormatting emits below are taken from the same state.
+    // Shared by nextFrame/notifyQueueSubmit, called with whichever counter capture_trigger_boundary
+    // says is active, to decide whether content counted against it is currently in range. Every
+    // call site that reaches here is already serialized via outputMutex (every generated dispatch
+    // entry point that dumps output holds it for its whole body), so frame_mutex guards this state
+    // against nothing more than that invariant ever slipping.
+    //
+    // Deliberately does not touch first_func_call_on_frame: that latch tracks whether a new JSON
+    // array was just opened, which only nextFrame ever does - resetting it here too would drop the
+    // separator before the first command dumped after a queue submission that was not also a frame
+    // boundary, corrupting the JSON.
+    void refreshShouldDumpOutput(uint64_t count) {
         settings().refreshCaptureTrigger();
-        should_dump_output = settings().isFrameInRange(frame_count);
-        settings().setupInterFrameOutputFormatting(frame_count);
-        first_func_call_on_frame = true;
+        should_dump_output = settings().isFrameInRange(count);
+        conditional_initialized = true;
     }
 
     ApiDumpSettings dump_settings;
     std::mutex output_mutex;
     std::mutex frame_mutex;
     uint64_t frame_count;
+    // Independent of frame_count - advanced by every queue submission regardless of
+    // capture_trigger_boundary, the same way frame_count is advanced by every real frame boundary
+    // regardless of it. See nextFrame/notifyQueueSubmit.
+    uint64_t queue_submit_count;
     uint64_t command_count;
+
+    // The next layer/driver's real vkFrameBoundaryANDROID, resolved once at CreateDevice - see
+    // setFrameBoundaryAndroidFunction/frameBoundaryAndroid. Null until then, and whenever nothing
+    // below actually implements it.
+    PFN_vkFrameBoundaryANDROID next_frame_boundary_android = nullptr;
 
     std::mutex thread_mutex;
     std::unordered_map<std::thread::id, uint64_t> thread_map;
@@ -2209,6 +2311,21 @@ inline void dump_json_function_head(ApiDumpInstance &dump_inst, const char *func
     // Display return type
     dump_separate_members<ApiDumpFormat::Json>(settings);
     dump_json_key_value(settings, 3, "returnType", funcReturn);
+
+    // Display whether this queue submission predates the active queue-submission range/trigger.
+    // Written as a bare boolean, and only when true, matching isSetupFrame's own convention (a
+    // native JSON value the reader's boolean() SAX callback expects, not the quoted-string
+    // convention dump_json_key_value gives every other field here) - left out entirely for a
+    // submission that is genuinely in range, rather than writing false. Only meaningful - and only
+    // ever written - when the layer is counting queue submissions rather than frames, since a
+    // submission's own frame in Frames boundary mode is not what output_range/capture_trigger is
+    // deciding for it. See ApiDumpInstance::setCurrentCommand.
+    if (settings.captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits && ApiDumpSettings::isQueueSubmitFunction(funcName) &&
+        dump_inst.currentCommandIsSetup()) {
+        dump_separate_members<ApiDumpFormat::Json>(settings);
+        dump_json_key(settings, 3, "isSetupSubmission");
+        settings.stream() << " true";
+    }
     flush(settings);
 }
 
@@ -2248,7 +2365,7 @@ inline void dump_function_head(ApiDumpInstance &dump_inst, const char *funcName,
 //==================================== Exposed Query Functions ======================================//
 
 // Lets other layers poll the commandNumber of the last command api_dump wrote, to correlate their
-// own records against a specific entry in the dump. Mirrors gfxreconstruct's vkGetBlockIndexGFXR:
+// own records against a specific entry in the dump.
 // not a real Vulkan command, so it is resolved only through vkGetInstanceProcAddr and queried by
 // name without the leading "vk" - "GetCommandNumberAPIDUMP" - so a caller cannot mistake it for one.
 inline VKAPI_ATTR uint64_t VKAPI_CALL vkGetCommandNumberAPIDUMP() { return ApiDumpInstance::current().lastCommandNumber(); }

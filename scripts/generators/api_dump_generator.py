@@ -217,10 +217,10 @@ BLOCKING_API_CALLS = [
     'vkQueueWaitIdle', 'vkAcquireNextImageKHR', 'vkGetQueryPoolResults', 'vkWaitSemaphoresKHR'
 ]
 
-# Advances ApiDumpInstance's frame counter the same way vkQueuePresentKHR does, but only when the
-# layer is configured to count queue submissions instead of frames (capture_trigger_boundary =
-# queue_submits) - see ApiDumpInstance::notifyQueueSubmit. Needed for compute-only workloads that
-# never call vkQueuePresentKHR.
+# Advances ApiDumpInstance's own, independent queue-submission counter - needed for compute-only
+# workloads that never call vkQueuePresentKHR to get more than a single frame's worth of
+# range/trigger granularity - and separately checks each submission for a chained VkFrameBoundaryEXT
+# marking the end of a real frame. See ApiDumpInstance::notifyQueueSubmit/checkFrameBoundaryInSubmit.
 QUEUE_SUBMIT_API_CALLS = ['vkQueueSubmit', 'vkQueueSubmit2', 'vkQueueSubmit2KHR']
 
 FUNCTION_IMPLEMENTATION_IGNORE_LIST = ['vkGetDeviceProcAddr', 'vkGetInstanceProcAddr', 'vkEnumerateInstanceVersion']
@@ -515,6 +515,7 @@ class ApiDumpGenerator(BaseGenerator):
                 self.write('ApiDumpInstance::current().nextFrame();')
             if command.name in QUEUE_SUBMIT_API_CALLS:
                 self.write('ApiDumpInstance::current().notifyQueueSubmit();')
+                self.write('ApiDumpInstance::current().checkFrameBoundaryInSubmit(submitCount, pSubmits);')
             if command.returnType != 'void':
                 self.write('return result;')
             self.write('}')

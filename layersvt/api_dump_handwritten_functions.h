@@ -130,6 +130,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
     VkResult result = fpCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
     if (result == VK_SUCCESS) {
         initDeviceTable(*pDevice, fpGetDeviceProcAddr);
+
+        // vkFrameBoundaryANDROID has no dispatch-table slot (see VK_ANDROID_frame_boundary.h) - the
+        // next layer/driver's real implementation, if any, has to be resolved here instead.
+        ApiDumpInstance::current().setFrameBoundaryAndroidFunction(
+            reinterpret_cast<PFN_vkFrameBoundaryANDROID>(fpGetDeviceProcAddr(*pDevice, "vkFrameBoundaryANDROID")));
     }
 
     // Output the API dump
@@ -175,10 +180,19 @@ EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateDeviceExtensionPropert
                                                                                      const char* pLayerName,
                                                                                      uint32_t* pPropertyCount,
                                                                                      VkExtensionProperties* pProperties) {
-    static const VkExtensionProperties extensionProperties[] = {{
-        "VK_EXT_tooling_info",
-        1,
-    }};
+    static const VkExtensionProperties extensionProperties[] = {
+        {
+            "VK_EXT_tooling_info",
+            1,
+        },
+        // Not in the official registry - see VK_ANDROID_frame_boundary.h. Advertised so the loader
+        // routes vkFrameBoundaryANDROID through this layer's GetDeviceProcAddr regardless of
+        // whether the underlying driver has ever heard of it.
+        {
+            "VK_ANDROID_frame_boundary",
+            1,
+        },
+    };
     if (pLayerName && strcmp(pLayerName, "VK_LAYER_LUNARG_api_dump") == 0) {
         return util_GetExtensionProperties(ARRAY_SIZE(extensionProperties), extensionProperties, pPropertyCount, pProperties);
     } else {
@@ -190,16 +204,31 @@ EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL layer_vkEnumerateDeviceExtensionP
                                                                                           const char* pLayerName,
                                                                                           uint32_t* pPropertyCount,
                                                                                           VkExtensionProperties* pProperties) {
-    static const VkExtensionProperties extensionProperties[] = {{
-        "VK_EXT_tooling_info",
-        1,
-    }};
+    static const VkExtensionProperties extensionProperties[] = {
+        {
+            "VK_EXT_tooling_info",
+            1,
+        },
+        // Not in the official registry - see VK_ANDROID_frame_boundary.h.
+        {
+            "VK_ANDROID_frame_boundary",
+            1,
+        },
+    };
     if (pLayerName && strcmp(pLayerName, "VK_LAYER_LUNARG_api_dump") == 0) {
         return util_GetExtensionProperties(ARRAY_SIZE(extensionProperties), extensionProperties, pPropertyCount, pProperties);
     } else {
         return instance_dispatch_table(physicalDevice)
             ->EnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pPropertyCount, pProperties);
     }
+}
+
+// vkFrameBoundaryANDROID has no dispatch-table slot (see VK_ANDROID_frame_boundary.h), so unlike
+// every generated entry point it cannot be reached through device_dispatch_table(device)->X - it is
+// caught by name instead, in layer_vkGetInstanceProcAddr/layer_vkGetDeviceProcAddr below.
+VKAPI_ATTR void VKAPI_CALL layer_vkFrameBoundaryANDROID(VkDevice device, VkSemaphore semaphore, VkImage image) {
+    std::lock_guard<std::mutex> lg(ApiDumpInstance::current().outputMutex());
+    ApiDumpInstance::current().frameBoundaryAndroid(device, semaphore, image);
 }
 
 EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceLayerProperties(uint32_t* pPropertyCount,

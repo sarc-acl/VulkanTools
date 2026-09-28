@@ -65,6 +65,13 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetInstanceProcAddr(VkInstance 
         return reinterpret_cast<PFN_vkVoidFunction>(vkGetCommandNumberAPIDUMP);
     }
 
+    // vkFrameBoundaryANDROID is real, but is not in the official registry (see
+    // VK_ANDROID_frame_boundary.h) so the generated device_func lookup above never matches it -
+    // caught here the same way GetCommandNumberAPIDUMP is, just above.
+    if (strcmp(pName, "vkFrameBoundaryANDROID") == 0) {
+        return reinterpret_cast<PFN_vkVoidFunction>(layer_vkFrameBoundaryANDROID);
+    }
+
     // Haven't created an instance yet, exit now since there is no instance_dispatch_table
     if (instance == VK_NULL_HANDLE) return nullptr;
     if (instance_dispatch_table(instance)->GetInstanceProcAddr == NULL) return nullptr;
@@ -85,6 +92,12 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
             break;
     }
     if (device_func) return device_func;
+
+    // vkFrameBoundaryANDROID is real, but is not in the official registry (see
+    // VK_ANDROID_frame_boundary.h) so the generated device_func lookup above never matches it.
+    if (strcmp(pName, "vkFrameBoundaryANDROID") == 0) {
+        return reinterpret_cast<PFN_vkVoidFunction>(layer_vkFrameBoundaryANDROID);
+    }
 
     // Haven't created a device yet, exit now since there is no device_dispatch_table
     if (device == VK_NULL_HANDLE) return nullptr;

@@ -198,3 +198,154 @@ TEST_F(ApiDumpTests, CaptureProcessNameExcludesOtherProcesses) {
     // A process this excludes must not report any frame as recorded either - see init/isFrameRecorded.
     EXPECT_FALSE(settings.isFrameRecorded(0));
 }
+
+// ApiDumpInstance is normally reached only through the process-wide current() singleton, but its
+// constructor is public and copy/move are merely deleted (not the default constructor), so these
+// construct one directly - avoiding shared mutable state (frame_count, queue_submit_count, ...)
+// across tests that current() would otherwise force.
+class ApiDumpInstanceTests : public VkTestFramework {
+   public:
+    ~ApiDumpInstanceTests(){};
+
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite(){};
+
+    // Mirrors the ApiDumpSettings::init() pattern used above, but through an ApiDumpInstance's own
+    // contained settings object, so nextFrame/notifyQueueSubmit/checkFrameBoundaryInSubmit have a
+    // fully initialized ConditionalFrameOutput/document state to work against.
+    static void InitWithSettings(ApiDumpInstance& instance, const std::vector<VkLayerSettingEXT>& settings_values) {
+        const VkLayerSettingsCreateInfoEXT layer_settings_create_info{VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT, nullptr,
+                                                                        static_cast<uint32_t>(settings_values.size()),
+                                                                        settings_values.data()};
+        VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+        VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+        inst_create_info.pNext = settings_values.empty() ? nullptr : &layer_settings_create_info;
+        inst_create_info.pApplicationInfo = &app_info;
+        instance.settings().init(&inst_create_info, nullptr);
+    }
+};
+
+TEST_F(ApiDumpInstanceTests, FrameCountAndQueueSubmitCountAdvanceIndependently) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+
+    // A compute-only workload: no vkQueuePresentKHR-equivalent call ever happens, only submissions.
+    instance.notifyQueueSubmit();
+    instance.notifyQueueSubmit();
+    instance.notifyQueueSubmit();
+
+    EXPECT_EQ(instance.frameCount(), 0u);
+    EXPECT_EQ(instance.queueSubmitCount(), 3u);
+}
+
+TEST_F(ApiDumpInstanceTests, NotifyQueueSubmitAlwaysAdvancesRegardlessOfBoundary) {
+    // Confirms queue_submit_count is not conditional on capture_trigger_boundary, mirroring how
+    // frame_count is not conditional on it either - both counters always tick.
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    ASSERT_EQ(instance.settings().captureBoundary(), ApiDumpCaptureBoundary::Frames);
+
+    instance.notifyQueueSubmit();
+
+    EXPECT_EQ(instance.queueSubmitCount(), 1u);
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryExtEndBitAdvancesFrameCount) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+
+    VkFrameBoundaryEXT frame_boundary{VK_STRUCTURE_TYPE_FRAME_BOUNDARY_EXT};
+    frame_boundary.flags = VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT;
+    VkSubmitInfo submit_info{VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submit_info.pNext = &frame_boundary;
+
+    instance.checkFrameBoundaryInSubmit(1, &submit_info);
+
+    EXPECT_EQ(instance.frameCount(), 1u);
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryExtWithoutEndBitDoesNotAdvanceFrameCount) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+
+    VkFrameBoundaryEXT frame_boundary{VK_STRUCTURE_TYPE_FRAME_BOUNDARY_EXT};
+    frame_boundary.flags = 0;
+    VkSubmitInfo submit_info{VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submit_info.pNext = &frame_boundary;
+
+    instance.checkFrameBoundaryInSubmit(1, &submit_info);
+
+    EXPECT_EQ(instance.frameCount(), 0u);
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryExtAdvancesFrameCountEvenInQueueSubmitsBoundary) {
+    // A frame boundary is a frame boundary independent of what output_range/capture_trigger is
+    // currently counting - see ApiDumpInstance::nextFrame.
+    ApiDumpInstance instance;
+    const char* boundary_value = "queue_submits";
+    InitWithSettings(instance,
+                      {{kLayerName, "capture_trigger_boundary", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &boundary_value}});
+    ASSERT_EQ(instance.settings().captureBoundary(), ApiDumpCaptureBoundary::QueueSubmits);
+
+    VkFrameBoundaryEXT frame_boundary{VK_STRUCTURE_TYPE_FRAME_BOUNDARY_EXT};
+    frame_boundary.flags = VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT;
+    VkSubmitInfo submit_info{VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submit_info.pNext = &frame_boundary;
+
+    instance.checkFrameBoundaryInSubmit(1, &submit_info);
+
+    EXPECT_EQ(instance.frameCount(), 1u);
+}
+
+TEST_F(ApiDumpInstanceTests, PreRangeQueueSubmitIsForceDumpedAndFlaggedSetup) {
+    // A queue submission before output_range_queue_submits opens must still be dumped under
+    // always_dump_setup - previously it was silently dropped entirely, since vkQueueSubmit was not
+    // classified as a setup command - and flagged isSetupSubmission via currentCommandIsSetup().
+    ApiDumpInstance instance;
+    const char* boundary_value = "queue_submits";
+    const char* range_value = "2-0";  // starts at submission 2 (0-based), unlimited count
+    VkBool32 always_dump_setup = VK_TRUE;
+    InitWithSettings(instance, {{kLayerName, "capture_trigger_boundary", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &boundary_value},
+                                 {kLayerName, "output_range_queue_submits", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &range_value},
+                                 {kLayerName, "always_dump_setup", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &always_dump_setup}});
+
+    // Submission 0: still before the range.
+    instance.setCurrentCommand("vkQueueSubmit");
+    EXPECT_TRUE(instance.shouldDumpOutput()) << "a pre-range submission must still be dumped under always_dump_setup";
+    EXPECT_TRUE(instance.currentCommandIsSetup());
+    instance.notifyQueueSubmit();
+
+    // Submission 1: still before the range (range starts at submission 2).
+    instance.setCurrentCommand("vkQueueSubmit");
+    EXPECT_TRUE(instance.currentCommandIsSetup());
+    instance.notifyQueueSubmit();
+
+    // Submission 2: now in range.
+    instance.setCurrentCommand("vkQueueSubmit");
+    EXPECT_TRUE(instance.shouldDumpOutput());
+    EXPECT_FALSE(instance.currentCommandIsSetup()) << "in-range content is not force-dumped setup content";
+}
+
+TEST_F(ApiDumpInstanceTests, QueueSubmitIsNeverSetupContentInFramesBoundary) {
+    // The classification added for isSetupSubmission must not change Frames boundary behavior.
+    ApiDumpInstance instance;
+    VkBool32 always_dump_setup = VK_TRUE;
+    InitWithSettings(instance, {{kLayerName, "always_dump_setup", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &always_dump_setup}});
+    ASSERT_EQ(instance.settings().captureBoundary(), ApiDumpCaptureBoundary::Frames);
+
+    instance.setCurrentCommand("vkQueueSubmit");
+
+    EXPECT_FALSE(instance.currentCommandIsSetup());
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidAdvancesFrameCountWithNoDriverResolved) {
+    // The driver-forwarding pointer is resolved separately at CreateDevice time (see
+    // api_dump_handwritten_functions.h); this only exercises the interception's own behavior, which
+    // must not crash and must still advance the real frame counter when nothing is resolved yet.
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+
+    instance.frameBoundaryAndroid(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
+
+    EXPECT_EQ(instance.frameCount(), 1u);
+}
