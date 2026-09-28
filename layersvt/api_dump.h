@@ -1506,7 +1506,7 @@ class ApiDumpInstance {
     // Which of the two independent counters output_range/output_range_queue_submits and
     // capture_trigger are actually meant to consult, per capture_trigger_boundary. Never used for
     // the frame's own JSON markup, which always tracks frame_count regardless - see nextFrame.
-    uint64_t activeBoundaryCount() const {
+    uint64_t activeBoundaryCount() {
         return settings().captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits ? queue_submit_count : frame_count;
     }
 
