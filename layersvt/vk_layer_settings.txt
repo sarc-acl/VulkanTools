@@ -124,6 +124,16 @@ lunarg_api_dump.show_thread_and_frame = true
 # ignored, so it is left commented out here rather than defaulted.
 # lunarg_api_dump.capture_trigger = false
 
+# Capture Process Name
+# =====================
+# <LayerIdentifier>.capture_process_name
+# Restrict dumping to the named process; every other process the layer loads into stays a no-op
+# pass-through, and never opens or writes to output_range/log_filename.
+# An exact, case sensitive comparison against the process's own name
+# (basename, with anything after the first space dropped, mirroring how it is derived). Leave empty
+# (the default) to capture every process the layer loads into.
+lunarg_api_dump.capture_process_name =
+
 # Capture Trigger Boundary
 # =====================
 # <LayerIdentifier>.capture_trigger_boundary

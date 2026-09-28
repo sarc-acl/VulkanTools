@@ -344,6 +344,14 @@
                     "default": false
                 },
                 {
+                    "key": "capture_process_name",
+                    "env": "VK_APIDUMP_CAPTURE_PROCESS_NAME",
+                    "label": "Capture Process Name",
+                    "description": "Restrict dumping to the named process; every other process the layer loads into stays a no-op pass-through. Exact, case sensitive match against the process's own name. Leave empty to capture every process the layer loads into.",
+                    "type": "STRING",
+                    "default": ""
+                },
+                {
                     "key": "capture_trigger_boundary",
                     "label": "Capture Trigger Boundary",
                     "description": "Whether output_range/output_range_queue_submits and capture_trigger count frames (advanced by vkQueuePresentKHR) or queue submissions (advanced by vkQueueSubmit, vkQueueSubmit2, and vkQueueSubmit2KHR). Set to queue_submits for compute-only workloads that never present.",

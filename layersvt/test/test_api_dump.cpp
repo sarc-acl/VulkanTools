@@ -149,3 +149,52 @@ TEST_F(ApiDumpTests, CaptureTriggerBoundarySelectsQueueSubmits) {
     settings.init(&inst_create_info, nullptr);
     EXPECT_EQ(settings.captureBoundary(), ApiDumpCaptureBoundary::QueueSubmits);
 }
+
+TEST_F(ApiDumpTests, CaptureProcessNameDefaultsToCaptureAll) {
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    EXPECT_TRUE(settings.processMatchesCaptureName());
+}
+
+TEST_F(ApiDumpTests, CaptureProcessNameMatchesCurrentProcess) {
+    const std::string current_process_name = GetCurrentProcessName();
+    const char* process_name_value = current_process_name.c_str();
+    const std::vector<VkLayerSettingEXT> settings_values = {
+        {kLayerName, "capture_process_name", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &process_name_value}};
+    const VkLayerSettingsCreateInfoEXT layer_settings_create_info{VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT, nullptr,
+                                                                    static_cast<uint32_t>(settings_values.size()),
+                                                                    settings_values.data()};
+
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pNext = &layer_settings_create_info;
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    EXPECT_TRUE(settings.processMatchesCaptureName());
+}
+
+TEST_F(ApiDumpTests, CaptureProcessNameExcludesOtherProcesses) {
+    const char* process_name_value = "definitely_not_this_test_binary";
+    const std::vector<VkLayerSettingEXT> settings_values = {
+        {kLayerName, "capture_process_name", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &process_name_value}};
+    const VkLayerSettingsCreateInfoEXT layer_settings_create_info{VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT, nullptr,
+                                                                    static_cast<uint32_t>(settings_values.size()),
+                                                                    settings_values.data()};
+
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pNext = &layer_settings_create_info;
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    EXPECT_FALSE(settings.processMatchesCaptureName());
+    // A process this excludes must not report any frame as recorded either - see init/isFrameRecorded.
+    EXPECT_FALSE(settings.isFrameRecorded(0));
+}

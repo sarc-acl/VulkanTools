@@ -44,6 +44,8 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <algorithm>
 #include <atomic>
@@ -67,6 +69,14 @@
 
 #if defined(_WIN32) && !defined(NDEBUG)
 #include <crtdbg.h>
+#endif
+
+#if defined(_WIN32)
+// Used by GetCurrentProcessName. NOMINMAX avoids windows.h's min/max macros shadowing std::min/max,
+// used throughout this header.
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 
 #ifdef ANDROID
@@ -125,6 +135,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowEnumValue "show_enum_value"
 #define kSettingsKeyFloatPrecision "float_precision"
 #define kSettingsKeyShowCommandNumbers "show_command_numbers"
+#define kSettingsKeyCaptureProcessName "capture_process_name"
 
 // The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
 // property once at instance creation, so the trigger has to be polled directly to be able to change
@@ -429,6 +440,44 @@ static const char *GetDefaultPrefix() {
 #endif
 }
 
+// The name of the process the layer is loaded into, used to answer kSettingsKeyCaptureProcessName.
+// Any directory prefix and anything from the first space onward is stripped, so this is a bare
+// executable/package name comparable against what a caller derives from a command line.
+static std::string GetCurrentProcessName() {
+    std::string application_name;
+#if defined(__APPLE__) || defined(__FreeBSD__)
+    application_name = getprogname();
+#elif defined(__linux__)
+    // Covers Android too: it is a Linux kernel, and there is no more specific API that reports
+    // this without a JNI round trip through ActivityThread.
+    char command_line[1024] = {};
+    FILE *fp = fopen("/proc/self/cmdline", "r");
+    if (fp != nullptr) {
+        char *str = fgets(command_line, sizeof(command_line), fp);
+        fclose(fp);
+        if (str != nullptr) {
+            std::string cmd_line_string = command_line;
+            std::size_t location = cmd_line_string.find_last_of('/');
+            if (location != std::string::npos) {
+                cmd_line_string = cmd_line_string.substr(location + 1);
+            }
+            application_name = cmd_line_string.substr(0, cmd_line_string.find(' '));
+        }
+    }
+#elif defined(_WIN32)
+    char module_name[MAX_PATH] = {};
+    if (GetModuleFileNameA(nullptr, module_name, MAX_PATH) > 0) {
+        std::string module_name_string = module_name;
+        std::size_t location = module_name_string.find_last_of('\\');
+        if (location != std::string::npos) {
+            module_name_string = module_name_string.substr(location + 1);
+        }
+        application_name = module_name_string.substr(0, module_name_string.find(' '));
+    }
+#endif
+    return application_name;
+}
+
 class ApiDumpSettings {
    public:
     ApiDumpSettings() : output_stream(std::cout.rdbuf()) {
@@ -439,6 +488,12 @@ class ApiDumpSettings {
     }
 
     ~ApiDumpSettings() {
+        // Nothing was opened for a process capture_process_name excludes - see init - so there is
+        // nothing to close either.
+        if (!process_matches_capture_name) {
+          return;
+        }
+
         if (output_format == ApiDumpFormat::Html) {
             // Close off html
             output_stream << "</details></div></body></html>";
@@ -561,8 +616,14 @@ class ApiDumpSettings {
 
     // Whether the given frame should be dumped. Every caller must go through here rather than
     // reaching for condFrameOutput directly, otherwise the trigger and the range can disagree and
-    // the per-frame markup stops matching the calls it wraps.
+    // the per-frame markup stops matching the calls it wraps. Also the one place, along with
+    // wasPreviousFrameDumped/isFrameRecorded/wasPreviousFrameRecorded below, that has to check
+    // capture_process_name: everything else that decides whether to write anything is built on one
+    // of these four.
     bool isFrameInRange(uint64_t frame) const {
+        if (!process_matches_capture_name) {
+            return false;
+        }
         if (use_capture_trigger) {
             return capture_triggered.load(std::memory_order_relaxed);
         }
@@ -573,6 +634,9 @@ class ApiDumpSettings {
     // Under a trigger this cannot be derived from the current state: the trigger being off now is
     // exactly the case where the previous frame was dumped and still needs closing.
     bool wasPreviousFrameDumped(uint64_t frame) const {
+        if (!process_matches_capture_name) {
+            return false;
+        }
         if (use_capture_trigger) {
             return previous_frame_dumped.load(std::memory_order_relaxed);
         }
@@ -585,7 +649,10 @@ class ApiDumpSettings {
     // is actually counting; see notifyQueueSubmit/nextFrame.
     ApiDumpCaptureBoundary captureBoundary() const { return capture_trigger_boundary; }
 
-    bool alwaysDumpSetup() const { return always_dump_setup; }
+    // Whether capture_process_name allows this process to be dumped; see init.
+    bool processMatchesCaptureName() const { return process_matches_capture_name; }
+
+    bool alwaysDumpSetup() const { return process_matches_capture_name && always_dump_setup; }
 
     // Sokatoa specific. Json output is consumed by gfxr-sqlite rather than read by eye, so it can
     // trade legibility for exactness and size.
@@ -596,9 +663,16 @@ class ApiDumpSettings {
     // calls are dumped. With always_dump_setup a setup command can occur in any frame, including
     // frames outside the captured range, and it needs a frame object to live in or the document is
     // malformed. Such a frame simply ends up holding only its setup commands, or none at all.
-    bool isFrameRecorded(uint64_t frame) const { return always_dump_setup || isFrameInRange(frame); }
+    //
+    // Checks capture_process_name directly rather than only through isFrameInRange/alwaysDumpSetup:
+    // this ORs the raw always_dump_setup member, not the gated accessor, so it needs its own check.
+    bool isFrameRecorded(uint64_t frame) const {
+        return process_matches_capture_name && (always_dump_setup || isFrameInRange(frame));
+    }
 
-    bool wasPreviousFrameRecorded(uint64_t frame) const { return always_dump_setup || wasPreviousFrameDumped(frame); }
+    bool wasPreviousFrameRecorded(uint64_t frame) const {
+        return process_matches_capture_name && (always_dump_setup || wasPreviousFrameDumped(frame));
+    }
 
     // Whether a command is one the captured frames depend on to be interpretable.
     //
@@ -681,6 +755,18 @@ class ApiDumpSettings {
 
         vkuSetLayerSettingCompatibilityNamespace(layerSettingSet, GetDefaultPrefix());
 
+        // Restricts dumping to a single named process:
+        // an empty value (the default) means every process is captured, and
+        // otherwise the match is an exact, case sensitive comparison against GetCurrentProcessName.
+        // Checked early because a process this excludes must not open or write anything below -
+        // see isFrameInRange, wasPreviousFrameDumped, isFrameRecorded, wasPreviousFrameRecorded, and
+        // alwaysDumpSetup, which are what every dump decision ultimately goes through.
+        std::string capture_process_name;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureProcessName)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureProcessName, capture_process_name);
+        }
+        process_matches_capture_name = capture_process_name.empty() || capture_process_name == GetCurrentProcessName();
+
         // Read the format type first as it may be used in the output file extension
         output_format = ApiDumpFormat::Text;
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyOutputFormat)) {
@@ -740,8 +826,11 @@ class ApiDumpSettings {
             }
         }
 
-        // If one of the above has set a filename, open the file as an output stream.
-        if (!filename_string.empty()) {
+        // If one of the above has set a filename, open the file as an output stream. Skipped for a
+        // process capture_process_name excludes: the configured path is one fixed name shared by
+        // every process the layer loads into, so every excluded process opening and truncating it
+        // regardless would race the one process actually meant to write it.
+        if (!filename_string.empty() && process_matches_capture_name) {
             output_file_stream.open(filename_string, std::ofstream::out | std::ostream::trunc);
             output_stream.rdbuf(output_file_stream.rdbuf());
         }
@@ -899,7 +988,14 @@ class ApiDumpSettings {
         }
         document_opened = true;
 
-        // Generate HTML heading if specified
+        // Generate HTML heading if specified. Skipped along with the file open above for a process
+        // capture_process_name excludes, so it never writes a document header for a file another
+        // process is meant to own.
+        if (!process_matches_capture_name) {
+            vkuDestroyLayerSettingSet(layerSettingSet, pAllocator);
+            return;
+        }
+
         if (output_format == ApiDumpFormat::Html) {
             // clang-format off
             // Insert html heading
@@ -1065,6 +1161,12 @@ class ApiDumpSettings {
     bool use_conditional_output = false;
     ConditionalFrameOutput condFrameOutput;
     ApiDumpCaptureBoundary capture_trigger_boundary = ApiDumpCaptureBoundary::Frames;
+
+    // Whether this process is the one capture_process_name names, or that setting is empty (every
+    // process matches). Defaults to true (no filter) so that reading this before init runs - not
+    // currently possible, but every other flag here follows the same default-open convention -
+    // behaves the same as an absent setting rather than silently disabling capture.
+    bool process_matches_capture_name = true;
 
     // When the capture_trigger setting is present, the trigger replaces the output_range check
     // entirely rather than combining with it. An output_range of "" or "0-0" means "every frame"
