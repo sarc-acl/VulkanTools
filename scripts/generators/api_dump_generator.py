@@ -485,6 +485,14 @@ class ApiDumpGenerator(BaseGenerator):
                         }}
                     }}''')
 
+            if command.name == 'vkDestroyDevice':
+                # The key is read out of the VkDevice handle itself, which the driver frees in
+                # vkDestroyDevice, so it has to be taken before calling down. Read afterwards it is a
+                # use after free: the table for the destroyed device is then never erased, and the next
+                # device that gets the same key inherits it, along with function pointers into layers
+                # that have since been unloaded (as vkDestroyInstance below already avoids).
+                self.write('auto dispatch_key = get_dispatch_key(device);')
+
             return_str = f'{command.returnType} result = ' if command.returnType != 'void' else ''
             self.write(f'{return_str}device_dispatch_table({command.params[0].name})->{command.name[2:]}({command_param_usage_text(command)});')
             if command.name in BLOCKING_API_CALLS:
@@ -495,7 +503,7 @@ class ApiDumpGenerator(BaseGenerator):
                 self.write('' + TRACKED_STATE[command.name])
 
             if command.name == 'vkDestroyDevice':
-                self.write('destroy_device_dispatch_table(get_dispatch_key(device));')
+                self.write('destroy_device_dispatch_table(dispatch_key);')
 
             self.write('if (ApiDumpInstance::current().shouldDumpOutput()) {')
             if command.returnType != 'void':

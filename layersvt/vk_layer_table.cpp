@@ -110,7 +110,11 @@ VkuInstanceDispatchTable *initInstanceTable(VkInstance instance, const PFN_vkGet
         pTable = new VkuInstanceDispatchTable;
         map[(void *)key] = pTable;
     } else {
-        return it->second;
+        // An entry already under this key can only be left over from an instance that is gone, since a
+        // live one has a key of its own. Returning it as it is would hand the new instance function
+        // pointers from the old one, into layers that may since have been unloaded, so it is initialised
+        // again instead.
+        pTable = it->second;
     }
 
     vkuInitInstanceDispatchTable(instance, pTable, gpa);
@@ -135,7 +139,9 @@ VkuDeviceDispatchTable *initDeviceTable(VkDevice device, const PFN_vkGetDevicePr
         pTable = new VkuDeviceDispatchTable;
         map[(void *)key] = pTable;
     } else {
-        return it->second;
+        // See initInstanceTable: an existing entry is a stale one, and is initialised again rather
+        // than reused, so the new device never calls through the old device's function pointers.
+        pTable = it->second;
     }
 
     vkuInitDeviceDispatchTable(device, pTable, gpa);
