@@ -34,10 +34,12 @@
 #include <thread>
 #include <vector>
 
+#include <new>
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 #endif
-#if defined(__linux__) || defined(__ANDROID__)
+#if !defined(_WIN32)
 #include <pthread.h>
 #endif
 
@@ -92,18 +94,17 @@ class ApiDumpAsyncFileBuf final : public std::streambuf {
         // Parenthesised so a windows.h that defines min and max as macros cannot break it.
         buffer_bytes = (std::min)((std::max)(buffer_bytes, kMinBufferBytes), kMaxBufferBytes);
 
-        std::unique_ptr<ApiDumpAsyncFileBuf> buf;
-        try {
-            buf.reset(new ApiDumpAsyncFileBuf(file, buffer_bytes / kBlockCount));
-        } catch (...) {
+        // Nothing here throws: this is built into environments that compile with exceptions disabled
+        // (Chromium's build, for one), so failure is reported by return value throughout. Allocation
+        // uses nothrow new, and the writer thread is started with a call that reports failure by
+        // return code - see startWriter.
+        std::unique_ptr<ApiDumpAsyncFileBuf> buf(new (std::nothrow) ApiDumpAsyncFileBuf(file, buffer_bytes / kBlockCount));
+        if (!buf) {
             std::fclose(file);
             return nullptr;
         }
-
-        try {
-            buf->writer_ = std::thread([raw = buf.get()] { raw->writerMain(); });
-        } catch (...) {
-            // The destructor closes the file.
+        // The destructor closes the file from here on, so every failure below just returns null.
+        if (!buf->blocksAllocated_ || !buf->startWriter()) {
             return nullptr;
         }
         return buf;
@@ -158,9 +159,7 @@ class ApiDumpAsyncFileBuf final : public std::streambuf {
             stop_ = true;
         }
         work_cv_.notify_all();
-        if (writer_.joinable()) {
-            writer_.join();
-        }
+        joinWriter();
         if (file_ != nullptr) {
             std::fclose(file_);
             file_ = nullptr;
@@ -231,13 +230,59 @@ class ApiDumpAsyncFileBuf final : public std::streambuf {
         blocks_.resize(kBlockCount);
         for (Block &block : blocks_) {
             // Not value-initialised, so pages are only backed once they are written.
-            block.data.reset(new char[block_bytes_]);
+            block.data.reset(new (std::nothrow) char[block_bytes_]);
+            if (!block.data) {
+                return;  // blocksAllocated_ stays false, which Adopt reports as failure
+            }
         }
         active_ = &blocks_[0];
         for (size_t i = kBlockCount - 1; i >= 1; --i) {
             free_.push_back(&blocks_[i]);
         }
         setp(active_->data.get(), active_->data.get() + block_bytes_);
+        blocksAllocated_ = true;
+    }
+
+    // Starts the writer thread. Returns false if it could not be started.
+    //
+    // Off Windows this is pthread_create, which reports failure by return code. std::thread reports it
+    // by throwing, which a build without exceptions turns into a terminate - and the whole point of the
+    // fallback to a synchronous sink is that failing to start a thread must not take the process down.
+    // On Windows std::thread is used, with the failure caught only where exceptions exist to catch it.
+    bool startWriter() {
+#if defined(_WIN32)
+#if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)
+        try {
+            writer_ = std::thread([this] { writerMain(); });
+        } catch (...) {
+            return false;
+        }
+#else
+        writer_ = std::thread([this] { writerMain(); });
+#endif
+        writer_started_ = true;
+#else
+        writer_started_ = pthread_create(
+                              &writer_, nullptr,
+                              [](void *self) -> void * {
+                                  static_cast<ApiDumpAsyncFileBuf *>(self)->writerMain();
+                                  return nullptr;
+                              },
+                              this) == 0;
+#endif
+        return writer_started_;
+    }
+
+    void joinWriter() {
+        if (!writer_started_) {
+            return;
+        }
+#if defined(_WIN32)
+        writer_.join();
+#else
+        pthread_join(writer_, nullptr);
+#endif
+        writer_started_ = false;
     }
 
     // The active block is full: queue what is left of it, release it, and switch to a free block,
@@ -330,5 +375,11 @@ class ApiDumpAsyncFileBuf final : public std::streambuf {
     bool stop_ = false;
     std::atomic<bool> failed_{false};
 
+    bool blocksAllocated_ = false;
+    bool writer_started_ = false;
+#if defined(_WIN32)
     std::thread writer_;
+#else
+    pthread_t writer_{};
+#endif
 };
