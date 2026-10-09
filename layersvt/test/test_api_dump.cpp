@@ -19,9 +19,16 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <mutex>
+#include <sstream>
+#include <thread>
+#include <vector>
 
 #include <filesystem>
 
@@ -348,4 +355,351 @@ TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidAdvancesFrameCountWithNoDriverR
     instance.frameBoundaryAndroid(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
 
     EXPECT_EQ(instance.frameCount(), 1u);
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Asynchronous file writes (async_write / buffer_size_kb), and the formatting helpers that were made
+// cheaper alongside them. Everything here has to produce exactly what the code it replaced produced.
+// ---------------------------------------------------------------------------------------------------
+
+namespace {
+
+std::string ReadWholeFile(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    std::ostringstream contents;
+    contents << in.rdbuf();
+    return contents.str();
+}
+
+// Removes the file when it goes out of scope, so a failing test does not leave it behind.
+struct ScopedFile {
+    explicit ScopedFile(std::string name) : path(std::move(name)) {}
+    ~ScopedFile() { std::remove(path.c_str()); }
+    std::string path;
+};
+
+}  // namespace
+
+class ApiDumpAsyncFileBufTests : public VkTestFramework {
+   public:
+    ~ApiDumpAsyncFileBufTests(){};
+
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite(){};
+};
+
+TEST_F(ApiDumpAsyncFileBufTests, WritesEverythingInOrderAcrossManyBlocks) {
+    ScopedFile file("api_dump_async_buf_contents.tmp");
+    // The smallest pool, so every block is 16 KiB and the data below crosses many of them.
+    auto buf = ApiDumpAsyncFileBuf::Open(file.path, ApiDumpAsyncFileBuf::kMinBufferBytes);
+    ASSERT_NE(buf, nullptr);
+    std::ostream out(buf.get());
+
+    std::string expected;
+    for (int i = 0; i < 6000; ++i) {
+        // Mixes small writes with ones larger than a whole block, and hand-offs part way through blocks.
+        const std::string text =
+            (i % 50 == 0) ? std::string(40 * 1024, static_cast<char>('a' + i % 26)) : "line " + std::to_string(i) + "\n";
+        out << text;
+        expected += text;
+        if (i % 7 == 0) buf->handOff();
+    }
+    ASSERT_TRUE(out.good());
+
+    // Drained, so all of it is already in the file, before anything is closed.
+    EXPECT_TRUE(buf->drain(std::chrono::milliseconds(30000)));
+    EXPECT_EQ(ReadWholeFile(file.path), expected);
+    buf->close();
+    EXPECT_EQ(ReadWholeFile(file.path), expected);
+}
+
+TEST_F(ApiDumpAsyncFileBufTests, DrainMakesDataVisibleMidBlock) {
+    ScopedFile file("api_dump_async_buf_drain.tmp");
+    auto buf = ApiDumpAsyncFileBuf::Open(file.path, 256 * 1024);
+    ASSERT_NE(buf, nullptr);
+    std::ostream out(buf.get());
+
+    std::string expected;
+    for (int i = 0; i < 20; ++i) {
+        const std::string text = "record " + std::to_string(i) + "\n";
+        out << text;
+        expected += text;
+        ASSERT_TRUE(buf->drain(std::chrono::milliseconds(10000)));
+        EXPECT_EQ(ReadWholeFile(file.path), expected);
+    }
+}
+
+TEST_F(ApiDumpAsyncFileBufTests, WritingAfterCloseIsDiscardedWithoutBlocking) {
+    ScopedFile file("api_dump_async_buf_closed.tmp");
+    auto buf = ApiDumpAsyncFileBuf::Open(file.path, ApiDumpAsyncFileBuf::kMinBufferBytes);
+    ASSERT_NE(buf, nullptr);
+    std::ostream out(buf.get());
+    out << "kept";
+    buf->close();
+    buf->close();  // idempotent
+
+    // Far more than the whole pool: must neither block nor reach the file.
+    out << std::string(8 * 1024 * 1024, 'x');
+    out.flush();
+    EXPECT_EQ(ReadWholeFile(file.path), "kept");
+}
+
+TEST_F(ApiDumpAsyncFileBufTests, FailedWritesAreDiscardedWithoutBlockingTheProducer) {
+    ScopedFile file("api_dump_async_buf_failure.tmp");
+    {
+        std::ofstream create(file.path);
+        create << "x";
+    }
+    // Opened read only, so every write to it fails.
+    std::FILE* read_only = std::fopen(file.path.c_str(), "rb");
+    ASSERT_NE(read_only, nullptr);
+    auto buf = ApiDumpAsyncFileBuf::Adopt(read_only, ApiDumpAsyncFileBuf::kMinBufferBytes);
+    ASSERT_NE(buf, nullptr);
+    std::ostream out(buf.get());
+
+    const std::string chunk(1024 * 1024, 'y');
+    for (int i = 0; i < 16; ++i) {  // 16 MiB through a 64 KiB pool
+        out << chunk;
+        buf->handOff();
+    }
+    EXPECT_FALSE(buf->drain(std::chrono::milliseconds(5000)));
+    EXPECT_TRUE(buf->failed());
+}
+
+TEST_F(ApiDumpAsyncFileBufTests, SerialisedProducersNeverTearALine) {
+    ScopedFile file("api_dump_async_buf_threads.tmp");
+    auto buf = ApiDumpAsyncFileBuf::Open(file.path, 128 * 1024);
+    ASSERT_NE(buf, nullptr);
+    std::ostream out(buf.get());
+    std::mutex output_mutex;  // plays the part of the layer's output mutex
+
+    constexpr int kThreads = 4;
+    constexpr int kLines = 5000;
+    std::vector<std::thread> threads;
+    for (int t = 0; t < kThreads; ++t) {
+        threads.emplace_back([&, t] {
+            for (int i = 0; i < kLines; ++i) {
+                std::lock_guard<std::mutex> lock(output_mutex);
+                out << "thread " << t << " line " << i << " payload payload payload\n";
+                if (i % 97 == 0) buf->handOff();
+            }
+        });
+    }
+    for (auto& thread : threads) thread.join();
+    buf->close();
+
+    std::istringstream lines(ReadWholeFile(file.path));
+    std::string line;
+    std::vector<int> next(kThreads, 0);
+    int count = 0;
+    while (std::getline(lines, line)) {
+        int t = -1, i = -1;
+        ASSERT_EQ(std::sscanf(line.c_str(), "thread %d line %d payload payload payload", &t, &i), 2) << line;
+        ASSERT_TRUE(t >= 0 && t < kThreads);
+        EXPECT_EQ(i, next[t]++) << "a thread's own lines must stay in order";
+        ++count;
+    }
+    EXPECT_EQ(count, kThreads * kLines);
+}
+
+TEST_F(ApiDumpAsyncFileBufTests, OpenFailsForAnUncreatableFile) {
+    EXPECT_EQ(ApiDumpAsyncFileBuf::Open("no_such_directory_for_api_dump_test/out.json", 64 * 1024), nullptr);
+}
+
+TEST_F(ApiDumpInstanceTests, AsyncWriteSupersedesFlushAndHandsOffAtFrameBoundaries) {
+    ScopedFile file("api_dump_async_instance.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    VkBool32 async_write = VK_TRUE;
+    VkBool32 flush = VK_TRUE;  // on, and async_write has to win
+    int32_t buffer_size_kb = 64;
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                 {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename},
+                                 {kLayerName, "async_write", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &async_write},
+                                 {kLayerName, "flush", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &flush},
+                                 {kLayerName, "buffer_size_kb", VK_LAYER_SETTING_TYPE_INT32_EXT, 1, &buffer_size_kb}});
+    EXPECT_FALSE(instance.settings().shouldFlush());
+
+    instance.settings().stream() << "first frame content\n";
+    instance.nextFrame();  // a frame boundary hands the data to the writer without waiting for it
+
+    // Not waited for, so poll until the writer has caught up.
+    bool seen = false;
+    for (int attempt = 0; attempt < 2000 && !seen; ++attempt) {
+        seen = ReadWholeFile(file.path).find("first frame content") != std::string::npos;
+        if (!seen) std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+    EXPECT_TRUE(seen);
+
+    // Anything written since is only in memory until another layer asks for it to be written out.
+    instance.settings().stream() << "second frame content\n";
+    {
+        std::lock_guard<std::mutex> lock(instance.outputMutex());
+        EXPECT_TRUE(instance.settings().drainOutput(std::chrono::milliseconds(10000)));
+    }
+    EXPECT_NE(ReadWholeFile(file.path).find("second frame content"), std::string::npos);
+}
+
+TEST_F(ApiDumpInstanceTests, FlushExportDrainsAndTimesOutInsteadOfHanging) {
+    ScopedFile file("api_dump_async_export.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    VkBool32 async_write = VK_TRUE;
+    ApiDumpInstance& instance = ApiDumpInstance::current();
+    InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                 {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename},
+                                 {kLayerName, "async_write", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &async_write}});
+    {
+        std::lock_guard<std::mutex> lock(instance.outputMutex());
+        instance.settings().stream() << "written before the flush call\n";
+    }
+    EXPECT_EQ(vkFlushAPIDUMP(10000), VK_TRUE);
+    EXPECT_NE(ReadWholeFile(file.path).find("written before the flush call"), std::string::npos);
+
+    // Another thread inside a long call, holding the output mutex: the flush gives up rather than hangs.
+    std::atomic<bool> holding{false};
+    std::atomic<bool> release{false};
+    std::thread holder([&] {
+        std::lock_guard<std::mutex> lock(instance.outputMutex());
+        holding = true;
+        while (!release) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    });
+    while (!holding) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    EXPECT_EQ(vkFlushAPIDUMP(50), VK_FALSE);
+    release = true;
+    holder.join();
+    EXPECT_EQ(vkFlushAPIDUMP(10000), VK_TRUE);  // and works again once the mutex is free
+}
+
+TEST_F(ApiDumpInstanceTests, BufferSizeAloneEnlargesTheSynchronousStreamAndDrainFlushesIt) {
+    ScopedFile file("api_dump_buffered_instance.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    VkBool32 flush = VK_FALSE;
+    int32_t buffer_size_kb = 1024;
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                 {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename},
+                                 {kLayerName, "flush", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &flush},
+                                 {kLayerName, "buffer_size_kb", VK_LAYER_SETTING_TYPE_INT32_EXT, 1, &buffer_size_kb}});
+    instance.settings().stream() << "buffered\n";
+    EXPECT_EQ(ReadWholeFile(file.path).find("buffered"), std::string::npos) << "still held in the 1 MiB buffer";
+
+    // A frame boundary flushes the stream, so a kill loses at most one frame even with flush off.
+    instance.nextFrame();
+    EXPECT_NE(ReadWholeFile(file.path).find("buffered"), std::string::npos);
+
+    // And so does another layer asking for everything to be written out.
+    instance.settings().stream() << "after the boundary\n";
+    {
+        std::lock_guard<std::mutex> lock(instance.outputMutex());
+        EXPECT_TRUE(instance.settings().drainOutput(std::chrono::milliseconds(1000)));
+    }
+    EXPECT_NE(ReadWholeFile(file.path).find("after the boundary"), std::string::npos);
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryDoesNotFlushWhenFlushIsOn) {
+    // With the layer's default flush on every call has already been flushed, so a boundary adds nothing.
+    ScopedFile file("api_dump_flush_on_instance.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    int32_t buffer_size_kb = 1024;  // large enough that only a flush could make the data visible
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                 {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename},
+                                 {kLayerName, "buffer_size_kb", VK_LAYER_SETTING_TYPE_INT32_EXT, 1, &buffer_size_kb}});
+    ASSERT_TRUE(instance.settings().shouldFlush());
+    instance.settings().stream() << "unflushed\n";
+    instance.nextFrame();
+    EXPECT_EQ(ReadWholeFile(file.path).find("unflushed"), std::string::npos);
+}
+
+TEST_F(ApiDumpInstanceTests, FlushStaysOnByDefaultWithoutAsyncWrite) {
+    // The default behaviour is unchanged: a flush after every call.
+    ScopedFile file("api_dump_default_instance.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                 {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename}});
+    EXPECT_TRUE(instance.settings().shouldFlush());
+}
+
+TEST_F(ApiDumpInstanceTests, IndentationMatchesTheSetwPaddingItReplaced) {
+    const char* format = "json";
+    for (const bool use_spaces : {true, false}) {
+        for (const int indent_size : {0, 1, 2, 4, 8}) {
+            ApiDumpInstance instance;
+            VkBool32 spaces = use_spaces ? VK_TRUE : VK_FALSE;
+            int32_t size = indent_size;
+            InitWithSettings(instance, {{kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &format},
+                                         {kLayerName, "use_spaces", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &spaces},
+                                         {kLayerName, "indent_size", VK_LAYER_SETTING_TYPE_INT32_EXT, 1, &size}});
+            // Out of order and growing, as real calls are. A tab indent is one tab per level.
+            for (const int indents : {0, 3, 1, 12, 2, 40, 1, 0, 7}) {
+                std::ostringstream expected;
+                expected << std::setfill(use_spaces ? ' ' : '\t') << std::setw(indents * (use_spaces ? indent_size : 1)) << "";
+                std::ostringstream actual;
+                actual << instance.settings().indentation(indents);
+                EXPECT_EQ(actual.str(), expected.str())
+                    << "indents " << indents << " size " << indent_size << " spaces " << use_spaces;
+            }
+        }
+    }
+}
+
+template <ApiDumpFormat Format>
+static std::string StringstreamElementName(const char* name, size_t i) {
+    std::stringstream stream;
+    if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) stream << name;
+    stream << "[" << i << "]";
+    return stream.str();
+}
+
+template <ApiDumpFormat Format>
+static std::string StringstreamElementName(const char* name, size_t i, size_t j) {
+    std::stringstream stream;
+    if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) stream << name;
+    stream << "[" << i << "][" << j << "]";
+    return stream.str();
+}
+
+template <ApiDumpFormat Format>
+static void ExpectElementNamesMatchTheStringstreamTheyReplaced() {
+    const std::string too_long_for_the_stack_buffer(400, 'n');
+    for (const char* name : {"pBufferMemoryBarriers", "x", "", too_long_for_the_stack_buffer.c_str()}) {
+        for (const size_t i : {size_t{0}, size_t{7}, size_t{123456789}, ~size_t{0}}) {
+            EXPECT_EQ(std::string(ArrayElementName<Format>(name, i).c_str()), StringstreamElementName<Format>(name, i));
+            for (const size_t j : {size_t{0}, size_t{3}, size_t{99999}}) {
+                EXPECT_EQ(std::string(ArrayElementName<Format>(name, i, j).c_str()), StringstreamElementName<Format>(name, i, j));
+            }
+        }
+    }
+}
+
+TEST_F(ApiDumpInstanceTests, ArrayElementNamesMatchTheStringstreamTheyReplaced) {
+    ExpectElementNamesMatchTheStringstreamTheyReplaced<ApiDumpFormat::Text>();
+    ExpectElementNamesMatchTheStringstreamTheyReplaced<ApiDumpFormat::Html>();
+    ExpectElementNamesMatchTheStringstreamTheyReplaced<ApiDumpFormat::Json>();
+}
+
+TEST_F(ApiDumpInstanceTests, ThreadIdsAreNumberedPerInstanceAndStayStable) {
+    ApiDumpInstance a;
+    EXPECT_EQ(a.threadID(), 0u);
+    EXPECT_EQ(a.threadID(), 0u);  // second call is served from the per-thread cache
+    uint64_t other_thread_id = 99;
+    std::thread([&] {
+        other_thread_id = a.threadID();
+        EXPECT_EQ(a.threadID(), other_thread_id);
+    }).join();
+    EXPECT_EQ(other_thread_id, 1u);
+    EXPECT_EQ(a.threadID(), 0u);
+
+    // A second instance numbers its own threads from zero, not from the first instance's cached value.
+    ApiDumpInstance b;
+    uint64_t b_other_thread_id = 99;
+    std::thread([&] { b_other_thread_id = b.threadID(); }).join();
+    EXPECT_EQ(b_other_thread_id, 0u);
+    EXPECT_EQ(b.threadID(), 1u);
 }

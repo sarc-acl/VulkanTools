@@ -397,6 +397,22 @@
                     "description": "Write a commandNumber field for each command, counting from 0 in the order commands are written to the dump, matching frame number indexing.",
                     "type": "BOOL",
                     "default": false
+                },
+                {
+                    "key": "async_write",
+                    "env": "VK_APIDUMP_ASYNC_WRITE",
+                    "label": "Asynchronous File Writes",
+                    "description": "Write the output file from a background thread, through a bounded in-memory buffer, instead of the application thread waiting on the file system for every call. Only applies when the output goes to a file. The buffer is handed to the writer at every frame boundary (every queue submission when capture_trigger_boundary is queue_submits), so a process that is killed loses at most what came after the last boundary; another layer can also ask for everything to be written out by calling FlushAPIDUMP. Overrides flush, which would only add a hand-off per call. Falls back to ordinary writes if the file or the writer thread cannot be created.",
+                    "type": "BOOL",
+                    "default": false
+                },
+                {
+                    "key": "buffer_size_kb",
+                    "env": "VK_APIDUMP_BUFFER_SIZE_KB",
+                    "label": "Write Buffer Size (KiB)",
+                    "description": "With async_write: the total memory, in KiB, the write buffer may use for the whole process - not per thread. It is split into 4 blocks, and clamped to between 64 and 65536. 0 uses 2048. A larger buffer absorbs bursts better, a smaller one uses less memory. Without async_write: the size of the output file stream's own buffer (0 leaves it at the standard library default), which is best combined with flush set to false. With flush off the stream is flushed at every frame boundary (every queue submission when capture_trigger_boundary is queue_submits), and when FlushAPIDUMP is called.",
+                    "type": "INT",
+                    "default": 0
                 }
             ]
         }

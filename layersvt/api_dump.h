@@ -28,6 +28,7 @@
 #include "vulkan/vk_layer.h"
 #include "vk_layer_table.h"
 #include "VK_ANDROID_frame_boundary.h"
+#include "api_dump_async_buf.h"
 #include <vulkan/utility/vk_dispatch_table.h>
 
 #include <vulkan/layer/vk_layer_settings.hpp>
@@ -56,9 +57,11 @@
 #include <mutex>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <map>
 #include <set>
@@ -137,6 +140,11 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyFloatPrecision "float_precision"
 #define kSettingsKeyShowCommandNumbers "show_command_numbers"
 #define kSettingsKeyCaptureProcessName "capture_process_name"
+#define kSettingsKeyAsyncWrite "async_write"
+#define kSettingsKeyBufferSizeKb "buffer_size_kb"
+
+// Default for kSettingsKeyBufferSizeKb when async_write is on and no size is given.
+#define kDefaultAsyncBufferSizeKb 2048
 
 // The Android property backing kSettingsKeyCaptureTrigger. The layer settings library only reads a
 // property once at instance creation, so the trigger has to be polled directly to be able to change
@@ -515,6 +523,41 @@ class ApiDumpSettings {
             // Close off json
             output_stream << "\n]" << std::endl;
         }
+
+        // Everything above only reached the buffer: wait for the background writer to put it in the
+        // file, and stop the writer, before the objects it uses are destroyed.
+        if (async_file_buf) {
+            async_file_buf->close();
+        }
+    }
+
+    // Gets what has been written so far on its way to the file, without waiting for the background
+    // writer: with async_write it queues it for the writer; otherwise, when flush is off, it flushes
+    // the file stream, so a buffer sized by buffer_size_kb never holds more than one boundary's worth.
+    // Called at frame and queue submission boundaries so the file is never more than one of them behind
+    // the application, which is what bounds what a kill can lose. A no-op when flush is on, since
+    // every call has already been flushed.
+    // Must be called with the output mutex held, like everything else that writes to the stream.
+    void handOffOutput() {
+        if (async_file_buf) {
+            async_file_buf->handOff();
+        } else if (!should_flush && output_file_stream.is_open()) {
+            output_stream.flush();
+        }
+    }
+
+    // Gets everything written so far into the output file, waiting up to `timeout` for the background
+    // writer if there is one. Returns false if that did not complete in time or a write failed. Must
+    // be called with the output mutex held.
+    bool drainOutput(std::chrono::milliseconds timeout) {
+        if (async_file_buf) {
+            return async_file_buf->drain(timeout);
+        }
+        if (output_file_stream.is_open()) {
+            output_stream.flush();
+            return output_stream.good();
+        }
+        return true;
     }
 
     void setupInterFrameOutputFormatting(uint64_t frame_count) const /*name change? */
@@ -600,10 +643,22 @@ class ApiDumpSettings {
         }
     }
 
-    inline const char *indentation(int indents) const {
-        // We have to 'print' an empty string for the setw to actually add the desired padding.
-        output_stream << std::setw(indents * indent_size) << "";
-        return "";
+    // The padding for `indents` levels, as a view the caller streams itself: a run of the indent
+    // character from a cache, rather than a setw-padded empty string written to the stream as a side
+    // effect, which cost two stream operations (and a stream sentry each) for every key and brace even
+    // when indent_size is 0. The view is only valid until the next call, which is how every caller
+    // uses it: streamed straight away, left to right.
+    std::string_view indentation(int indents) const {
+        const long long count = static_cast<long long>(indents) * indent_size;
+        if (count <= 0) {
+            return std::string_view();
+        }
+        const size_t length = static_cast<size_t>(count);
+        const char fill = use_spaces ? ' ' : '\t';
+        if (indent_cache.size() < length || indent_cache.front() != fill) {
+            indent_cache.assign(std::max(length, indent_cache.size()), fill);
+        }
+        return std::string_view(indent_cache.data(), length);
     }
 
     bool shouldFlush() const { return should_flush; }
@@ -788,6 +843,24 @@ class ApiDumpSettings {
         }
         process_matches_capture_name = capture_process_name.empty() || capture_process_name == GetCurrentProcessName();
 
+        // How the output file is written, read here because it decides what the file is opened as.
+        // async_write moves the file writes to a background thread behind a bounded in-memory buffer,
+        // instead of the thread being dumped waiting on the file system. buffer_size_kb is the total
+        // memory that buffer may use for the whole process (not per thread - every thread formats into
+        // the same buffer, one at a time under the output mutex). Without async_write it instead sizes
+        // the ordinary file stream's own buffer, so combine it with flush=false.
+        bool async_write = false;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyAsyncWrite)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyAsyncWrite, async_write);
+        }
+        int buffer_size_kb = 0;
+        if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyBufferSizeKb)) {
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyBufferSizeKb, buffer_size_kb);
+            // Capped at the same limit the asynchronous buffer is clamped to, so a typo cannot ask for
+            // an absurd allocation from either path.
+            buffer_size_kb = std::min(std::max(buffer_size_kb, 0), static_cast<int>(ApiDumpAsyncFileBuf::kMaxBufferBytes / 1024));
+        }
+
         // Read the format type first as it may be used in the output file extension
         output_format = ApiDumpFormat::Text;
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyOutputFormat)) {
@@ -851,9 +924,29 @@ class ApiDumpSettings {
         // process capture_process_name excludes: the configured path is one fixed name shared by
         // every process the layer loads into, so every excluded process opening and truncating it
         // regardless would race the one process actually meant to write it.
-        if (!filename_string.empty() && process_matches_capture_name) {
-            output_file_stream.open(filename_string, std::ofstream::out | std::ostream::trunc);
-            output_stream.rdbuf(output_file_stream.rdbuf());
+        //
+        // A process may create more than one VkInstance, which runs init again on this same settings
+        // object, so an output that is already open is left as it is.
+        if (!filename_string.empty() && process_matches_capture_name && !async_file_buf) {
+            if (async_write && !output_file_stream.is_open()) {
+                const size_t buffer_bytes = static_cast<size_t>(buffer_size_kb > 0 ? buffer_size_kb : kDefaultAsyncBufferSizeKb) * 1024;
+                async_file_buf = ApiDumpAsyncFileBuf::Open(filename_string, buffer_bytes);
+                if (async_file_buf) {
+                    output_stream.rdbuf(async_file_buf.get());
+                }
+                // Otherwise the file or the writer thread could not be created, so fall back to the
+                // ordinary synchronous stream below rather than losing the dump.
+            }
+            if (!async_file_buf) {
+                if (buffer_size_kb > 0 && !output_file_stream.is_open()) {
+                    // Has to be given to the stream before the file is opened to take effect.
+                    const size_t buffer_bytes = static_cast<size_t>(buffer_size_kb) * 1024;
+                    output_file_buffer.reset(new char[buffer_bytes]);
+                    output_file_stream.rdbuf()->pubsetbuf(output_file_buffer.get(), static_cast<std::streamsize>(buffer_bytes));
+                }
+                output_file_stream.open(filename_string, std::ofstream::out | std::ostream::trunc);
+                output_stream.rdbuf(output_file_stream.rdbuf());
+            }
         }
 
         show_params = true;
@@ -872,6 +965,12 @@ class ApiDumpSettings {
         should_flush = true;
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyFlush)) {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyFlush, should_flush);
+        }
+        // With async_write the data is handed to the writer at every frame and queue submission
+        // boundary instead, and when another layer asks for it (vkFlushAPIDUMP). A flush per call
+        // would only add a hand-off per call.
+        if (async_file_buf) {
+            should_flush = false;
         }
 
         should_pre_dump = false;
@@ -1159,7 +1258,14 @@ class ApiDumpSettings {
     // The mutable is necessary because everyone who 'writes' to the stream necessarily must be able to modify it.
     // Since basically every function in this struct is const, we have to work around that.
     mutable std::ostream output_stream;
+    // The buffer handed to output_file_stream when buffer_size_kb sizes it. Declared before the stream
+    // so it is destroyed after it.
+    std::unique_ptr<char[]> output_file_buffer;
     std::ofstream output_file_stream;
+    // Set instead of output_file_stream when async_write is on; see ApiDumpAsyncFileBuf.
+    std::unique_ptr<ApiDumpAsyncFileBuf> async_file_buf;
+    // The padding indentation() hands out views of. Written from a const method, like output_stream.
+    mutable std::string indent_cache;
 #ifdef __ANDROID__
     std::unique_ptr<AndroidLogcatBuf<>> android_logcat_buf = nullptr;
 #endif
@@ -1261,6 +1367,9 @@ class ApiDumpInstance {
         if (settings().captureBoundary() == ApiDumpCaptureBoundary::Frames) {
             refreshShouldDumpOutput(frame_count);
         }
+        // Everything written for the frame that just ended is complete, so give it to the writer. This
+        // also covers the capture trigger turning off, which refreshShouldDumpOutput only notices here.
+        settings().handOffOutput();
     }
 
     // Called from every vkQueueSubmit/vkQueueSubmit2/vkQueueSubmit2KHR. Always advances
@@ -1274,6 +1383,10 @@ class ApiDumpInstance {
         ++queue_submit_count;
         if (settings().captureBoundary() == ApiDumpCaptureBoundary::QueueSubmits) {
             refreshShouldDumpOutput(queue_submit_count);
+            // The queue submissions are the boundary here, and with no frames to hand off at, a whole
+            // capture can be a single frame object. Frames mode hands off in nextFrame instead, which
+            // is cheaper than doing it for every submission.
+            settings().handOffOutput();
         }
     }
 
@@ -1375,16 +1488,28 @@ class ApiDumpInstance {
     ApiDumpSettings &settings() { return dump_settings; }
 
     uint64_t threadID() {
+        // A thread's number never changes once assigned, so it is remembered per thread: this runs for
+        // every dumped call, and taking thread_mutex and searching thread_map each time added a lock
+        // and a hash lookup to all of them. Keyed by the instance too, because the cache is shared by
+        // every ApiDumpInstance a thread uses (tests create their own), and one instance's numbers
+        // mean nothing to another. A serial rather than the address, since a destroyed instance's
+        // address can be reused by the next one.
+        thread_local uint64_t cached_serial = 0;
+        thread_local uint64_t cached_id = 0;
+        if (cached_serial == serial) {
+            return cached_id;
+        }
+
         std::thread::id this_id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lg(thread_mutex);
 
         auto it = thread_map.find(this_id);
-        if (it != thread_map.end()) {
-            return it->second;
+        if (it == thread_map.end()) {
+            it = thread_map.insert({this_id, thread_map.size()}).first;
         }
-
-        thread_map.insert({this_id, thread_map.size()});
-        return thread_map.size() - 1;
+        cached_serial = serial;
+        cached_id = it->second;
+        return cached_id;
     }
 
     void setCmdBuffer(VkCommandBuffer cmd_buffer) { this->cmd_buffer = cmd_buffer; }
@@ -1503,6 +1628,13 @@ class ApiDumpInstance {
     }
 
    private:
+    // Never 0, so a thread's zero-initialised cache can never match it. See threadID.
+    static uint64_t nextSerial() {
+        static std::atomic<uint64_t> counter{0};
+        return ++counter;
+    }
+    const uint64_t serial = nextSerial();
+
     // Which of the two independent counters output_range/output_range_queue_submits and
     // capture_trigger are actually meant to consult, per capture_trigger_boundary. Never used for
     // the frame's own JSON markup, which always tracks frame_count regardless - see nextFrame.
@@ -2006,6 +2138,50 @@ void dump_array_end(const void *array, size_t len, const ApiDumpSettings &settin
     }
 }
 
+// The name given to one element of an array: "[i]" in Json, "<name>[i]" in Text and Html (and the two
+// index form for a double array). Built once per element, so it formats into a stack buffer instead of
+// a std::stringstream and std::string, which allocated for every element of every array dumped. A name
+// too long for the buffer - none of the generated ones are - falls back to a string, so the result is
+// never truncated.
+template <ApiDumpFormat Format>
+class ArrayElementName {
+   public:
+    ArrayElementName(const char *name, size_t i) {
+        const char *prefix = prefixFor(name);
+        const int needed = snprintf(buffer_, sizeof(buffer_), "%s[%zu]", prefix, i);
+        if (grow(needed)) snprintf(&overflow_[0], overflow_.size(), "%s[%zu]", prefix, i);
+    }
+    ArrayElementName(const char *name, size_t i, size_t j) {
+        const char *prefix = prefixFor(name);
+        const int needed = snprintf(buffer_, sizeof(buffer_), "%s[%zu][%zu]", prefix, i, j);
+        if (grow(needed)) snprintf(&overflow_[0], overflow_.size(), "%s[%zu][%zu]", prefix, i, j);
+    }
+
+    const char *c_str() const { return overflow_.empty() ? buffer_ : overflow_.c_str(); }
+
+   private:
+    static const char *prefixFor(const char *name) {
+        if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
+            return name ? name : "";
+        } else {
+            return "";
+        }
+    }
+
+    // Makes room in overflow_ when `needed` characters did not fit in buffer_. Returns whether it did,
+    // in which case the caller formats again into overflow_ (whose size includes the terminator).
+    bool grow(int needed) {
+        if (needed < 0 || needed < static_cast<int>(sizeof(buffer_))) {
+            return false;
+        }
+        overflow_.resize(static_cast<size_t>(needed) + 1);
+        return true;
+    }
+
+    char buffer_[192];
+    std::string overflow_;
+};
+
 template <ApiDumpFormat Format, size_t N, typename T, typename DumpElement>
 void dump_double_array(const T(array)[][N], size_t len1, size_t len2, const ApiDumpSettings &settings, const char *type_string,
                        const char *name, const char *element_type, int indents, DumpElement dump_element) {
@@ -2015,12 +2191,7 @@ void dump_double_array(const T(array)[][N], size_t len1, size_t len2, const ApiD
     dump_array_start<Format>(array, len1 * len2, settings, type_string, name, indents);
     for (size_t i = 0; i < len1; ++i) {
         for (size_t j = 0; j < len2; ++j) {
-            std::stringstream stream;
-            if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
-                stream << name;
-            }
-            stream << "[" << i << "][" << j << "]";
-            std::string indexName = stream.str();
+            const ArrayElementName<Format> indexName(name, i, j);
             dump_element(array[i][j], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                          nullptr);
             if constexpr (Format == ApiDumpFormat::Json) {
@@ -2040,12 +2211,7 @@ void dump_single_array(const T (&array)[N], size_t len, const ApiDumpSettings &s
     }
     dump_array_start<Format>(array, len, settings, type_string, name, indents);
     for (size_t i = 0; i < len; ++i) {
-        std::stringstream stream;
-        if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
-            stream << name;
-        }
-        stream << "[" << i << "]";
-        std::string indexName = stream.str();
+        const ArrayElementName<Format> indexName(name, i);
         dump_element(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                      nullptr);
         if constexpr (Format == ApiDumpFormat::Json) {
@@ -2065,12 +2231,7 @@ void dump_pointer_array(const T *array, size_t len, const ApiDumpSettings &setti
     }
     dump_array_start<Format>(array, len, settings, type_string, name, indents);
     for (size_t i = 0; i < len; ++i) {
-        std::stringstream stream;
-        if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
-            stream << name;
-        }
-        stream << "[" << i << "]";
-        std::string indexName = stream.str();
+        const ArrayElementName<Format> indexName(name, i);
         dump_element(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                      array + i);
         if constexpr (Format == ApiDumpFormat::Json) {
@@ -2090,12 +2251,7 @@ void dump_double_pointer_array(const T *const *array, size_t len, const ApiDumpS
     }
     dump_array_start<Format>(array, len, settings, type_string, name, indents);
     for (size_t i = 0; i < len; ++i) {
-        std::stringstream stream;
-        if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
-            stream << name;
-        }
-        stream << "[" << i << "]";
-        std::string indexName = stream.str();
+        const ArrayElementName<Format> indexName(name, i);
         dump_pointer<Format>(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                              dump_element);
         if constexpr (Format == ApiDumpFormat::Json) {
@@ -2369,3 +2525,30 @@ inline void dump_function_head(ApiDumpInstance &dump_inst, const char *funcName,
 // not a real Vulkan command, so it is resolved only through vkGetInstanceProcAddr and queried by
 // name without the leading "vk" - "GetCommandNumberAPIDUMP" - so a caller cannot mistake it for one.
 inline VKAPI_ATTR uint64_t VKAPI_CALL vkGetCommandNumberAPIDUMP() { return ApiDumpInstance::current().lastCommandNumber(); }
+
+// Lets another layer make sure everything dumped so far is in the output file before it ends the
+// process - with async_write the dump is otherwise partly held in memory, and a process that is killed
+// takes that with it. Resolved the same way as the function above, as "FlushAPIDUMP".
+//
+// Waits up to timeout_ms, which covers both getting the output mutex (another thread may be inside a
+// long driver call holding it) and the background writer finishing. Returns VK_TRUE if everything
+// reached the file, VK_FALSE if time ran out or a write failed.
+//
+// Only flushes. It does not close the frame or the document, so the output is exactly what it would be
+// at that point without the call, and calling it more than once is harmless. Must not be called from a
+// thread that is inside one of this layer's own entry points, which already holds the output mutex.
+inline VKAPI_ATTR VkBool32 VKAPI_CALL vkFlushAPIDUMP(uint32_t timeout_ms) {
+    ApiDumpInstance &instance = ApiDumpInstance::current();
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout_ms);
+
+    std::unique_lock<std::mutex> lock(instance.outputMutex(), std::defer_lock);
+    while (!lock.try_lock()) {
+        if (std::chrono::steady_clock::now() >= deadline) {
+            return VK_FALSE;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+
+    const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now());
+    return instance.settings().drainOutput(std::max(remaining, std::chrono::milliseconds(0))) ? VK_TRUE : VK_FALSE;
+}

@@ -65,6 +65,11 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetInstanceProcAddr(VkInstance 
         return reinterpret_cast<PFN_vkVoidFunction>(vkGetCommandNumberAPIDUMP);
     }
 
+    // Likewise, for another layer to make sure the dump is in the file before it kills the process.
+    if (strcmp(pName, "FlushAPIDUMP") == 0) {
+        return reinterpret_cast<PFN_vkVoidFunction>(vkFlushAPIDUMP);
+    }
+
     // vkFrameBoundaryANDROID is real, but is not in the official registry (see
     // VK_ANDROID_frame_boundary.h) so the generated device_func lookup above never matches it -
     // caught here the same way GetCommandNumberAPIDUMP is, just above.

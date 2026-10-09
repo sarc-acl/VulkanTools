@@ -179,6 +179,30 @@ lunarg_api_dump.float_precision = 0
 # advances for commands that are actually written, so it stays contiguous with the file's contents.
 lunarg_api_dump.show_command_numbers = false
 
+# Asynchronous File Writes
+# =====================
+# <LayerIdentifier>.async_write
+# Write the output file from a background thread, through a bounded in-memory buffer, instead of the
+# application thread waiting on the file system for every call. Only applies when the output goes to a
+# file. The buffer is handed to the writer at every frame boundary (every queue submission when
+# capture_trigger_boundary is queue_submits), so a process that is killed loses at most what came after
+# the last boundary. Another layer can ask for everything to be written out by resolving
+# "FlushAPIDUMP" with vkGetInstanceProcAddr and calling it. Overrides flush. Falls back to ordinary
+# writes if the file or the writer thread cannot be created.
+lunarg_api_dump.async_write = false
+
+# Write Buffer Size (KiB)
+# =====================
+# <LayerIdentifier>.buffer_size_kb
+# With async_write: the total memory, in KiB, the write buffer may use for the whole process - not per
+# thread. Split into 4 blocks, clamped to between 64 and 65536. 0 uses 2048. A larger buffer absorbs
+# bursts better, a smaller one uses less memory.
+# Without async_write: the size of the output file stream's own buffer. 0 leaves it at the standard
+# library default. Best combined with flush = false, in which case the stream is flushed at every frame
+# boundary (every queue submission when capture_trigger_boundary is queue_submits), and when
+# FlushAPIDUMP is called.
+lunarg_api_dump.buffer_size_kb = 0
+
 
 # VK_LAYER_LUNARG_screenshot
 
