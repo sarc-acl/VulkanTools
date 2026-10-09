@@ -29,6 +29,7 @@
 #include "vk_layer_table.h"
 #include "VK_ANDROID_frame_boundary.h"
 #include "api_dump_async_buf.h"
+#include "api_dump_fast_writer.h"
 #include <vulkan/utility/vk_dispatch_table.h>
 
 #include <vulkan/layer/vk_layer_settings.hpp>
@@ -1774,34 +1775,68 @@ void dump_value_end(const ApiDumpSettings &settings) {
     if constexpr (Format == ApiDumpFormat::Json) settings.stream() << '"';
 }
 
-template <ApiDumpFormat Format, typename... T>
-void dump_value(const ApiDumpSettings &settings, T &&...values) {
-    dump_value_start<Format>(settings);
-    // A lone floating point value is the only case worth widening: the default ostream precision
-    // of 6 significant digits silently rounds, and a consumer that parses this file back cannot
-    // recover the lost bits. Composite output is left alone so text and html are unaffected.
+// The Json dump is made of a great many tiny pieces, so it is written through an ApiDumpFastWriter,
+// which gathers them and hands them to the stream's buffer in one call, instead of inserting each into
+// the ostream. The *_w helpers below take the writer so that a caller writing several pieces - a whole
+// field, say - uses one writer for all of them; the helpers without the suffix make a writer of their own.
+
+// A value in Json: a quoted string of whatever is inserted. See dump_value for the float precision.
+template <typename... T>
+void dump_json_value_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, T &&...values) {
+    writer << " \"";
     if constexpr (sizeof...(T) == 1 && (std::is_floating_point_v<std::decay_t<T>> && ...)) {
         const int precision = settings.floatPrecision();
         if (precision > 0) {
-            const std::streamsize previous = settings.stream().precision(precision);
-            (settings.stream() << ... << values);
-            settings.stream().precision(previous);
+            writer.setPrecision(precision);
+        }
+    }
+    (writer << ... << values);
+    writer << '"';
+}
+
+template <ApiDumpFormat Format, typename... T>
+void dump_value(const ApiDumpSettings &settings, T &&...values) {
+    if constexpr (Format == ApiDumpFormat::Json) {
+        ApiDumpFastWriter writer(settings.stream());
+        dump_json_value_w(writer, settings, values...);
+    } else {
+        dump_value_start<Format>(settings);
+        // A lone floating point value is the only case worth widening: the default ostream precision
+        // of 6 significant digits silently rounds, and a consumer that parses this file back cannot
+        // recover the lost bits. Composite output is left alone so text and html are unaffected.
+        if constexpr (sizeof...(T) == 1 && (std::is_floating_point_v<std::decay_t<T>> && ...)) {
+            const int precision = settings.floatPrecision();
+            if (precision > 0) {
+                const std::streamsize previous = settings.stream().precision(precision);
+                (settings.stream() << ... << values);
+                settings.stream().precision(previous);
+            } else {
+                (settings.stream() << ... << values);
+            }
         } else {
             (settings.stream() << ... << values);
         }
-    } else {
-        (settings.stream() << ... << values);
+        dump_value_end<Format>(settings);
     }
-    dump_value_end<Format>(settings);
 }
 
 template <ApiDumpFormat Format, typename... T>
 void dump_value_hex(const ApiDumpSettings &settings, T &&...values) {
-    dump_value_start<Format>(settings);
-    settings.stream() << "0x" << std::hex;
-    (settings.stream() << ... << values);
-    settings.stream() << std::dec;
-    dump_value_end<Format>(settings);
+    if constexpr (Format == ApiDumpFormat::Json &&
+                  ((std::is_integral_v<std::decay_t<T>> && !std::is_same_v<std::decay_t<T>, bool> &&
+                    !std::is_same_v<std::decay_t<T>, char> && !std::is_same_v<std::decay_t<T>, signed char> &&
+                    !std::is_same_v<std::decay_t<T>, unsigned char>) && ...)) {
+        ApiDumpFastWriter writer(settings.stream());
+        writer << " \"0x";
+        (writer.hex(values), ...);
+        writer << '"';
+    } else {
+        dump_value_start<Format>(settings);
+        settings.stream() << "0x" << std::hex;
+        (settings.stream() << ... << values);
+        settings.stream() << std::dec;
+        dump_value_end<Format>(settings);
+    }
 }
 
 template <ApiDumpFormat Format>
@@ -1851,59 +1886,116 @@ void dump_pNext(const void *object, const ApiDumpSettings &settings, const char 
     }
 }
 
+// The address of a Json object. "address" stands in for it when it is null or when addresses are hidden.
+inline void dump_json_address_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, const void *address) {
+    if (address != NULL && settings.showAddress()) {
+        dump_json_value_w(writer, settings, address);
+    } else {
+        dump_json_value_w(writer, settings, "address");
+    }
+}
+
 template <ApiDumpFormat Format>
 void dump_address(const ApiDumpSettings &settings, const void *address) {
-    if (address == NULL) {
-        // TEMPORARY to minimize diff in output while developing.
-        if constexpr (Format == ApiDumpFormat::Json) {
-            dump_value<Format>(settings, "address");
-        } else {
+    if constexpr (Format == ApiDumpFormat::Json) {
+        ApiDumpFastWriter writer(settings.stream());
+        dump_json_address_w(writer, settings, address);
+    } else {
+        if (address == NULL) {
+            // TEMPORARY to minimize diff in output while developing.
             dump_value<Format>(settings, "NULL");
-        }
-    } else if (settings.showAddress())
-        dump_value<Format>(settings, address);
-    else
-        dump_value<Format>(settings, "address");
+        } else if (settings.showAddress())
+            dump_value<Format>(settings, address);
+        else
+            dump_value<Format>(settings, "address");
+    }
 }
 
 template <ApiDumpFormat Format>
 void dump_separate_members(const ApiDumpSettings &settings) {
     if constexpr (Format == ApiDumpFormat::Json) {
-        settings.stream() << ",\n";
+        ApiDumpFastWriter writer(settings.stream());
+        writer << ",\n";
     }
 }
 
 //============================== Json formatting helper functions ==============================//
 
+// Each helper has a form ending in _w that writes through a writer the caller already has, so that a
+// caller emitting several pieces - a whole field, say - gathers them all in one buffer. The plain forms
+// make a writer of their own. Neither changes what is written.
+
+inline void dump_json_key_start_array_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents, const char *key) {
+    writer << settings.indentation(indents) << '"' << key << "\" :\n" << settings.indentation(indents) << "[\n";
+}
+inline void dump_json_end_array_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents) {
+    writer << settings.indentation(indents) << ']';
+}
+inline void dump_json_newline_end_array_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents) {
+    writer << '\n';
+    dump_json_end_array_w(writer, settings, indents);
+}
+inline void dump_json_start_object_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents) {
+    writer << settings.indentation(indents) << "{\n";
+}
+inline void dump_json_end_object_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents) {
+    writer << '\n' << settings.indentation(indents) << '}';
+}
+inline void dump_json_key_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents, const char *key) {
+    writer << settings.indentation(indents) << '"' << key << "\" :";
+}
+
+template <typename... T>
+void dump_json_key_value_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents, const char *key, T &&...values) {
+    dump_json_key_w(writer, settings, indents, key);
+    dump_json_value_w(writer, settings, values...);
+}
+
+inline void dump_json_key_address_w(ApiDumpFastWriter &writer, const ApiDumpSettings &settings, int indents, const void *address) {
+    dump_json_key_w(writer, settings, indents, "address");
+    dump_json_address_w(writer, settings, address);
+}
+
 inline void dump_json_key_start_array(const ApiDumpSettings &settings, int indents, const char *key) {
-    settings.stream() << settings.indentation(indents) << "\"" << key << "\" :\n" << settings.indentation(indents) << "[\n";
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_key_start_array_w(writer, settings, indents, key);
 }
 inline void dump_json_end_array(const ApiDumpSettings &settings, int indents) {
-    settings.stream() << settings.indentation(indents) << "]";
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_end_array_w(writer, settings, indents);
 }
 inline void dump_json_newline_end_array(const ApiDumpSettings &settings, int indents) {
-    settings.stream() << "\n";
-    dump_json_end_array(settings, indents);
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_newline_end_array_w(writer, settings, indents);
 }
 inline void dump_json_start_object(const ApiDumpSettings &settings, int indents) {
-    settings.stream() << settings.indentation(indents) << "{\n";
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_start_object_w(writer, settings, indents);
 }
 inline void dump_json_end_object(const ApiDumpSettings &settings, int indents) {
-    settings.stream() << "\n" << settings.indentation(indents) << "}";
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_end_object_w(writer, settings, indents);
 }
 inline void dump_json_key(const ApiDumpSettings &settings, int indents, const char *key) {
-    settings.stream() << settings.indentation(indents) << "\"" << key << "\" :";
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_key_w(writer, settings, indents, key);
 }
 
 template <typename... T>
 void dump_json_key_value(const ApiDumpSettings &settings, int indents, const char *key, T &&...values) {
-    dump_json_key(settings, indents, key);
-    dump_value<ApiDumpFormat::Json>(settings, values...);
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_key_value_w(writer, settings, indents, key, values...);
 }
 
 inline void dump_json_key_address(const ApiDumpSettings &settings, int indents, const void *address) {
-    dump_json_key(settings, indents, "address");
-    dump_address<ApiDumpFormat::Json>(settings, address);
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_key_address_w(writer, settings, indents, address);
+}
+
+// What follows an element of a Json array: a comma unless it is the last, and the newline.
+inline void dump_json_element_end(const ApiDumpSettings &settings, bool last) {
+    ApiDumpFastWriter writer(settings.stream());
+    writer << (last ? "\n" : ",\n");
 }
 
 //================================ Common Output Functions ================================//
@@ -1950,25 +2042,27 @@ void dump_start(const ApiDumpSettings &settings, OutputConstruct construct, cons
         }
 
     } else if constexpr (Format == ApiDumpFormat::Json) {
-        dump_json_start_object(settings, indents);
+        // The whole of the opening of the object is one writer's worth, and so one call into the buffer.
+        ApiDumpFastWriter writer(settings.stream());
+        dump_json_start_object_w(writer, settings, indents);
         if (construct == OutputConstruct::api_union)
-            dump_json_key_value(settings, indents + 1, "type", type_string, " (Union)");
+            dump_json_key_value_w(writer, settings, indents + 1, "type", type_string, " (Union)");
         else
-            dump_json_key_value(settings, indents + 1, "type", type_string);
+            dump_json_key_value_w(writer, settings, indents + 1, "type", type_string);
 
-        dump_separate_members<ApiDumpFormat::Json>(settings);
-        dump_json_key_value(settings, indents + 1, "name", name);
+        writer << ",\n";
+        dump_json_key_value_w(writer, settings, indents + 1, "name", name);
 
         if (construct == OutputConstruct::pointer || address != nullptr) {
-            dump_separate_members<ApiDumpFormat::Json>(settings);
-            dump_json_key_address(settings, indents + 1, address);
+            writer << ",\n";
+            dump_json_key_address_w(writer, settings, indents + 1, address);
         }
         if (construct != OutputConstruct::pointer) {
-            dump_separate_members<ApiDumpFormat::Json>(settings);
+            writer << ",\n";
             if (construct == OutputConstruct::value) {
-                dump_json_key(settings, indents + 1, "value");
+                dump_json_key_w(writer, settings, indents + 1, "value");
             } else if (construct == OutputConstruct::api_struct || construct == OutputConstruct::api_union) {
-                dump_json_key_start_array(settings, indents + 1, "members");
+                dump_json_key_start_array_w(writer, settings, indents + 1, "members");
             }
         }
     }
@@ -1987,10 +2081,11 @@ void dump_end(const ApiDumpSettings &settings, OutputConstruct construct, int in
         }
 
     } else if constexpr (Format == ApiDumpFormat::Json) {
+        ApiDumpFastWriter writer(settings.stream());
         if (construct == OutputConstruct::api_struct || construct == OutputConstruct::api_union) {
-            dump_json_newline_end_array(settings, indents + 1);
+            dump_json_newline_end_array_w(writer, settings, indents + 1);
         }
-        dump_json_end_object(settings, indents);
+        dump_json_end_object_w(writer, settings, indents);
     }
 }
 
@@ -2111,17 +2206,18 @@ void dump_array_start(const void *array, size_t len, const ApiDumpSettings &sett
     } else if constexpr (Format == ApiDumpFormat::Html) {
         dump_start<Format>(settings, OutputConstruct::api_struct, type_string, name, indents, array);
     } else if constexpr (Format == ApiDumpFormat::Json) {
-        dump_json_start_object(settings, indents);
-        dump_json_key_value(settings, indents + 1, "type", type_string);
-        dump_separate_members<Format>(settings);
-        dump_json_key_value(settings, indents + 1, "name", name);
-        dump_separate_members<Format>(settings);
-        dump_json_key_address(settings, indents + 1, array);
+        ApiDumpFastWriter writer(settings.stream());
+        dump_json_start_object_w(writer, settings, indents);
+        dump_json_key_value_w(writer, settings, indents + 1, "type", type_string);
+        writer << ",\n";
+        dump_json_key_value_w(writer, settings, indents + 1, "name", name);
+        writer << ",\n";
+        dump_json_key_address_w(writer, settings, indents + 1, array);
         if (len > 0 && array != NULL) {
-            dump_separate_members<Format>(settings);
-            dump_json_key_start_array(settings, indents + 1, "elements");
+            writer << ",\n";
+            dump_json_key_start_array_w(writer, settings, indents + 1, "elements");
         } else {
-            settings.stream() << "\n";
+            writer << '\n';
         }
     }
 }
@@ -2131,10 +2227,11 @@ void dump_array_end(const void *array, size_t len, const ApiDumpSettings &settin
     if constexpr (Format == ApiDumpFormat::Html) {
         dump_end<ApiDumpFormat::Html>(settings, OutputConstruct::api_struct, indents);
     } else if constexpr (Format == ApiDumpFormat::Json) {
+        ApiDumpFastWriter writer(settings.stream());
         if (len > 0 && array != NULL) {
-            dump_json_end_array(settings, indents + 1);
+            dump_json_end_array_w(writer, settings, indents + 1);
         }
-        dump_json_end_object(settings, indents);
+        dump_json_end_object_w(writer, settings, indents);
     }
 }
 
@@ -2146,36 +2243,48 @@ void dump_array_end(const void *array, size_t len, const ApiDumpSettings &settin
 template <ApiDumpFormat Format>
 class ArrayElementName {
    public:
-    ArrayElementName(const char *name, size_t i) {
-        const char *prefix = prefixFor(name);
-        const int needed = snprintf(buffer_, sizeof(buffer_), "%s[%zu]", prefix, i);
-        if (grow(needed)) snprintf(&overflow_[0], overflow_.size(), "%s[%zu]", prefix, i);
-    }
-    ArrayElementName(const char *name, size_t i, size_t j) {
-        const char *prefix = prefixFor(name);
-        const int needed = snprintf(buffer_, sizeof(buffer_), "%s[%zu][%zu]", prefix, i, j);
-        if (grow(needed)) snprintf(&overflow_[0], overflow_.size(), "%s[%zu][%zu]", prefix, i, j);
-    }
+    ArrayElementName(const char *name, size_t i) { build(prefixFor(name), i, nullptr); }
+    ArrayElementName(const char *name, size_t i, size_t j) { build(prefixFor(name), i, &j); }
 
     const char *c_str() const { return overflow_.empty() ? buffer_ : overflow_.c_str(); }
 
    private:
+    // Writes "<prefix>[i]", or "<prefix>[i][j]" when j is given, and a terminator. Assembled by hand
+    // from the digits rather than by snprintf, which parses its format string on every element.
+    void build(const char *prefix, size_t i, const size_t *j) {
+        char first[24];
+        char second[24];
+        const size_t prefix_length = strlen(prefix);
+        const size_t first_length = static_cast<size_t>(std::to_chars(first, first + sizeof(first), i).ptr - first);
+        const size_t second_length = j ? static_cast<size_t>(std::to_chars(second, second + sizeof(second), *j).ptr - second) : 0;
+        const size_t needed = prefix_length + 2 + first_length + (j ? 2 + second_length : 0);
+
+        char *out = buffer_;
+        if (needed >= sizeof(buffer_)) {
+            overflow_.resize(needed + 1);
+            out = &overflow_[0];
+        }
+        memcpy(out, prefix, prefix_length);
+        out += prefix_length;
+        *out++ = '[';
+        memcpy(out, first, first_length);
+        out += first_length;
+        *out++ = ']';
+        if (j) {
+            *out++ = '[';
+            memcpy(out, second, second_length);
+            out += second_length;
+            *out++ = ']';
+        }
+        *out = '\0';
+    }
+
     static const char *prefixFor(const char *name) {
         if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
             return name ? name : "";
         } else {
             return "";
         }
-    }
-
-    // Makes room in overflow_ when `needed` characters did not fit in buffer_. Returns whether it did,
-    // in which case the caller formats again into overflow_ (whose size includes the terminator).
-    bool grow(int needed) {
-        if (needed < 0 || needed < static_cast<int>(sizeof(buffer_))) {
-            return false;
-        }
-        overflow_.resize(static_cast<size_t>(needed) + 1);
-        return true;
     }
 
     char buffer_[192];
@@ -2195,8 +2304,7 @@ void dump_double_array(const T(array)[][N], size_t len1, size_t len2, const ApiD
             dump_element(array[i][j], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                          nullptr);
             if constexpr (Format == ApiDumpFormat::Json) {
-                if (i < len1 - 1 && j < len2 - 1) settings.stream() << ',';
-                settings.stream() << "\n";
+                dump_json_element_end(settings, !(i < len1 - 1 && j < len2 - 1));
             }
         }
     }
@@ -2215,8 +2323,7 @@ void dump_single_array(const T (&array)[N], size_t len, const ApiDumpSettings &s
         dump_element(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                      nullptr);
         if constexpr (Format == ApiDumpFormat::Json) {
-            if (i < len - 1) settings.stream() << ',';
-            settings.stream() << "\n";
+            dump_json_element_end(settings, !(i < len - 1));
         }
     }
     dump_array_end<Format>(array, len, settings, indents);
@@ -2235,8 +2342,7 @@ void dump_pointer_array(const T *array, size_t len, const ApiDumpSettings &setti
         dump_element(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                      array + i);
         if constexpr (Format == ApiDumpFormat::Json) {
-            if (i < len - 1) settings.stream() << ',';
-            settings.stream() << "\n";
+            dump_json_element_end(settings, !(i < len - 1));
         }
     }
     dump_array_end<Format>(array, len, settings, indents);
@@ -2255,8 +2361,7 @@ void dump_double_pointer_array(const T *const *array, size_t len, const ApiDumpS
         dump_pointer<Format>(array[i], settings, element_type, indexName.c_str(), indents + (Format == ApiDumpFormat::Json ? 2 : 1),
                              dump_element);
         if constexpr (Format == ApiDumpFormat::Json) {
-            if (i < len - 1) settings.stream() << ',';
-            settings.stream() << "\n";
+            dump_json_element_end(settings, !(i < len - 1));
         }
     }
     dump_array_end<Format>(array, len, settings, indents);
@@ -2362,7 +2467,8 @@ void dump_post_params_formatting(const ApiDumpSettings &settings) {
     if constexpr (Format == ApiDumpFormat::Text || Format == ApiDumpFormat::Html) {
         settings.stream() << "\n";
     } else if constexpr (Format == ApiDumpFormat::Json) {
-        settings.stream() << "\n" << settings.indentation(3) << "]\n";
+        ApiDumpFastWriter writer(settings.stream());
+        writer << '\n' << settings.indentation(3) << "]\n";
     }
 }
 
@@ -2383,7 +2489,8 @@ void dump_post_function_formatting(const ApiDumpSettings &settings) {
     if constexpr (Format == ApiDumpFormat::Html) {
         settings.stream() << "</details>";
     } else if constexpr (Format == ApiDumpFormat::Json) {
-        settings.stream() << settings.indentation(2) << "}";
+        ApiDumpFastWriter writer(settings.stream());
+        writer << settings.indentation(2) << '}';
     }
 }
 
@@ -2486,15 +2593,16 @@ inline void dump_json_function_head(ApiDumpInstance &dump_inst, const char *func
 }
 
 inline void dump_json_UNUSED(const ApiDumpSettings &settings, const char *type_string, const char *name, int indents) {
-    dump_json_start_object(settings, indents);
-    dump_json_key_value(settings, indents + 1, "type", type_string);
-    dump_separate_members<ApiDumpFormat::Json>(settings);
-    dump_json_key_value(settings, indents + 1, "name", name);
-    dump_separate_members<ApiDumpFormat::Json>(settings);
-    dump_json_key_value(settings, indents + 1, "address", "UNUSED");
-    dump_separate_members<ApiDumpFormat::Json>(settings);
-    dump_json_key_value(settings, indents + 1, "value", "UNUSED");
-    dump_json_end_object(settings, indents);
+    ApiDumpFastWriter writer(settings.stream());
+    dump_json_start_object_w(writer, settings, indents);
+    dump_json_key_value_w(writer, settings, indents + 1, "type", type_string);
+    writer << ",\n";
+    dump_json_key_value_w(writer, settings, indents + 1, "name", name);
+    writer << ",\n";
+    dump_json_key_value_w(writer, settings, indents + 1, "address", "UNUSED");
+    writer << ",\n";
+    dump_json_key_value_w(writer, settings, indents + 1, "value", "UNUSED");
+    dump_json_end_object_w(writer, settings, indents);
 }
 
 //==================================== Common Helpers ======================================//

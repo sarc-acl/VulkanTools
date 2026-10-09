@@ -25,6 +25,7 @@
 #include <cstring>
 #include <fstream>
 #include <iomanip>
+#include <limits>
 #include <mutex>
 #include <sstream>
 #include <thread>
@@ -702,4 +703,203 @@ TEST_F(ApiDumpInstanceTests, ThreadIdsAreNumberedPerInstanceAndStayStable) {
     std::thread([&] { b_other_thread_id = b.threadID(); }).join();
     EXPECT_EQ(b_other_thread_id, 0u);
     EXPECT_EQ(b.threadID(), 1u);
+}
+
+namespace {
+
+// A type the writer has no formatting for, so that it has to be passed to the ostream.
+struct OnlyStreamable {
+    int value;
+};
+std::ostream& operator<<(std::ostream& os, const OnlyStreamable& o) { return os << "<" << o.value << ">"; }
+
+enum UnscopedEnum { kUnscopedSmall = 3, kUnscopedLarge = 70000 };
+
+// Inserts `values` into an ostream and into a writer over another, and expects the same text from both.
+template <typename... T>
+void ExpectWriterMatchesOstream(int precision, const T&... values) {
+    std::ostringstream expected;
+    expected.precision(precision);
+    (expected << ... << values);
+
+    std::ostringstream actual;
+    {
+        ApiDumpFastWriter writer(actual);
+        writer.setPrecision(precision);
+        (writer << ... << values);
+    }
+    EXPECT_EQ(expected.str(), actual.str());
+}
+
+}  // namespace
+
+class ApiDumpFastWriterTests : public VkTestFramework {
+   public:
+    ~ApiDumpFastWriterTests(){};
+
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite(){};
+};
+
+TEST_F(ApiDumpFastWriterTests, IntegersCharactersAndStringsMatchTheOstream) {
+    ExpectWriterMatchesOstream(6, "literal", std::string("a string"), std::string_view("a view"), "");
+    // char, signed char and unsigned char are characters to an ostream, not numbers.
+    ExpectWriterMatchesOstream(6, 'x', '\n', static_cast<signed char>('s'), static_cast<unsigned char>('Q'));
+    ExpectWriterMatchesOstream(6, true, false);
+    ExpectWriterMatchesOstream(6, std::numeric_limits<int8_t>::min(), std::numeric_limits<uint8_t>::max());
+    ExpectWriterMatchesOstream(6, std::numeric_limits<int16_t>::min(), std::numeric_limits<uint16_t>::max());
+    ExpectWriterMatchesOstream(6, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max(),
+                               std::numeric_limits<uint32_t>::max());
+    ExpectWriterMatchesOstream(6, std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max(),
+                               std::numeric_limits<uint64_t>::max());
+    ExpectWriterMatchesOstream(6, 0, -1L, 42ULL, static_cast<size_t>(7));
+}
+
+TEST_F(ApiDumpFastWriterTests, FloatingPointMatchesTheOstreamAtEveryPrecision) {
+    for (const int precision : {0, 1, 6, 9, 17, 40, 41, 60}) {
+        ExpectWriterMatchesOstream(precision, 1.0f / 3.0f, 3.4028235e38f, 1.17549435e-38f, 1e-45f);
+        ExpectWriterMatchesOstream(precision, -2.5e-10, 100000.0, 1000000.0, 3.14159265358979323846, 0.0, -0.0);
+        ExpectWriterMatchesOstream(precision, std::numeric_limits<double>::max(), std::numeric_limits<double>::denorm_min());
+        ExpectWriterMatchesOstream(precision, std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                                   std::numeric_limits<double>::quiet_NaN());
+        ExpectWriterMatchesOstream(precision, static_cast<long double>(1.0L / 3.0L));
+    }
+}
+
+TEST_F(ApiDumpFastWriterTests, TextAroundAndBeyondTheBufferSizeIsWrittenWhole) {
+    // Pieces that land the buffer exactly full, one short, one over, and several times over, in every
+    // order the writer can meet them.
+    const size_t capacity = ApiDumpFastWriter::kCapacity;
+    for (const size_t first : {size_t{0}, size_t{1}, capacity - 1, capacity, capacity + 1, capacity * 3}) {
+        for (const size_t second : {size_t{0}, size_t{1}, capacity - 1, capacity, capacity + 1, capacity * 3}) {
+            const std::string a(first, 'a');
+            const std::string b(second, 'b');
+            ExpectWriterMatchesOstream(6, a, b, 'c', a, 12345, b);
+        }
+    }
+}
+
+TEST_F(ApiDumpFastWriterTests, TypesItDoesNotFormatGoToTheOstreamInOrder) {
+    ExpectWriterMatchesOstream(6, "before ", OnlyStreamable{1}, " between ", 2, OnlyStreamable{3}, " after");
+    ExpectWriterMatchesOstream(6, kUnscopedSmall, ' ', kUnscopedLarge);
+}
+
+TEST_F(ApiDumpFastWriterTests, HexMatchesTheOstreamUnderStdHex) {
+    std::ostringstream expected;
+    expected << std::hex << uint64_t{0} << uint64_t{255} << uint64_t{0xDEADBEEFCAFEF00DULL} << uint32_t{0x1a2b} << int32_t{-1}
+             << int64_t{-2} << int16_t{-3};
+
+    std::ostringstream actual;
+    {
+        ApiDumpFastWriter writer(actual);
+        writer.hex(uint64_t{0}).hex(uint64_t{255}).hex(uint64_t{0xDEADBEEFCAFEF00DULL}).hex(uint32_t{0x1a2b});
+        writer.hex(int32_t{-1}).hex(int64_t{-2}).hex(int16_t{-3});
+    }
+    EXPECT_EQ(expected.str(), actual.str());
+}
+
+TEST_F(ApiDumpFastWriterTests, ANullCStringWritesNothingInsteadOfPoisoningTheStream) {
+    std::ostringstream out;
+    {
+        ApiDumpFastWriter writer(out);
+        const char* none = nullptr;
+        writer << "x" << none << "y";
+    }
+    EXPECT_EQ(out.str(), "xy");
+    EXPECT_TRUE(out.good());
+}
+
+TEST_F(ApiDumpFastWriterTests, FlushKeepsTheOrderWithDirectWritesToTheStream) {
+    std::ostringstream out;
+    {
+        ApiDumpFastWriter writer(out);
+        writer << "one";
+        writer.flush();
+        out << "-direct-";
+        writer << "two";
+    }
+    EXPECT_EQ(out.str(), "one-direct-two");
+}
+
+// The Json helpers are written through the writer, so pin down exactly what they produce: this is the
+// text the ostream-based versions wrote, and the file format other tools read.
+TEST_F(ApiDumpFastWriterTests, JsonHelpersWriteExactlyWhatTheOstreamVersionsWrote) {
+    ScopedFile file("api_dump_fast_writer_golden.json");
+    const VkBool32 use_file = VK_TRUE;
+    const char* filename_string = file.path.c_str();
+    const char* output_format = "json";
+    const int32_t indent_size = 2;
+    const std::vector<VkLayerSettingEXT> settings_values = {
+        {kLayerName, "file", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &use_file},
+        {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename_string},
+        {kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &output_format},
+        {kLayerName, "indent_size", VK_LAYER_SETTING_TYPE_INT32_EXT, 1, &indent_size}};
+    const VkLayerSettingsCreateInfoEXT layer_settings_create_info{VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT, nullptr,
+                                                                    static_cast<uint32_t>(settings_values.size()),
+                                                                    settings_values.data()};
+    VkApplicationInfo app_info{layer_test::GetDefaultApplicationInfo()};
+    VkInstanceCreateInfo inst_create_info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    inst_create_info.pNext = &layer_settings_create_info;
+    inst_create_info.pApplicationInfo = &app_info;
+
+    ApiDumpSettings settings;
+    settings.init(&inst_create_info, nullptr);
+    constexpr ApiDumpFormat Json = ApiDumpFormat::Json;
+
+    dump_type<Json, uint32_t>(7, settings, "uint32_t", "a", 1);
+    settings.stream() << "\n#\n";
+    dump_type<Json, float>(0.5f, settings, "float", "f", 1);
+    settings.stream() << "\n#\n";
+    dump_pointer_array<Json>(static_cast<const uint32_t*>(nullptr), 0, settings, "const uint32_t*", "p", "const uint32_t", 1,
+                             dump_type<Json, uint32_t>);
+    settings.stream() << "\n#\n";
+    dump_json_UNUSED(settings, "const VkFoo*", "pFoo", 1);
+    settings.stream() << "\n#\n";
+    dump_start<Json>(settings, OutputConstruct::api_struct, "VkFoo", "foo", 1, nullptr);
+    dump_type_hex<Json, uint64_t>(255, settings, "uint64_t", "h", 2);
+    dump_end<Json>(settings, OutputConstruct::api_struct, 1);
+    settings.stream().flush();
+
+    std::ifstream written(file.path);
+    const std::string contents((std::istreambuf_iterator<char>(written)), std::istreambuf_iterator<char>());
+    // Opening the file starts the first frame, so what the helpers wrote follows that frame's header.
+    const std::string frame_header = "\"apiCalls\" :\n  [\n";
+    const size_t body_start = contents.find(frame_header);
+    ASSERT_TRUE(body_start != std::string::npos);
+    const std::string actual = contents.substr(body_start + frame_header.size());
+    const std::string expected =
+        "  {\n"
+        "    \"type\" : \"uint32_t\",\n"
+        "    \"name\" : \"a\",\n"
+        "    \"value\" : \"7\"\n"
+        "  }\n#\n"
+        "  {\n"
+        "    \"type\" : \"float\",\n"
+        "    \"name\" : \"f\",\n"
+        "    \"value\" : \"0.5\"\n"
+        "  }\n#\n"
+        "  {\n"
+        "    \"type\" : \"const uint32_t*\",\n"
+        "    \"name\" : \"p\",\n"
+        "    \"address\" : \"address\"\n"
+        "  }\n#\n"
+        "  {\n"
+        "    \"type\" : \"const VkFoo*\",\n"
+        "    \"name\" : \"pFoo\",\n"
+        "    \"address\" : \"UNUSED\",\n"
+        "    \"value\" : \"UNUSED\"\n"
+        "  }\n#\n"
+        "  {\n"
+        "    \"type\" : \"VkFoo\",\n"
+        "    \"name\" : \"foo\",\n"
+        "    \"members\" :\n"
+        "    [\n"
+        "    {\n"
+        "      \"type\" : \"uint64_t\",\n"
+        "      \"name\" : \"h\",\n"
+        "      \"value\" : \"0xff\"\n"
+        "    }\n"
+        "    ]\n"
+        "  }";
+    EXPECT_EQ(actual, expected);
 }
