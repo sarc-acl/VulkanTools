@@ -52,7 +52,13 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          cmake -S . -B build --toolchain $ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake \
+          # 1. Override the environment variables via bash (Bypasses GitHub's YAML linter)
+          export ANDROID_NDK=$ANDROID_NDK_LATEST_HOME
+          export ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME
+          export ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME
+          
+          # 2. Fire up your build with everything fully aligned to NDK 30
+          cmake -S . -B build --toolchain $ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
           -D ANDROID_PLATFORM=29 \
           -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }} \
           -D CMAKE_ANDROID_STL_TYPE=c++_static \
@@ -60,6 +66,7 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release \
           -D UPDATE_DEPS=ON \
           -G "Ninja"
+          
           cmake --build build
           cmake --install build --prefix build/install
 
