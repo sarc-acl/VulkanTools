@@ -136,6 +136,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
 #define kSettingsKeyCaptureTrigger "capture_trigger"
 #define kSettingsKeyCaptureTriggerBoundary "capture_trigger_boundary"
+#define kSettingsKeyCaptureTriggerBoundaryCount "capture_trigger_boundary_count"
 #define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
 #define kSettingsKeyShowEnumValue "show_enum_value"
 #define kSettingsKeyFloatPrecision "float_precision"
@@ -561,15 +562,20 @@ class ApiDumpSettings {
         return true;
     }
 
-    void setupInterFrameOutputFormatting(uint64_t frame_count) const /*name change? */
+    // Closes the frame object of the frame that ended, if one was opened, and opens one for frame_count
+    // if it is recorded. boundary_count is what output_range/output_range_queue_submits and the
+    // trigger are checked against: the frame number, or with capture_trigger_boundary queue_submits,
+    // the number of the queue submission the new frame starts with. Checking the frame number against
+    // a queue submission range would tag frames by the wrong number.
+    void setupInterFrameOutputFormatting(uint64_t frame_count, uint64_t boundary_count) const /*name change? */
     {
         static bool hasPrintedAFrame = false;
+        const bool previous_frame_open = frame_open;
+        frame_open = isFrameRecorded(boundary_count);
         switch (format()) {
             case (ApiDumpFormat::Html):
-                if (frame_count > 0) {
-                    if (wasPreviousFrameRecorded(frame_count)) output_stream << "</details>";
-                }
-                if (isFrameRecorded(frame_count)) {
+                if (previous_frame_open) output_stream << "</details>";
+                if (frame_open) {
                     output_stream << "<details class='frm'><summary>Frame ";
                     if (show_thread_and_frame) {
                         output_stream << frame_count;
@@ -580,10 +586,8 @@ class ApiDumpSettings {
 
             case (ApiDumpFormat::Json):
 
-                if (frame_count > 0) {
-                    if (wasPreviousFrameRecorded(frame_count)) output_stream << "\n" << indentation(1) << "]\n}";
-                }
-                if (isFrameRecorded(frame_count)) {
+                if (previous_frame_open) output_stream << "\n" << indentation(1) << "]\n}";
+                if (frame_open) {
                     if (!hasPrintedAFrame) {
                         hasPrintedAFrame = true;
                     } else {
@@ -593,7 +597,7 @@ class ApiDumpSettings {
                     if (show_thread_and_frame) {
                         output_stream << indentation(1) << "\"frameNumber\" : \"" << frame_count << "\",\n";
                     }
-                    if (!isFrameInRange(frame_count)) {
+                    if (!isFrameInRange(boundary_count)) {
                         // The only way this frame object exists at all while being out of range is
                         // always_dump_setup, so this frame holds setup commands only.
                         output_stream << indentation(1) << "\"isSetupFrame\" : true,\n";
@@ -609,7 +613,11 @@ class ApiDumpSettings {
         }
     }
 
+    // Whether setupInterFrameOutputFormatting opened a frame object that is not closed yet.
+    bool isFrameOpen() const { return frame_open; }
+
     void closeFrameOutput() const {
+        frame_open = false;
         switch (format()) {
             case (ApiDumpFormat::Html):
                 output_stream << "</details>";
@@ -687,9 +695,8 @@ class ApiDumpSettings {
     // Whether the given frame should be dumped. Every caller must go through here rather than
     // reaching for condFrameOutput directly, otherwise the trigger and the range can disagree and
     // the per-frame markup stops matching the calls it wraps. Also the one place, along with
-    // wasPreviousFrameDumped/isFrameRecorded/wasPreviousFrameRecorded below, that has to check
-    // capture_process_name: everything else that decides whether to write anything is built on one
-    // of these four.
+    // isFrameRecorded below, that has to check capture_process_name: everything else that decides
+    // whether to write anything is built on one of these two.
     bool isFrameInRange(uint64_t frame) const {
         if (!process_matches_capture_name) {
             return false;
@@ -698,19 +705,6 @@ class ApiDumpSettings {
             return capture_triggered.load(std::memory_order_relaxed);
         }
         return condFrameOutput.isFrameInRange(frame);
-    }
-
-    // Whether the frame before `frame` was dumped, i.e. whether there is open markup to close.
-    // Under a trigger this cannot be derived from the current state: the trigger being off now is
-    // exactly the case where the previous frame was dumped and still needs closing.
-    bool wasPreviousFrameDumped(uint64_t frame) const {
-        if (!process_matches_capture_name) {
-            return false;
-        }
-        if (use_capture_trigger) {
-            return previous_frame_dumped.load(std::memory_order_relaxed);
-        }
-        return condFrameOutput.isFrameInRange(frame - 1);
     }
 
     bool usingCaptureTrigger() const { return use_capture_trigger; }
@@ -735,10 +729,6 @@ class ApiDumpSettings {
     // this ORs the raw always_dump_setup member, not the gated accessor, so it needs its own check.
     bool isFrameRecorded(uint64_t frame) const {
         return process_matches_capture_name && (always_dump_setup || isFrameInRange(frame));
-    }
-
-    bool wasPreviousFrameRecorded(uint64_t frame) const {
-        return process_matches_capture_name && (always_dump_setup || wasPreviousFrameDumped(frame));
     }
 
     // Whether a command is one the captured frames depend on to be interpretable.
@@ -812,17 +802,26 @@ class ApiDumpSettings {
     // The property is read outright each time rather than checked against __system_property_serial
     // first: that function only appears in the NDK headers from r28 on, and one property read per
     // frame is not worth a version dependency in a layer that serializes every call it dumps.
+    //
+    // With capture_trigger_boundary_count, also counts the frames (or queue submissions) dumped since the
+    // trigger turned on, and stops dumping once there are that many. Dumping then stays off until the
+    // trigger is turned off and on again, which starts a new count.
     void refreshCaptureTrigger() {
         if (!use_capture_trigger) {
             return;
         }
-        previous_frame_dumped.store(capture_triggered.load(std::memory_order_relaxed), std::memory_order_relaxed);
+        const bool dumped = capture_triggered.load(std::memory_order_relaxed);
 #ifdef ANDROID
-        if (capture_trigger_prop == nullptr) {
-            return;
+        if (capture_trigger_prop != nullptr) {
+            capture_requested = readCaptureTriggerProp();
         }
-        capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
 #endif
+        if (!capture_requested) {
+            captured_boundaries = 0;
+        } else if (dumped && capture_trigger_boundary_count > 0) {
+            ++captured_boundaries;
+        }
+        updateCaptureTriggered();
     }
 
     void init(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator) {
@@ -836,8 +835,8 @@ class ApiDumpSettings {
         // an empty value (the default) means every process is captured, and
         // otherwise the match is an exact, case sensitive comparison against GetCurrentProcessName.
         // Checked early because a process this excludes must not open or write anything below -
-        // see isFrameInRange, wasPreviousFrameDumped, isFrameRecorded, wasPreviousFrameRecorded, and
-        // alwaysDumpSetup, which are what every dump decision ultimately goes through.
+        // see isFrameInRange, isFrameRecorded, and alwaysDumpSetup, which are what every dump decision
+        // ultimately goes through.
         std::string capture_process_name;
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureProcessName)) {
             vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureProcessName, capture_process_name);
@@ -1070,16 +1069,25 @@ class ApiDumpSettings {
         // is ignored. Callers pick one or the other, never both.
         if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTrigger)) {
             use_capture_trigger = true;
-            bool initial_trigger = false;
-            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTrigger, initial_trigger);
-            capture_triggered.store(initial_trigger, std::memory_order_relaxed);
-            previous_frame_dumped.store(false, std::memory_order_relaxed);
+            capture_requested = false;
+            vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTrigger, capture_requested);
 #ifdef ANDROID
             capture_trigger_prop = __system_property_find(kCaptureTriggerProperty);
             if (capture_trigger_prop != nullptr) {
-                capture_triggered.store(readCaptureTriggerProp(), std::memory_order_relaxed);
+                capture_requested = readCaptureTriggerProp();
             }
 #endif
+
+            // Only means anything with the trigger. Unlike the trigger it is not polled: it is fixed
+            // for the life of the process, like every other setting.
+            capture_trigger_boundary_count = 0;
+            if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTriggerBoundaryCount)) {
+                vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTriggerBoundaryCount, capture_trigger_boundary_count);
+            }
+            // captured_boundaries is left alone: init runs again for every VkInstance the process
+            // creates, and a new instance must neither restart a count in progress nor resume dumping
+            // after one has ended.
+            updateCaptureTriggered();
         }
 
         if (cond_range_string == "" || cond_range_string == "0-0") {  //"0-0" is every frame, no need to check
@@ -1227,13 +1235,19 @@ class ApiDumpSettings {
         }
 
         if (isFrameRecorded(0)) {
-            setupInterFrameOutputFormatting(0);
+            setupInterFrameOutputFormatting(0, 0);
         }
 
         vkuDestroyLayerSettingSet(layerSettingSet, pAllocator);
     }
 
    private:
+    // Dump while the trigger is on, until capture_trigger_boundary_count frames or queue submissions were dumped.
+    void updateCaptureTriggered() {
+        const bool count_reached = capture_trigger_boundary_count > 0 && captured_boundaries >= capture_trigger_boundary_count;
+        capture_triggered.store(capture_requested && !count_reached, std::memory_order_relaxed);
+    }
+
 #ifdef ANDROID
     // Read the already-resolved trigger property. Only called when the serial says it changed.
     bool readCaptureTriggerProp() const {
@@ -1306,10 +1320,20 @@ class ApiDumpSettings {
     int float_precision = 0;
     bool use_capture_trigger = false;
     std::atomic<bool> capture_triggered{false};
-    // State the trigger had while the previous frame was being dumped. setupInterFrameOutputFormatting
-    // has to close the markup it opened for that frame, which is only correct if it is told what was
-    // actually emitted then rather than what the trigger says now.
-    std::atomic<bool> previous_frame_dumped{false};
+    // What the trigger itself says. capture_triggered follows it, except that it also goes off once
+    // capture_trigger_boundary_count frames or queue submissions were dumped. Only used by init and
+    // refreshCaptureTrigger, which every caller serializes.
+    bool capture_requested = false;
+    // How many frames (or queue submissions, per capture_trigger_boundary) to dump each time the
+    // trigger turns on. 0 dumps for as long as it stays on. Like gfxreconstruct's
+    // capture_trigger_boundary_count.
+    uint32_t capture_trigger_boundary_count = 0;
+    // Frames or queue submissions dumped since the trigger last turned on, while counting them
+    // against capture_trigger_boundary_count.
+    uint32_t captured_boundaries = 0;
+    // Whether a frame object is open, so that it is closed exactly when it was opened, whatever the
+    // range or trigger says by the time the frame ends. Written from const methods, like output_stream.
+    mutable bool frame_open = false;
 #ifdef ANDROID
     // Resolved once, so that the per frame refresh only pays for reading the value and not for
     // looking the property up by name again.
@@ -1334,7 +1358,7 @@ class ApiDumpInstance {
         // Closing depends on whether a frame object was opened, not on whether anything was dumped
         // into it. A recorded frame that ends up empty - which always_dump_setup makes common, since
         // every frame is recorded but most hold no setup commands - still has markup to close.
-        if (settings().isFrameRecorded(frame_count)) settings().closeFrameOutput();
+        if (settings().isFrameOpen()) settings().closeFrameOutput();
     }
 
     void initLayerSettings(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator) {
@@ -1363,11 +1387,14 @@ class ApiDumpInstance {
     void nextFrame() {
         std::lock_guard<std::mutex> lg(frame_mutex);
         ++frame_count;
-        settings().setupInterFrameOutputFormatting(frame_count);
-        first_func_call_on_frame = true;
+        // Decided before the markup below, which opens and tags this frame from that decision. The
+        // other way round, under a trigger every frame was tagged by its predecessor's state, so the
+        // first dumped frame was marked isSetupFrame and the first one after the trigger went off was not.
         if (settings().captureBoundary() == ApiDumpCaptureBoundary::Frames) {
             refreshShouldDumpOutput(frame_count);
         }
+        settings().setupInterFrameOutputFormatting(frame_count, activeBoundaryCount());
+        first_func_call_on_frame = true;
         // Everything written for the frame that just ended is complete, so give it to the writer. This
         // also covers the capture trigger turning off, which refreshShouldDumpOutput only notices here.
         settings().handOffOutput();

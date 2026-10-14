@@ -903,3 +903,163 @@ TEST_F(ApiDumpFastWriterTests, JsonHelpersWriteExactlyWhatTheOstreamVersionsWrot
         "  }";
     EXPECT_EQ(actual, expected);
 }
+
+// ---------------------------------------------------------------------------------------------------
+// capture_trigger_boundary_count, and the isSetupFrame tag of each frame. The layer only polls the
+// trigger property on Android. Elsewhere, as in these tests, the trigger stays at the value of the
+// capture_trigger setting, and each call to refreshCaptureTrigger stands for one boundary passing.
+// ---------------------------------------------------------------------------------------------------
+
+namespace {
+
+std::vector<VkLayerSettingEXT> CaptureTriggerSettings(const VkBool32* capture_trigger,
+                                                      const uint32_t* capture_trigger_boundary_count) {
+    std::vector<VkLayerSettingEXT> settings_values = {
+        {kLayerName, "capture_trigger", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, capture_trigger}};
+    if (capture_trigger_boundary_count != nullptr) {
+        settings_values.push_back(
+            {kLayerName, "capture_trigger_boundary_count", VK_LAYER_SETTING_TYPE_UINT32_EXT, 1, capture_trigger_boundary_count});
+    }
+    return settings_values;
+}
+
+// The settings for a json dump to `filename` with always_dump_setup, which records every frame and
+// tags the ones outside the range or trigger. The pointers have to outlive the returned settings.
+void AddJsonDumpSettings(std::vector<VkLayerSettingEXT>& settings_values, const char* const* format, const char* const* filename,
+                         const VkBool32* always_dump_setup) {
+    settings_values.push_back({kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, format});
+    settings_values.push_back({kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, filename});
+    settings_values.push_back({kLayerName, "always_dump_setup", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, always_dump_setup});
+}
+
+// Whether each frame object in a json dump, in order, is tagged isSetupFrame.
+std::vector<bool> SetupFrameTags(const std::string& contents) {
+    std::vector<bool> setup_frames;
+    const std::string frame_number_key = "\"frameNumber\" : \"";
+    for (size_t at = contents.find(frame_number_key); at != std::string::npos; at = contents.find(frame_number_key, at + 1)) {
+        const size_t calls = contents.find("\"apiCalls\"", at);
+        if (calls == std::string::npos) {
+            break;
+        }
+        setup_frames.push_back(contents.substr(at, calls - at).find("\"isSetupFrame\"") != std::string::npos);
+    }
+    return setup_frames;
+}
+
+}  // namespace
+
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountStopsDumpingAfterThatManyFrames) {
+    VkBool32 capture_trigger = VK_TRUE;
+    uint32_t capture_trigger_boundary_count = 2;
+    ApiDumpInstance instance;
+    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count));
+    ApiDumpSettings& settings = instance.settings();
+
+    EXPECT_TRUE(settings.isFrameInRange(0));
+    settings.refreshCaptureTrigger();
+    EXPECT_TRUE(settings.isFrameInRange(1));
+    settings.refreshCaptureTrigger();
+    EXPECT_FALSE(settings.isFrameInRange(2));
+    // The trigger is still on, but it takes turning it off and on again to dump more.
+    settings.refreshCaptureTrigger();
+    EXPECT_FALSE(settings.isFrameInRange(3));
+}
+
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountDefaultsToDumpingWhileTheTriggerIsOn) {
+    VkBool32 capture_trigger = VK_TRUE;
+    ApiDumpInstance instance;
+    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, nullptr));
+    ApiDumpSettings& settings = instance.settings();
+
+    for (uint64_t frame = 0; frame < 10; ++frame) {
+        EXPECT_TRUE(settings.isFrameInRange(frame)) << "frame " << frame;
+        settings.refreshCaptureTrigger();
+    }
+}
+
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountDoesNotStartDumpingWhileTheTriggerIsOff) {
+    VkBool32 capture_trigger = VK_FALSE;
+    uint32_t capture_trigger_boundary_count = 2;
+    ApiDumpInstance instance;
+    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count));
+    ApiDumpSettings& settings = instance.settings();
+
+    for (uint64_t frame = 0; frame < 4; ++frame) {
+        EXPECT_FALSE(settings.isFrameInRange(frame)) << "frame " << frame;
+        settings.refreshCaptureTrigger();
+    }
+}
+
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountSurvivesAnotherInstance) {
+    // init runs again for every VkInstance a process creates. Once the count has ended, a new instance
+    // must not turn dumping back on.
+    VkBool32 capture_trigger = VK_TRUE;
+    uint32_t capture_trigger_boundary_count = 1;
+    ApiDumpInstance instance;
+    const std::vector<VkLayerSettingEXT> settings_values =
+        CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count);
+    InitWithSettings(instance, settings_values);
+    ApiDumpSettings& settings = instance.settings();
+
+    EXPECT_TRUE(settings.isFrameInRange(0));
+    settings.refreshCaptureTrigger();
+    EXPECT_FALSE(settings.isFrameInRange(1));
+
+    InitWithSettings(instance, settings_values);
+    EXPECT_FALSE(settings.isFrameInRange(1));
+}
+
+TEST_F(ApiDumpInstanceTests, TriggeredFramesAreTaggedFromTheirOwnState) {
+    // Each frame's isSetupFrame tag has to describe that frame. It was once written before the trigger
+    // was refreshed, which tagged every frame from the frame before it.
+    ScopedFile file("api_dump_trigger_frames.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    VkBool32 always_dump_setup = VK_TRUE;
+    VkBool32 capture_trigger = VK_TRUE;
+    uint32_t capture_trigger_boundary_count = 2;
+    {
+        ApiDumpInstance instance;
+        std::vector<VkLayerSettingEXT> settings_values = CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count);
+        AddJsonDumpSettings(settings_values, &format, &filename, &always_dump_setup);
+        InitWithSettings(instance, settings_values);
+
+        for (int frame = 1; frame <= 4; ++frame) {
+            instance.nextFrame();
+        }
+    }  // Closes the last frame and the file.
+
+    EXPECT_EQ(SetupFrameTags(ReadWholeFile(file.path)), (std::vector<bool>{false, false, true, true, true}));
+}
+
+TEST_F(ApiDumpInstanceTests, QueueSubmitRangeTagsFramesByTheirQueueSubmissions) {
+    // A frame is tagged by whether the queue submission it starts with is in the range, not by its own
+    // number: the two differ as soon as a frame has more than one submission, here the first.
+    ScopedFile file("api_dump_queue_submit_range.json");
+    const char* format = "json";
+    const char* filename = file.path.c_str();
+    VkBool32 always_dump_setup = VK_TRUE;
+    const char* boundary_value = "queue_submits";
+    const char* range_value = "4-3";  // submissions 4 to 6, counting from 0
+    {
+        ApiDumpInstance instance;
+        std::vector<VkLayerSettingEXT> settings_values = {
+            {kLayerName, "capture_trigger_boundary", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &boundary_value},
+            {kLayerName, "output_range_queue_submits", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &range_value}};
+        AddJsonDumpSettings(settings_values, &format, &filename, &always_dump_setup);
+        InitWithSettings(instance, settings_values);
+
+        // Frame 0 uploads its resources in three submissions before the one it draws with.
+        for (int submission = 0; submission < 4; ++submission) {
+            instance.notifyQueueSubmit();
+        }
+        instance.nextFrame();
+        // Then one submission per frame: frames 1 to 3 hold submissions 4 to 6.
+        for (int frame = 1; frame <= 4; ++frame) {
+            instance.notifyQueueSubmit();
+            instance.nextFrame();
+        }
+    }  // Closes the last frame and the file.
+
+    EXPECT_EQ(SetupFrameTags(ReadWholeFile(file.path)), (std::vector<bool>{true, false, false, false, true, true}));
+}
