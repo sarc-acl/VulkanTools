@@ -136,7 +136,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL layer_vkGetDeviceProcAddr(VkDevice devi
 #define kSettingsKeyShowThreadAndFrame "show_thread_and_frame"
 #define kSettingsKeyCaptureTrigger "capture_trigger"
 #define kSettingsKeyCaptureTriggerBoundary "capture_trigger_boundary"
-#define kSettingsKeyCaptureTriggerFrames "capture_trigger_frames"
+#define kSettingsKeyCaptureTriggerBoundaryCount "capture_trigger_boundary_count"
 #define kSettingsKeyAlwaysDumpSetup "always_dump_setup"
 #define kSettingsKeyShowEnumValue "show_enum_value"
 #define kSettingsKeyFloatPrecision "float_precision"
@@ -803,7 +803,7 @@ class ApiDumpSettings {
     // first: that function only appears in the NDK headers from r28 on, and one property read per
     // frame is not worth a version dependency in a layer that serializes every call it dumps.
     //
-    // With capture_trigger_frames, also counts the frames (or queue submissions) dumped since the
+    // With capture_trigger_boundary_count, also counts the frames (or queue submissions) dumped since the
     // trigger turned on, and stops dumping once there are that many. Dumping then stays off until the
     // trigger is turned off and on again, which starts a new count.
     void refreshCaptureTrigger() {
@@ -818,7 +818,7 @@ class ApiDumpSettings {
 #endif
         if (!capture_requested) {
             captured_boundaries = 0;
-        } else if (dumped && capture_trigger_frames > 0) {
+        } else if (dumped && capture_trigger_boundary_count > 0) {
             ++captured_boundaries;
         }
         updateCaptureTriggered();
@@ -1080,9 +1080,9 @@ class ApiDumpSettings {
 
             // Only means anything with the trigger. Unlike the trigger it is not polled: it is fixed
             // for the life of the process, like every other setting.
-            capture_trigger_frames = 0;
-            if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTriggerFrames)) {
-                vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTriggerFrames, capture_trigger_frames);
+            capture_trigger_boundary_count = 0;
+            if (vkuHasLayerSetting(layerSettingSet, kSettingsKeyCaptureTriggerBoundaryCount)) {
+                vkuGetLayerSettingValue(layerSettingSet, kSettingsKeyCaptureTriggerBoundaryCount, capture_trigger_boundary_count);
             }
             // captured_boundaries is left alone: init runs again for every VkInstance the process
             // creates, and a new instance must neither restart a count in progress nor resume dumping
@@ -1242,9 +1242,9 @@ class ApiDumpSettings {
     }
 
    private:
-    // Dump while the trigger is on, until capture_trigger_frames frames or queue submissions were dumped.
+    // Dump while the trigger is on, until capture_trigger_boundary_count frames or queue submissions were dumped.
     void updateCaptureTriggered() {
-        const bool count_reached = capture_trigger_frames > 0 && captured_boundaries >= capture_trigger_frames;
+        const bool count_reached = capture_trigger_boundary_count > 0 && captured_boundaries >= capture_trigger_boundary_count;
         capture_triggered.store(capture_requested && !count_reached, std::memory_order_relaxed);
     }
 
@@ -1321,15 +1321,15 @@ class ApiDumpSettings {
     bool use_capture_trigger = false;
     std::atomic<bool> capture_triggered{false};
     // What the trigger itself says. capture_triggered follows it, except that it also goes off once
-    // capture_trigger_frames frames or queue submissions were dumped. Only used by init and
+    // capture_trigger_boundary_count frames or queue submissions were dumped. Only used by init and
     // refreshCaptureTrigger, which every caller serializes.
     bool capture_requested = false;
     // How many frames (or queue submissions, per capture_trigger_boundary) to dump each time the
-    // trigger turns on. 0 dumps for as long as it stays on. Mirrors gfxreconstruct's setting of the
-    // same name.
-    uint32_t capture_trigger_frames = 0;
+    // trigger turns on. 0 dumps for as long as it stays on. Like gfxreconstruct's
+    // capture_trigger_boundary_count.
+    uint32_t capture_trigger_boundary_count = 0;
     // Frames or queue submissions dumped since the trigger last turned on, while counting them
-    // against capture_trigger_frames.
+    // against capture_trigger_boundary_count.
     uint32_t captured_boundaries = 0;
     // Whether a frame object is open, so that it is closed exactly when it was opened, whatever the
     // range or trigger says by the time the frame ends. Written from const methods, like output_stream.

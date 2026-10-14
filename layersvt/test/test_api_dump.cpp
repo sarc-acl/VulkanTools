@@ -905,19 +905,20 @@ TEST_F(ApiDumpFastWriterTests, JsonHelpersWriteExactlyWhatTheOstreamVersionsWrot
 }
 
 // ---------------------------------------------------------------------------------------------------
-// capture_trigger_frames, and the isSetupFrame tag of each frame. The trigger property only exists on
-// Android, so off it the trigger keeps the value of the capture_trigger setting, and each refresh
-// stands for one frame boundary passing.
+// capture_trigger_boundary_count, and the isSetupFrame tag of each frame. The layer only polls the
+// trigger property on Android. Elsewhere, as in these tests, the trigger stays at the value of the
+// capture_trigger setting, and each call to refreshCaptureTrigger stands for one boundary passing.
 // ---------------------------------------------------------------------------------------------------
 
 namespace {
 
-std::vector<VkLayerSettingEXT> CaptureTriggerSettings(const VkBool32* capture_trigger, const uint32_t* capture_trigger_frames) {
+std::vector<VkLayerSettingEXT> CaptureTriggerSettings(const VkBool32* capture_trigger,
+                                                      const uint32_t* capture_trigger_boundary_count) {
     std::vector<VkLayerSettingEXT> settings_values = {
         {kLayerName, "capture_trigger", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, capture_trigger}};
-    if (capture_trigger_frames != nullptr) {
+    if (capture_trigger_boundary_count != nullptr) {
         settings_values.push_back(
-            {kLayerName, "capture_trigger_frames", VK_LAYER_SETTING_TYPE_UINT32_EXT, 1, capture_trigger_frames});
+            {kLayerName, "capture_trigger_boundary_count", VK_LAYER_SETTING_TYPE_UINT32_EXT, 1, capture_trigger_boundary_count});
     }
     return settings_values;
 }
@@ -947,11 +948,11 @@ std::vector<bool> SetupFrameTags(const std::string& contents) {
 
 }  // namespace
 
-TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesStopsDumpingAfterThatManyFrames) {
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountStopsDumpingAfterThatManyFrames) {
     VkBool32 capture_trigger = VK_TRUE;
-    uint32_t capture_trigger_frames = 2;
+    uint32_t capture_trigger_boundary_count = 2;
     ApiDumpInstance instance;
-    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_frames));
+    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count));
     ApiDumpSettings& settings = instance.settings();
 
     EXPECT_TRUE(settings.isFrameInRange(0));
@@ -964,7 +965,7 @@ TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesStopsDumpingAfterThatManyFrames
     EXPECT_FALSE(settings.isFrameInRange(3));
 }
 
-TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesDefaultsToDumpingWhileTheTriggerIsOn) {
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountDefaultsToDumpingWhileTheTriggerIsOn) {
     VkBool32 capture_trigger = VK_TRUE;
     ApiDumpInstance instance;
     InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, nullptr));
@@ -976,11 +977,11 @@ TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesDefaultsToDumpingWhileTheTrigge
     }
 }
 
-TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesDoesNotStartDumpingWhileTheTriggerIsOff) {
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountDoesNotStartDumpingWhileTheTriggerIsOff) {
     VkBool32 capture_trigger = VK_FALSE;
-    uint32_t capture_trigger_frames = 2;
+    uint32_t capture_trigger_boundary_count = 2;
     ApiDumpInstance instance;
-    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_frames));
+    InitWithSettings(instance, CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count));
     ApiDumpSettings& settings = instance.settings();
 
     for (uint64_t frame = 0; frame < 4; ++frame) {
@@ -989,13 +990,14 @@ TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesDoesNotStartDumpingWhileTheTrig
     }
 }
 
-TEST_F(ApiDumpInstanceTests, CaptureTriggerFramesSurvivesAnotherInstance) {
+TEST_F(ApiDumpInstanceTests, CaptureTriggerBoundaryCountSurvivesAnotherInstance) {
     // init runs again for every VkInstance a process creates. Once the count has ended, a new instance
     // must not turn dumping back on.
     VkBool32 capture_trigger = VK_TRUE;
-    uint32_t capture_trigger_frames = 1;
+    uint32_t capture_trigger_boundary_count = 1;
     ApiDumpInstance instance;
-    const std::vector<VkLayerSettingEXT> settings_values = CaptureTriggerSettings(&capture_trigger, &capture_trigger_frames);
+    const std::vector<VkLayerSettingEXT> settings_values =
+        CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count);
     InitWithSettings(instance, settings_values);
     ApiDumpSettings& settings = instance.settings();
 
@@ -1015,10 +1017,10 @@ TEST_F(ApiDumpInstanceTests, TriggeredFramesAreTaggedFromTheirOwnState) {
     const char* filename = file.path.c_str();
     VkBool32 always_dump_setup = VK_TRUE;
     VkBool32 capture_trigger = VK_TRUE;
-    uint32_t capture_trigger_frames = 2;
+    uint32_t capture_trigger_boundary_count = 2;
     {
         ApiDumpInstance instance;
-        std::vector<VkLayerSettingEXT> settings_values = CaptureTriggerSettings(&capture_trigger, &capture_trigger_frames);
+        std::vector<VkLayerSettingEXT> settings_values = CaptureTriggerSettings(&capture_trigger, &capture_trigger_boundary_count);
         AddJsonDumpSettings(settings_values, &format, &filename, &always_dump_setup);
         InitWithSettings(instance, settings_values);
 

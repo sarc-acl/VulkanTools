@@ -371,8 +371,8 @@
                     "default": "frames"
                 },
                 {
-                    "key": "capture_trigger_frames",
-                    "label": "Capture Trigger Frames",
+                    "key": "capture_trigger_boundary_count",
+                    "label": "Capture Trigger Boundary Count",
                     "description": "With capture_trigger: the number of frames (or queue submissions, per capture_trigger_boundary) to dump each time the trigger turns on. Dumping then stops by itself, and starts again only once the trigger was turned off and on. 0 dumps for as long as the trigger stays on.",
                     "type": "INT",
                     "default": 0
