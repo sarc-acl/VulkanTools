@@ -8,7 +8,7 @@ on:
     inputs:
       release_tag:
         description: 'Release tag'
-        default: 'v1.4.361'
+        default: 'v1.4.363.1'
         required: true
         type: string
 
@@ -35,10 +35,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Android NDK/SDK is preinstalled on the macos-latest runner image.
         abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
 
-    runs-on: macos-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
 
     steps:
