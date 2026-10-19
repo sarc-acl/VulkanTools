@@ -1821,6 +1821,53 @@ void dump_json_value_w(ApiDumpFastWriter &writer, const ApiDumpSettings &setting
     writer << '"';
 }
 
+// A string as a Json value: quoted, with the quote, the backslash and the control characters escaped as
+// Json requires. Strings from the application - object names, debug labels and the like - may contain
+// any of these (a line break in a render pass name, say), and written as they are they make the whole
+// file invalid. The runs between the characters that need escaping are written as they are.
+inline void dump_json_string_w(ApiDumpFastWriter &writer, const char *text) {
+    writer << " \"";
+    const char *run = text;
+    const char *p = text;
+    for (; *p != '\0'; ++p) {
+        const unsigned char c = static_cast<unsigned char>(*p);
+        if (c != '"' && c != '\\' && c >= 0x20) continue;
+        writer << std::string_view(run, static_cast<size_t>(p - run));
+        switch (c) {
+            case '"':
+                writer << "\\\"";
+                break;
+            case '\\':
+                writer << "\\\\";
+                break;
+            case '\n':
+                writer << "\\n";
+                break;
+            case '\r':
+                writer << "\\r";
+                break;
+            case '\t':
+                writer << "\\t";
+                break;
+            case '\b':
+                writer << "\\b";
+                break;
+            case '\f':
+                writer << "\\f";
+                break;
+            default: {
+                static constexpr char kHexDigits[] = "0123456789abcdef";
+                const char escape[] = {'\\', 'u', '0', '0', kHexDigits[c >> 4], kHexDigits[c & 0xf]};
+                writer << std::string_view(escape, sizeof(escape));
+                break;
+            }
+        }
+        run = p + 1;
+    }
+    writer << std::string_view(run, static_cast<size_t>(p - run));
+    writer << '"';
+}
+
 template <ApiDumpFormat Format, typename... T>
 void dump_value(const ApiDumpSettings &settings, T &&...values) {
     if constexpr (Format == ApiDumpFormat::Json) {
@@ -2132,7 +2179,8 @@ void dump_char(const char *object, const ApiDumpSettings &settings, const char *
         else
             dump_value<Format>(settings, '"', object, '"');
     } else if constexpr (Format == ApiDumpFormat::Json) {
-        dump_value<Format>(settings, (object != NULL ? object : ""));
+        ApiDumpFastWriter writer(settings.stream());
+        dump_json_string_w(writer, object != NULL ? object : "");
     }
     dump_end<Format>(settings, OutputConstruct::value, indents);
 }
