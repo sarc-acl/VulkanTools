@@ -193,6 +193,20 @@ SPECIAL_LENGTH = {
     }
 }
 
+# Arrays of pointers (T* const*) whose inner arrays have their own length, which the registry has no way to express
+# (it only gives the length of the outer array). Maps command -> parameter -> C++ expression for the length of inner
+# array 'i'. These are dumped with dump_double_pointer_array_variable_length instead of dump_double_pointer_array,
+# which would only dump the first element each pointer refers to.
+SPECIAL_INNER_LENGTH = {
+    'vkCmdBuildAccelerationStructuresKHR': {
+        # ppBuildRangeInfos[i] points to pInfos[i].geometryCount VkAccelerationStructureBuildRangeInfoKHR
+        'ppBuildRangeInfos': 'pInfos ? pInfos[i].geometryCount : 1',
+    },
+    'vkBuildAccelerationStructuresKHR': {
+        'ppBuildRangeInfos': 'pInfos ? pInfos[i].geometryCount : 1',
+    },
+}
+
 HANDWRITTEN_FUNCTIONS = ['vkCreateInstance',
                          'vkCreateDevice',
                          'vkEnumerateInstanceExtensionProperties',
@@ -976,7 +990,11 @@ class ApiDumpGenerator(BaseGenerator):
 
             else:
                 array_len = get_array_length(var, parent)
-                if var.fullType.count('*') > 1 and var.type not in ['void', 'char'] and (call_type in self.vulkan_defined_types):
+                if parent.name in SPECIAL_INNER_LENGTH and var.name in SPECIAL_INNER_LENGTH[parent.name]:
+                    inner_length = SPECIAL_INNER_LENGTH[parent.name][var.name]
+                    inner_element_type = custom_type.rstrip('*')
+                    self.write(f'dump_double_pointer_array_variable_length<Format>({value}, {array_len}, [&](size_t i) -> size_t {{ return {inner_length}; }}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", "{inner_element_type}", {indent}, {element_type});')
+                elif var.fullType.count('*') > 1 and var.type not in ['void', 'char'] and (call_type in self.vulkan_defined_types):
                     self.write(f'dump_double_pointer_array<Format>({value}, {array_len}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", {indent}, {element_type});')
                 else:
                     self.write(f'dump_pointer_array<Format>({value}, {array_len}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", {indent}, {element_type});')

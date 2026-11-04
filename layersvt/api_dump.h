@@ -2442,6 +2442,33 @@ void dump_double_pointer_array(const T *const *array, size_t len, const ApiDumpS
     dump_array_end<Format>(array, len, settings, indents);
 }
 
+// An array of `len` pointers where each pointer refers to its own array, whose length differs per element and is given by
+// `inner_length(i)`. Used for parameters the registry can't describe fully, such as vkCmdBuildAccelerationStructuresKHR
+// ppBuildRangeInfos, where ppBuildRangeInfos[i] points to pInfos[i].geometryCount structures. Unlike
+// dump_double_pointer_array (one struct per pointer), each element is dumped as an array of its own:
+//     [i] -> { "type": element_type, "name": "[i]", "address": ..., "elements": [ ... inner_length(i) structs ... ] }
+// A null inner pointer, or an inner length of zero, is dumped as a null pointer.
+template <ApiDumpFormat Format, typename T, typename InnerLength, typename DumpElement>
+void dump_double_pointer_array_variable_length(const T *const *array, size_t len, InnerLength inner_length,
+                                               const ApiDumpSettings &settings, const char *type_string, const char *name,
+                                               const char *element_type, const char *inner_element_type, int indents,
+                                               DumpElement dump_element) {
+    if (array == nullptr || len == 0) {
+        dump_nullptr<Format>(settings, type_string, name, indents);
+        return;
+    }
+    dump_array_start<Format>(array, len, settings, type_string, name, indents);
+    for (size_t i = 0; i < len; ++i) {
+        const ArrayElementName<Format> indexName(name, i);
+        dump_pointer_array<Format>(array[i], static_cast<size_t>(inner_length(i)), settings, element_type, indexName.c_str(),
+                                   inner_element_type, indents + (Format == ApiDumpFormat::Json ? 2 : 1), dump_element);
+        if constexpr (Format == ApiDumpFormat::Json) {
+            dump_json_element_end(settings, !(i < len - 1));
+        }
+    }
+    dump_array_end<Format>(array, len, settings, indents);
+}
+
 // Designed to be viewed in something like https://www.khronos.org/spir/visualizer/
 // There is also now support in SPIRV-Tools (https://github.com/KhronosGroup/SPIRV-Tools/pull/5870) to consume the array
 template <ApiDumpFormat Format, typename T>
