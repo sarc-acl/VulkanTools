@@ -70344,7 +70344,7 @@ void dump_params_vkCmdBuildAccelerationStructuresKHR(ApiDumpInstance& dump_inst,
         dump_separate_members<Format>(settings);
         dump_pointer_array<Format>(pInfos, infoCount, settings, "const VkAccelerationStructureBuildGeometryInfoKHR*", "pInfos", "const VkAccelerationStructureBuildGeometryInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildGeometryInfoKHR<Format>);
         dump_separate_members<Format>(settings);
-        dump_double_pointer_array_variable_length<Format>(ppBuildRangeInfos, infoCount, [&](size_t i) -> size_t { return pInfos ? pInfos[i].geometryCount : 1; }, settings, "const VkAccelerationStructureBuildRangeInfoKHR* const*", "ppBuildRangeInfos", "const VkAccelerationStructureBuildRangeInfoKHR*", "const VkAccelerationStructureBuildRangeInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildRangeInfoKHR<Format>);
+        dump_double_pointer_array_variable_length<Format>(ppBuildRangeInfos, infoCount, [&](size_t i) -> size_t { return pInfos ? pInfos[i].geometryCount : 0; }, settings, "const VkAccelerationStructureBuildRangeInfoKHR* const*", "ppBuildRangeInfos", "const VkAccelerationStructureBuildRangeInfoKHR*", "const VkAccelerationStructureBuildRangeInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildRangeInfoKHR<Format>);
         dump_post_params_formatting<Format>(settings);
         flush(settings);
     }
@@ -70365,7 +70365,7 @@ void dump_params_vkCmdBuildAccelerationStructuresIndirectKHR(ApiDumpInstance& du
         dump_separate_members<Format>(settings);
         dump_pointer_array<Format>(pIndirectStrides, infoCount, settings, "const uint32_t*", "pIndirectStrides", "const uint32_t", (Format == ApiDumpFormat::Json ? 4 : 1), dump_type<Format, const uint32_t>);
         dump_separate_members<Format>(settings);
-        dump_pointer_array<Format>(ppMaxPrimitiveCounts, infoCount, settings, "const uint32_t* const*", "ppMaxPrimitiveCounts", "const uint32_t*", (Format == ApiDumpFormat::Json ? 4 : 1), dump_type<Format, const uint32_t*>);
+        dump_double_pointer_array_variable_length<Format>(ppMaxPrimitiveCounts, infoCount, [&](size_t i) -> size_t { return pInfos ? pInfos[i].geometryCount : 0; }, settings, "const uint32_t* const*", "ppMaxPrimitiveCounts", "const uint32_t*", "const uint32_t", (Format == ApiDumpFormat::Json ? 4 : 1), dump_type<Format, const uint32_t>);
         dump_post_params_formatting<Format>(settings);
         flush(settings);
     }
@@ -70384,7 +70384,7 @@ void dump_params_vkBuildAccelerationStructuresKHR(ApiDumpInstance& dump_inst, Vk
         dump_separate_members<Format>(settings);
         dump_pointer_array<Format>(pInfos, infoCount, settings, "const VkAccelerationStructureBuildGeometryInfoKHR*", "pInfos", "const VkAccelerationStructureBuildGeometryInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildGeometryInfoKHR<Format>);
         dump_separate_members<Format>(settings);
-        dump_double_pointer_array_variable_length<Format>(ppBuildRangeInfos, infoCount, [&](size_t i) -> size_t { return pInfos ? pInfos[i].geometryCount : 1; }, settings, "const VkAccelerationStructureBuildRangeInfoKHR* const*", "ppBuildRangeInfos", "const VkAccelerationStructureBuildRangeInfoKHR*", "const VkAccelerationStructureBuildRangeInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildRangeInfoKHR<Format>);
+        dump_double_pointer_array_variable_length<Format>(ppBuildRangeInfos, infoCount, [&](size_t i) -> size_t { return pInfos ? pInfos[i].geometryCount : 0; }, settings, "const VkAccelerationStructureBuildRangeInfoKHR* const*", "ppBuildRangeInfos", "const VkAccelerationStructureBuildRangeInfoKHR*", "const VkAccelerationStructureBuildRangeInfoKHR", (Format == ApiDumpFormat::Json ? 4 : 1), dump_VkAccelerationStructureBuildRangeInfoKHR<Format>);
         dump_post_params_formatting<Format>(settings);
         flush(settings);
     }
