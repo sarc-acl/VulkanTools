@@ -193,6 +193,23 @@ SPECIAL_LENGTH = {
     }
 }
 
+# ppBuildRangeInfos[i] and ppMaxPrimitiveCounts[i] each point to pInfos[i].geometryCount elements. When pInfos is null that
+# length isn't known, so it is 0 and only the pointer is dumped, rather than reading through one that may not be valid.
+GEOMETRY_COUNT_OF_INFO = 'pInfos ? pInfos[i].geometryCount : 0'
+
+# Command parameters that are arrays of pointers (T* const*) whose inner arrays have a length of their own, which the
+# registry has no way to express (it only gives the length of the outer array). Maps parameter name -> C++ expression for
+# the length of inner array 'i' (in terms of the command's other parameters). These are dumped with
+# dump_double_pointer_array_variable_length; dump_double_pointer_array would only dump the first element each pointer
+# refers to.
+# This is keyed by parameter name, not command, so any alias or promotion of a command with such a parameter is covered.
+# Every entry has to match at least one command parameter, which generate_implementation checks, so one that stops
+# matching (for example after a rename in the registry) fails the generator instead of silently truncating the output.
+SPECIAL_INNER_LENGTH = {
+    'ppBuildRangeInfos': GEOMETRY_COUNT_OF_INFO,
+    'ppMaxPrimitiveCounts': GEOMETRY_COUNT_OF_INFO,
+}
+
 HANDWRITTEN_FUNCTIONS = ['vkCreateInstance',
                          'vkCreateDevice',
                          'vkEnumerateInstanceExtensionProperties',
@@ -334,6 +351,7 @@ class ApiDumpGenerator(BaseGenerator):
         self.return_types = set()
         self.vulkan_defined_types = set()
         self.only_use_as_pointer_types = set()
+        self.used_inner_length = set()
 
     def generate(self):
         self.build_return_types()
@@ -820,6 +838,10 @@ class ApiDumpGenerator(BaseGenerator):
             }''')
         protect.add_guard(self, None)
 
+        unused_inner_length = set(SPECIAL_INNER_LENGTH) - self.used_inner_length
+        if unused_inner_length:
+            raise RuntimeError(f'SPECIAL_INNER_LENGTH entries match no command parameter: {sorted(unused_inner_length)}')
+
         self.write('\n//========================== Type Implementations =========================//\n')
         self.write('''
             template <ApiDumpFormat Format>
@@ -976,7 +998,16 @@ class ApiDumpGenerator(BaseGenerator):
 
             else:
                 array_len = get_array_length(var, parent)
-                if var.fullType.count('*') > 1 and var.type not in ['void', 'char'] and (call_type in self.vulkan_defined_types):
+                if isinstance(parent, Command) and var.name in SPECIAL_INNER_LENGTH:
+                    if not any(param.name == 'pInfos' for param in parent.params):
+                        raise RuntimeError(f'{parent.name} {var.name}: its inner length is in terms of pInfos, which it does not have')
+                    self.used_inner_length.add(var.name)
+                    inner_length = SPECIAL_INNER_LENGTH[var.name]
+                    inner_element_type = custom_type.rstrip('*')
+                    # Structs are dumped by their own function, anything else (such as the uint32_t of ppMaxPrimitiveCounts) as a plain value
+                    inner_element = element_type if call_type in self.vulkan_defined_types else f'dump_type<Format, {inner_element_type}>'
+                    self.write(f'dump_double_pointer_array_variable_length<Format>({value}, {array_len}, [&](size_t i) -> size_t {{ return {inner_length}; }}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", "{inner_element_type}", {indent}, {inner_element});')
+                elif var.fullType.count('*') > 1 and var.type not in ['void', 'char'] and (call_type in self.vulkan_defined_types):
                     self.write(f'dump_double_pointer_array<Format>({value}, {array_len}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", {indent}, {element_type});')
                 else:
                     self.write(f'dump_pointer_array<Format>({value}, {array_len}, settings, "{custom_fullType}", "{var.name}", "{custom_type}", {indent}, {element_type});')
