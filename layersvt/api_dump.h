@@ -79,8 +79,12 @@
 #if defined(_WIN32)
 // Used by GetCurrentProcessName. NOMINMAX avoids windows.h's min/max macros shadowing std::min/max,
 // used throughout this header.
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #endif
 
