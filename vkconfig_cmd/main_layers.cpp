@@ -24,6 +24,7 @@
 #include "../vkconfig_core/configuration.h"
 #include "../vkconfig_core/layer_manager.h"
 
+#include <algorithm>
 #include <cassert>
 
 static int RunLayersOverride(Configurator& configurator, const CommandLine& command_line) {
@@ -87,21 +88,40 @@ static int RunLayersSurrender(Configurator& configurator, const CommandLine& com
 }
 
 static int RunLayersPath(Configurator& configurator, const CommandLine& command_line) {
-    printf("vkconfig: [INFO] Vulkan Layers paths:\n");
+    const std::array<std::vector<Path>, LAYERS_PATHS_COUNT>& paths = configurator.layers.BuildLayersSearchPaths();
 
-    const std::set<LayerDisplay>& layer_display_list = configurator.layers.BuildLayerDisplayList();
+    for (std::size_t group_index = 0, group_count = paths.size(); group_index < group_count; ++group_index) {
+        const LayersPaths layers_paths = static_cast<LayersPaths>(group_index);
 
-    for (auto it = layer_display_list.begin(), end = layer_display_list.end(); it != end; ++it) {
-        const Layer* layer = configurator.layers.FindFromManifest(it->id.manifest_path, true);
-        if (layer == nullptr) {
+        const std::vector<Path>& paths_group = paths[group_index];
+
+        printf("%s (%s layers):\n", ::GetLabel(layers_paths), ::GetToken(::GetLayerType(layers_paths)));
+        if (paths_group.empty()) {
+            printf(" - None\n");
             continue;
         }
 
-        const std::string status = layer->status == STATUS_STABLE ? "" : format(" (%s)", ::GetToken(layer->status));
-        const std::string text = format("%s - %s%s, %s layer", layer->key.c_str(), layer->api_version.str().c_str(), status.c_str(),
-                                        ::GetToken(layer->type));
+        // Some locations are layer manifest files, only print their directory once
+        std::vector<std::string> printed_dirs;
+        for (std::size_t i = 0, n = paths_group.size(); i < n; ++i) {
+            const Path& path = paths_group[i];
+            const std::string dir = path.IsFile() ? path.AbsoluteDir() : path.AbsolutePath();
 
-        printf(" - %s\n", text.c_str());
+            if (std::find(printed_dirs.begin(), printed_dirs.end(), dir) != printed_dirs.end()) {
+                continue;
+            }
+            printed_dirs.push_back(dir);
+
+            printf(" - %s\n", dir.c_str());
+
+            const std::vector<Layer>& layers = configurator.layers.available_layers;
+            for (std::size_t j = 0, m = layers.size(); j < m; ++j) {
+                if (layers[j].manifest_path.AbsoluteDir() == dir) {
+                    printf("    * %s - %s (%s)\n", layers[j].key.c_str(), layers[j].api_version.str().c_str(),
+                           layers[j].manifest_path.Filename().c_str());
+                }
+            }
+        }
     }
 
     return 0;
