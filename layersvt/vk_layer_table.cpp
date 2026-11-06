@@ -18,6 +18,7 @@
  * Author: Tobin Ehlis <tobin@lunarg.com>
  */
 #include <assert.h>
+#include <memory>
 #include <unordered_map>
 #include "vulkan/vk_layer.h"
 #include "vk_layer_table.h"
@@ -25,38 +26,32 @@
 static device_table_map tableMap;
 static instance_table_map tableInstanceMap;
 
-dispatch_key get_dispatch_key(const void *object) { return (dispatch_key) * (VkuDeviceDispatchTable **)object; }
+// The loader stores its dispatch table pointer in the first bytes of every dispatchable object. It's copied out rather than
+// read through a pointer cast, which would break C++'s aliasing rules.
+dispatch_key get_dispatch_key(const void *object) {
+    dispatch_key key = nullptr;
+    std::memcpy(&key, object, sizeof(key));
+    return key;
+}
 
 // Map lookup must be thread safe
 VkuDeviceDispatchTable *device_dispatch_table(void *object) {
     dispatch_key key = get_dispatch_key(object);
     device_table_map::const_iterator it = tableMap.find((void *)key);
     assert(it != tableMap.end() && "Not able to find device dispatch entry");
-    return it->second;
+    return it->second.get();
 }
 
 VkuInstanceDispatchTable *instance_dispatch_table(void *object) {
     dispatch_key key = get_dispatch_key(object);
     instance_table_map::const_iterator it = tableInstanceMap.find((void *)key);
     assert(it != tableInstanceMap.end() && "Not able to find instance dispatch entry");
-    return it->second;
+    return it->second.get();
 }
 
-void destroy_dispatch_table(device_table_map &map, dispatch_key key) {
-    device_table_map::const_iterator it = map.find((void *)key);
-    if (it != map.end()) {
-        delete it->second;
-        map.erase(it);
-    }
-}
+void destroy_dispatch_table(device_table_map &map, dispatch_key key) { map.erase(key); }
 
-void destroy_dispatch_table(instance_table_map &map, dispatch_key key) {
-    instance_table_map::const_iterator it = map.find((void *)key);
-    if (it != map.end()) {
-        delete it->second;
-        map.erase(it);
-    }
-}
+void destroy_dispatch_table(instance_table_map &map, dispatch_key key) { map.erase(key); }
 
 void destroy_device_dispatch_table(dispatch_key key) { destroy_dispatch_table(tableMap, key); }
 
@@ -66,30 +61,41 @@ VkuDeviceDispatchTable *get_dispatch_table(device_table_map &map, void *object) 
     dispatch_key key = get_dispatch_key(object);
     device_table_map::const_iterator it = map.find((void *)key);
     assert(it != map.end() && "Not able to find device dispatch entry");
-    return it->second;
+    return it->second.get();
 }
 
 VkuInstanceDispatchTable *get_dispatch_table(instance_table_map &map, void *object) {
     dispatch_key key = get_dispatch_key(object);
     instance_table_map::const_iterator it = map.find((void *)key);
     assert(it != map.end() && "Not able to find instance dispatch entry");
-    return it->second;
+    return it->second.get();
+}
+
+// The loader's struct of type `type` for `func` in a create info's pNext chain. The loader expects layers to change it,
+// so the const of the chain is cast away. A struct is only accessed as a LayerCreateInfo once its sType says it is one.
+template <typename LayerCreateInfo>
+static LayerCreateInfo *find_layer_create_info(const void *chain, VkStructureType type, VkLayerFunction func) {
+    for (const void *node = chain; node; node = read_chain_header(node).pNext) {
+        if (read_chain_header(node).sType == type) {
+            auto *info = static_cast<LayerCreateInfo *>(const_cast<void *>(node));
+            if (info->function == func) {
+                return info;
+            }
+        }
+    }
+    return nullptr;
 }
 
 VkLayerInstanceCreateInfo *get_chain_info(const VkInstanceCreateInfo *pCreateInfo, VkLayerFunction func) {
-    VkLayerInstanceCreateInfo *chain_info = (VkLayerInstanceCreateInfo *)pCreateInfo->pNext;
-    while (chain_info && !(chain_info->sType == VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO && chain_info->function == func)) {
-        chain_info = (VkLayerInstanceCreateInfo *)chain_info->pNext;
-    }
+    VkLayerInstanceCreateInfo *chain_info =
+        find_layer_create_info<VkLayerInstanceCreateInfo>(pCreateInfo->pNext, VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO, func);
     assert(chain_info != NULL);
     return chain_info;
 }
 
 VkLayerDeviceCreateInfo *get_chain_info(const VkDeviceCreateInfo *pCreateInfo, VkLayerFunction func) {
-    VkLayerDeviceCreateInfo *chain_info = (VkLayerDeviceCreateInfo *)pCreateInfo->pNext;
-    while (chain_info && !(chain_info->sType == VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO && chain_info->function == func)) {
-        chain_info = (VkLayerDeviceCreateInfo *)chain_info->pNext;
-    }
+    VkLayerDeviceCreateInfo *chain_info =
+        find_layer_create_info<VkLayerDeviceCreateInfo>(pCreateInfo->pNext, VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO, func);
     assert(chain_info != NULL);
     return chain_info;
 }
@@ -102,20 +108,15 @@ VkLayerDeviceCreateInfo *get_chain_info(const VkDeviceCreateInfo *pCreateInfo, V
  * If use the object themselves as key to map then implies Create entrypoints have to be intercepted
  * and a new key inserted into map */
 VkuInstanceDispatchTable *initInstanceTable(VkInstance instance, const PFN_vkGetInstanceProcAddr gpa, instance_table_map &map) {
-    VkuInstanceDispatchTable *pTable;
-    dispatch_key key = get_dispatch_key(instance);
-    instance_table_map::const_iterator it = map.find((void *)key);
-
-    if (it == map.end()) {
-        pTable = new VkuInstanceDispatchTable;
-        map[(void *)key] = pTable;
-    } else {
-        // An entry already under this key can only be left over from an instance that is gone, since a
-        // live one has a key of its own. Returning it as it is would hand the new instance function
-        // pointers from the old one, into layers that may since have been unloaded, so it is initialised
-        // again instead.
-        pTable = it->second;
+    std::unique_ptr<VkuInstanceDispatchTable> &table = map[get_dispatch_key(instance)];
+    // An entry already under this key can only be left over from an instance that is gone, since a
+    // live one has a key of its own. Returning it as it is would hand the new instance function
+    // pointers from the old one, into layers that may since have been unloaded, so it is initialised
+    // again instead.
+    if (!table) {
+        table = std::make_unique<VkuInstanceDispatchTable>();
     }
+    VkuInstanceDispatchTable *pTable = table.get();
 
     vkuInitInstanceDispatchTable(instance, pTable, gpa);
 
@@ -131,18 +132,13 @@ VkuInstanceDispatchTable *initInstanceTable(VkInstance instance, const PFN_vkGet
 }
 
 VkuDeviceDispatchTable *initDeviceTable(VkDevice device, const PFN_vkGetDeviceProcAddr gpa, device_table_map &map) {
-    VkuDeviceDispatchTable *pTable;
-    dispatch_key key = get_dispatch_key(device);
-    device_table_map::const_iterator it = map.find((void *)key);
-
-    if (it == map.end()) {
-        pTable = new VkuDeviceDispatchTable;
-        map[(void *)key] = pTable;
-    } else {
-        // See initInstanceTable: an existing entry is a stale one, and is initialised again rather
-        // than reused, so the new device never calls through the old device's function pointers.
-        pTable = it->second;
+    std::unique_ptr<VkuDeviceDispatchTable> &table = map[get_dispatch_key(device)];
+    // See initInstanceTable: an existing entry is a stale one, and is initialised again rather
+    // than reused, so the new device never calls through the old device's function pointers.
+    if (!table) {
+        table = std::make_unique<VkuDeviceDispatchTable>();
     }
+    VkuDeviceDispatchTable *pTable = table.get();
 
     vkuInitDeviceDispatchTable(device, pTable, gpa);
 
