@@ -1384,7 +1384,8 @@ class ApiDumpInstance {
 
     // Called from vkQueuePresentKHR, from vkQueueSubmit/vkQueueSubmit2 when a chained
     // VkFrameBoundaryEXT marks the end of a frame (see checkFrameBoundaryInSubmit), and from
-    // vkFrameBoundaryANDROID. Always advances frame_count and the frame's own JSON markup,
+    // vkFrameBoundaryANDROID. All three write the call that ends the frame into the dump before
+    // calling this, so it is the last entry of the frame it closes. Always advances frame_count and the frame's own JSON markup,
     // regardless of capture_trigger_boundary - a frame boundary is a frame boundary independent of
     // what output_range/capture_trigger is currently counting. See notifyQueueSubmit for the
     // independent counter used for range/trigger decisions when the boundary is queue_submits.
@@ -1446,13 +1447,17 @@ class ApiDumpInstance {
     // (GetCommandNumberAPIDUMP via GetInstanceProcAddr).
     void setFrameBoundaryAndroidFunction(PFN_vkFrameBoundaryANDROID fp) { next_frame_boundary_android = fp; }
 
-    // Hand-written interception for vkFrameBoundaryANDROID. Forwards to the resolved pointer so the
-    // app's call still reaches the driver - it is void, so there is nothing to fail even if no
-    // driver below actually implements it - then advances the real frame counter the same way any
-    // other genuine frame-boundary signal does.
-    void frameBoundaryAndroid(VkDevice device, VkSemaphore semaphore, VkImage image) {
+    // Forwards a vkFrameBoundaryANDROID to the resolved pointer so the app's call still reaches the
+    // driver - it is void, so there is nothing to fail even if no driver below actually implements it.
+    //
+    // Deliberately does not advance the frame counter: the interception (layer_vkFrameBoundaryANDROID)
+    // has to write the call into the dump first, so that it lands in the frame it ends, and only then
+    // call nextFrame() - the same order vkQueuePresentKHR uses. Without the entry in the dump, a frame
+    // that ends here has no visible reason to have ended, which is how an app whose UI renderer calls
+    // this on one thread while another thread presents ends up with frames that contain neither a
+    // present nor a submit.
+    void forwardFrameBoundaryAndroid(VkDevice device, VkSemaphore semaphore, VkImage image) {
         if (next_frame_boundary_android) next_frame_boundary_android(device, semaphore, image);
-        nextFrame();
     }
 
     // The number assigned to the command currently being dumped. Only advanced in dump_function_head
