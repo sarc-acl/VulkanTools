@@ -111,10 +111,15 @@ LayerControl Layer::GetActualControl() const {
 }
 
 int Layer::FindPresetIndex(const SettingDataSet& settings) const {
-    for (std::size_t i = 0, n = this->presets.size(); i < n; ++i) {
+    // Search the layer presets before the default preset, the default values may match a layer preset
+    for (std::size_t i = DEFAULT_PRESET + 1, n = this->presets.size(); i < n; ++i) {
         if (::HasPreset(settings, this->presets[i].settings)) {
             return static_cast<int>(i);
         }
+    }
+
+    if (!this->presets.empty() && ::HasPreset(settings, this->presets[DEFAULT_PRESET].settings)) {
+        return DEFAULT_PRESET;
     }
 
     return NO_PRESET;
@@ -435,6 +440,7 @@ void CollectDefaultSettingData(const SettingMetaSet& meta_set, SettingDataSet& d
 
         if (!setting_found) {
             SettingData* setting_data = setting_meta->Instantiate();
+            setting_data->ResetExpanded(*setting_meta);
             data_set.push_back(setting_data);
         }
 
