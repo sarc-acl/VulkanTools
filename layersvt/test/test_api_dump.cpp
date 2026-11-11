@@ -79,6 +79,82 @@ TEST_F(ApiDumpTests, init_layer) {
     EXPECT_STREQ(file_start_content_read.c_str(), file_start_content_expected);
 }
 
+// vkFrameBoundaryANDROID is not in the registry, so the generator never emitted a dump for it. The
+// layer has to write the call itself, as the last entry of the frame it ends - otherwise a frame can
+// end with nothing in the dump to say why.
+TEST_F(ApiDumpTests, FrameBoundaryAndroidIsDumpedAsTheLastCallOfTheFrameItEnds) {
+    const char* filename_string = "api_dump_frame_boundary_android.json";
+    std::remove(filename_string);
+
+    VkBool32 use_file = VK_TRUE;
+    const char* output_format = "json";
+    const std::vector<VkLayerSettingEXT> settings = {
+        {kLayerName, "file", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &use_file},
+        {kLayerName, "log_filename", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &filename_string},
+        {kLayerName, "output_format", VK_LAYER_SETTING_TYPE_STRING_EXT, 1, &output_format}};
+
+    {
+        layer_test::VulkanInstanceBuilder inst_builder;
+        ASSERT_EQ(inst_builder.Init(settings), VK_SUCCESS);
+
+        VkPhysicalDevice physical_device = VK_NULL_HANDLE;
+        if (inst_builder.GetPhysicalDevice(&physical_device) != VK_SUCCESS || physical_device == VK_NULL_HANDLE) {
+            GTEST_SKIP() << "no physical device to create a device on";
+        }
+        // The call below passes null semaphore and image, which the layer forwards to whatever it
+        // resolved below itself at vkCreateDevice. Harmless where nothing implements the function, but
+        // where a driver or lower layer does (Android), that would be an invalid call into real code.
+        // The test only needs the layer to answer by name, so it does not run there.
+        if (layer_test::IsExtensionSupported(physical_device, "VK_ANDROID_frame_boundary")) {
+            GTEST_SKIP() << "something below the layer implements VK_ANDROID_frame_boundary; "
+                            "not calling it with null handles";
+        }
+
+        float priority = 1.0f;
+        VkDeviceQueueCreateInfo queue_info{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
+        queue_info.queueFamilyIndex = 0;
+        queue_info.queueCount = 1;
+        queue_info.pQueuePriorities = &priority;
+        VkDeviceCreateInfo device_info{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
+        device_info.queueCreateInfoCount = 1;
+        device_info.pQueueCreateInfos = &queue_info;
+
+        VkDevice device = VK_NULL_HANDLE;
+        ASSERT_EQ(vkCreateDevice(physical_device, &device_info, nullptr, &device), VK_SUCCESS);
+
+        // Resolved by name, like an app does: the layer answers for it whether or not the driver
+        // below implements the extension.
+        auto fp = reinterpret_cast<void(VKAPI_PTR*)(VkDevice, VkSemaphore, VkImage)>(
+            vkGetDeviceProcAddr(device, "vkFrameBoundaryANDROID"));
+        ASSERT_NE(fp, nullptr);
+        fp(device, VK_NULL_HANDLE, VK_NULL_HANDLE);
+
+        vkDestroyDevice(device, nullptr);
+    }
+
+    std::ifstream stream(filename_string);
+    ASSERT_TRUE(stream.good());
+    const std::string dump((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+    stream.close();
+    std::remove(filename_string);
+
+    const size_t boundary_call = dump.find("\"name\" : \"vkFrameBoundaryANDROID\"");
+    ASSERT_NE(boundary_call, std::string::npos) << dump;
+    const size_t frame_one = dump.find("\"frameNumber\" : \"1\"");
+    ASSERT_NE(frame_one, std::string::npos) << dump;
+
+    // Written into the frame it ends (frame 0), not the one that opens after it.
+    EXPECT_LT(boundary_call, frame_one);
+    const size_t frame_zero = dump.find("\"frameNumber\" : \"0\"");
+    ASSERT_NE(frame_zero, std::string::npos);
+    EXPECT_LT(frame_zero, boundary_call);
+
+    // And the vkDestroyDevice after it belongs to frame 1.
+    const size_t destroy_call = dump.find("\"name\" : \"vkDestroyDevice\"");
+    ASSERT_NE(destroy_call, std::string::npos);
+    EXPECT_GT(destroy_call, frame_one);
+}
+
 // ConditionalFrameOutput parses output_range/output_range_queue_submits strings and answers
 // isFrameInRange for them. Neither needs a Vulkan device, so these test it directly rather than
 // through a full capture.
@@ -346,16 +422,83 @@ TEST_F(ApiDumpInstanceTests, QueueSubmitIsNeverSetupContentInFramesBoundary) {
     EXPECT_FALSE(instance.currentCommandIsSetup());
 }
 
-TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidAdvancesFrameCountWithNoDriverResolved) {
+static int g_frame_boundary_android_calls = 0;
+static void VKAPI_CALL CountingFrameBoundaryAndroid(VkDevice, VkSemaphore, VkImage) { ++g_frame_boundary_android_calls; }
+
+TEST_F(ApiDumpInstanceTests, ForwardFrameBoundaryAndroidWithNoDriverResolvedDoesNotCrash) {
     // The driver-forwarding pointer is resolved separately at CreateDevice time (see
-    // api_dump_handwritten_functions.h); this only exercises the interception's own behavior, which
-    // must not crash and must still advance the real frame counter when nothing is resolved yet.
+    // api_dump_handwritten_functions.h); with nothing resolved yet the forward must be a no-op.
+    // It must not advance the frame counter either: layer_vkFrameBoundaryANDROID dumps the call first
+    // and only then calls nextFrame(), so the call is the last entry of the frame it ends.
     ApiDumpInstance instance;
     InitWithSettings(instance, {});
 
-    instance.frameBoundaryAndroid(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
+    instance.forwardFrameBoundaryAndroid(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
 
+    EXPECT_EQ(instance.frameCount(), 0u);
+}
+
+TEST_F(ApiDumpInstanceTests, ForwardFrameBoundaryAndroidReachesTheResolvedDriverFunction) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    g_frame_boundary_android_calls = 0;
+    instance.setFrameBoundaryAndroidFunction(CountingFrameBoundaryAndroid);
+
+    instance.forwardFrameBoundaryAndroid(VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE);
+
+    EXPECT_EQ(g_frame_boundary_android_calls, 1);
+    EXPECT_EQ(instance.frameCount(), 0u);
+}
+
+// The frame count as each step of handle_frame_boundary_android saw it. The helper is what
+// layer_vkFrameBoundaryANDROID runs, and unlike the layer entry point it needs no device - so this is
+// the device-free check that a vkFrameBoundaryANDROID dumps the call, forwards it, and only then
+// advances the frame. (The parameter dump itself is generated code the test cannot include; it is
+// stood in for here, and covered end to end by ApiDumpTests.FrameBoundaryAndroid...)
+static ApiDumpInstance* g_boundary_instance = nullptr;
+static std::vector<uint64_t> g_frame_count_at_dump;
+static std::vector<uint64_t> g_frame_count_at_forward;
+
+static void VKAPI_CALL RecordingFrameBoundaryAndroid(VkDevice, VkSemaphore, VkImage) {
+    g_frame_count_at_forward.push_back(g_boundary_instance->frameCount());
+}
+
+struct RecordingParamsDumper {
+    template <ApiDumpFormat Format>
+    void operator()(ApiDumpInstance& dump_inst) const {
+        g_frame_count_at_dump.push_back(dump_inst.frameCount());
+    }
+};
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidIsDumpedAndForwardedBeforeTheFrameAdvances) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    g_boundary_instance = &instance;
+    g_frame_count_at_dump.clear();
+    g_frame_count_at_forward.clear();
+    instance.setFrameBoundaryAndroidFunction(RecordingFrameBoundaryAndroid);
+
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+
+    // Both happen while the call's own frame (0) is still the current one, and exactly once each...
+    EXPECT_EQ(g_frame_count_at_forward, std::vector<uint64_t>{0});
+    EXPECT_EQ(g_frame_count_at_dump, std::vector<uint64_t>{0});
+    // ...and then the frame advances, which only this helper does for vkFrameBoundaryANDROID.
     EXPECT_EQ(instance.frameCount(), 1u);
+    g_boundary_instance = nullptr;
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidStillAdvancesTheFrameWithNoDriverResolved) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    g_frame_count_at_dump.clear();
+
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+
+    // Each call is dumped into the frame it ends: 0, then 1.
+    EXPECT_EQ(g_frame_count_at_dump, (std::vector<uint64_t>{0, 1}));
+    EXPECT_EQ(instance.frameCount(), 2u);
 }
 
 // ---------------------------------------------------------------------------------------------------

@@ -149,6 +149,36 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
     return result;
 }
 
+// vkFrameBoundaryANDROID is not in the generated dump code (see VK_ANDROID_frame_boundary.h), so its dump
+// is written by hand, in the shape the generator gives every other void command. These are templates,
+// so they have to sit outside the extern "C" block below that holds layer_vkFrameBoundaryANDROID.
+template <ApiDumpFormat Format>
+void dump_params_vkFrameBoundaryANDROID(ApiDumpInstance& dump_inst, VkDevice device, VkSemaphore semaphore, VkImage image) {
+    const ApiDumpSettings& settings(dump_inst.settings());
+    if (settings.showParams()) {
+        dump_pre_params_formatting<Format>(settings);
+        dump_VkDevice<Format>(device, settings, "VkDevice", "device", (Format == ApiDumpFormat::Json ? 4 : 1));
+        dump_separate_members<Format>(settings);
+        dump_VkSemaphore<Format>(semaphore, settings, "VkSemaphore", "semaphore", (Format == ApiDumpFormat::Json ? 4 : 1));
+        dump_separate_members<Format>(settings);
+        dump_VkImage<Format>(image, settings, "VkImage", "image", (Format == ApiDumpFormat::Json ? 4 : 1));
+        dump_post_params_formatting<Format>(settings);
+        flush(settings);
+    }
+}
+
+// What handle_frame_boundary_android (api_dump.h) calls to write the parameters, once per format.
+struct FrameBoundaryAndroidParamsDumper {
+    VkDevice device;
+    VkSemaphore semaphore;
+    VkImage image;
+
+    template <ApiDumpFormat Format>
+    void operator()(ApiDumpInstance& dump_inst) const {
+        dump_params_vkFrameBoundaryANDROID<Format>(dump_inst, device, semaphore, image);
+    }
+};
+
 extern "C" {
 
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_layerGetPhysicalDeviceProcAddr(VkInstance instance, const char* funcName) {
@@ -226,9 +256,14 @@ EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL layer_vkEnumerateDeviceExtensionP
 // vkFrameBoundaryANDROID has no dispatch-table slot (see VK_ANDROID_frame_boundary.h), so unlike
 // every generated entry point it cannot be reached through device_dispatch_table(device)->X - it is
 // caught by name instead, in layer_vkGetInstanceProcAddr/layer_vkGetDeviceProcAddr below.
+//
+// The call is dumped like any other, and before the frame counter advances, so it is the last entry of
+// the frame it ends - what lets a consumer of the dump see why the frame ended. The sequence itself is
+// handle_frame_boundary_android (api_dump.h), where it can be tested without a device.
 VKAPI_ATTR void VKAPI_CALL layer_vkFrameBoundaryANDROID(VkDevice device, VkSemaphore semaphore, VkImage image) {
-    std::lock_guard<std::mutex> lg(ApiDumpInstance::current().outputMutex());
-    ApiDumpInstance::current().frameBoundaryAndroid(device, semaphore, image);
+    ApiDumpInstance& dump_inst = ApiDumpInstance::current();
+    std::lock_guard<std::mutex> lg(dump_inst.outputMutex());
+    handle_frame_boundary_android(dump_inst, device, semaphore, image, FrameBoundaryAndroidParamsDumper{device, semaphore, image});
 }
 
 EXPORT_FUNCTION VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceLayerProperties(uint32_t* pPropertyCount,
