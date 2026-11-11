@@ -1384,8 +1384,10 @@ class ApiDumpInstance {
 
     // Called from vkQueuePresentKHR, from vkQueueSubmit/vkQueueSubmit2 when a chained
     // VkFrameBoundaryEXT marks the end of a frame (see checkFrameBoundaryInSubmit), and from
-    // vkFrameBoundaryANDROID. All three write the call that ends the frame into the dump before
-    // calling this, so it is the last entry of the frame it closes. Always advances frame_count and the frame's own JSON markup,
+    // vkFrameBoundaryANDROID. Each dumps the call that triggers the boundary before calling this, so
+    // that call lands in the frame it closes. That does not make it the only thing a frame can end on:
+    // a vkQueueSubmit2 with several end-flagged submits calls this once per submit, and the extra
+    // frames it closes are empty. Always advances frame_count and the frame's own JSON markup,
     // regardless of capture_trigger_boundary - a frame boundary is a frame boundary independent of
     // what output_range/capture_trigger is currently counting. See notifyQueueSubmit for the
     // independent counter used for range/trigger decisions when the boundary is queue_submits.
@@ -1706,8 +1708,8 @@ class ApiDumpInstance {
     uint64_t command_count;
 
     // The next layer/driver's real vkFrameBoundaryANDROID, resolved once at CreateDevice - see
-    // setFrameBoundaryAndroidFunction/frameBoundaryAndroid. Null until then, and whenever nothing
-    // below actually implements it.
+    // setFrameBoundaryAndroidFunction/forwardFrameBoundaryAndroid. Null until then, and whenever
+    // nothing below actually implements it.
     PFN_vkFrameBoundaryANDROID next_frame_boundary_android = nullptr;
 
     std::mutex thread_mutex;
@@ -2746,6 +2748,50 @@ inline void dump_function_head(ApiDumpInstance &dump_inst, const char *funcName,
         }
         dump_inst.nextCommand();
     }
+}
+
+// Everything the layer does for an app's vkFrameBoundaryANDROID, in order: dump the call, forward it
+// to whatever implements it below, then close the frame - so the call is the last entry of the frame
+// it ends, the same order vkQueuePresentKHR uses. Must be called with the output mutex held.
+//
+// Lives here, apart from the layer entry point, so the order and the frame advance can be tested
+// without a device. The one part that cannot live here is writing the parameters, which need the
+// generated dump functions this header cannot see: `params_dumper` is called as
+// params_dumper.template operator()<Format>(dump_inst) and has to dump just the parameters.
+template <typename ParamsDumper>
+inline void handle_frame_boundary_android(ApiDumpInstance &dump_inst, VkDevice device, VkSemaphore semaphore, VkImage image,
+                                          ParamsDumper &&params_dumper) {
+    dump_function_head(dump_inst, "vkFrameBoundaryANDROID", "device, semaphore, image", "void");
+    if (dump_inst.settings().shouldPreDump() && dump_inst.settings().format() == ApiDumpFormat::Text &&
+        dump_inst.shouldDumpOutput()) {
+        dump_before_pre_dump_formatting<ApiDumpFormat::Text>(dump_inst.settings());
+        params_dumper.template operator()<ApiDumpFormat::Text>(dump_inst);
+    }
+
+    dump_inst.forwardFrameBoundaryAndroid(device, semaphore, image);
+
+    if (dump_inst.shouldDumpOutput()) {
+        switch (dump_inst.settings().format()) {
+            case ApiDumpFormat::Text:
+                dump_pre_function_formatting<ApiDumpFormat::Text>(dump_inst.settings());
+                params_dumper.template operator()<ApiDumpFormat::Text>(dump_inst);
+                dump_post_function_formatting<ApiDumpFormat::Text>(dump_inst.settings());
+                break;
+            case ApiDumpFormat::Html:
+                dump_pre_function_formatting<ApiDumpFormat::Html>(dump_inst.settings());
+                params_dumper.template operator()<ApiDumpFormat::Html>(dump_inst);
+                dump_post_function_formatting<ApiDumpFormat::Html>(dump_inst.settings());
+                break;
+            case ApiDumpFormat::Json:
+                dump_pre_function_formatting<ApiDumpFormat::Json>(dump_inst.settings());
+                params_dumper.template operator()<ApiDumpFormat::Json>(dump_inst);
+                dump_post_function_formatting<ApiDumpFormat::Json>(dump_inst.settings());
+                break;
+        }
+        flush(dump_inst.settings());
+    }
+
+    dump_inst.nextFrame();
 }
 
 //==================================== Exposed Query Functions ======================================//

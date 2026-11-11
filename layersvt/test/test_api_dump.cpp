@@ -101,6 +101,14 @@ TEST_F(ApiDumpTests, FrameBoundaryAndroidIsDumpedAsTheLastCallOfTheFrameItEnds) 
         if (inst_builder.GetPhysicalDevice(&physical_device) != VK_SUCCESS || physical_device == VK_NULL_HANDLE) {
             GTEST_SKIP() << "no physical device to create a device on";
         }
+        // The call below passes null semaphore and image, which the layer forwards to whatever it
+        // resolved below itself at vkCreateDevice. Harmless where nothing implements the function, but
+        // where a driver or lower layer does (Android), that would be an invalid call into real code.
+        // The test only needs the layer to answer by name, so it does not run there.
+        if (layer_test::IsExtensionSupported(physical_device, "VK_ANDROID_frame_boundary")) {
+            GTEST_SKIP() << "something below the layer implements VK_ANDROID_frame_boundary; "
+                            "not calling it with null handles";
+        }
 
         float priority = 1.0f;
         VkDeviceQueueCreateInfo queue_info{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
@@ -440,6 +448,57 @@ TEST_F(ApiDumpInstanceTests, ForwardFrameBoundaryAndroidReachesTheResolvedDriver
 
     EXPECT_EQ(g_frame_boundary_android_calls, 1);
     EXPECT_EQ(instance.frameCount(), 0u);
+}
+
+// The frame count as each step of handle_frame_boundary_android saw it. The helper is what
+// layer_vkFrameBoundaryANDROID runs, and unlike the layer entry point it needs no device - so this is
+// the device-free check that a vkFrameBoundaryANDROID dumps the call, forwards it, and only then
+// advances the frame. (The parameter dump itself is generated code the test cannot include; it is
+// stood in for here, and covered end to end by ApiDumpTests.FrameBoundaryAndroid...)
+static ApiDumpInstance* g_boundary_instance = nullptr;
+static std::vector<uint64_t> g_frame_count_at_dump;
+static std::vector<uint64_t> g_frame_count_at_forward;
+
+static void VKAPI_CALL RecordingFrameBoundaryAndroid(VkDevice, VkSemaphore, VkImage) {
+    g_frame_count_at_forward.push_back(g_boundary_instance->frameCount());
+}
+
+struct RecordingParamsDumper {
+    template <ApiDumpFormat Format>
+    void operator()(ApiDumpInstance& dump_inst) const {
+        g_frame_count_at_dump.push_back(dump_inst.frameCount());
+    }
+};
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidIsDumpedAndForwardedBeforeTheFrameAdvances) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    g_boundary_instance = &instance;
+    g_frame_count_at_dump.clear();
+    g_frame_count_at_forward.clear();
+    instance.setFrameBoundaryAndroidFunction(RecordingFrameBoundaryAndroid);
+
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+
+    // Both happen while the call's own frame (0) is still the current one, and exactly once each...
+    EXPECT_EQ(g_frame_count_at_forward, std::vector<uint64_t>{0});
+    EXPECT_EQ(g_frame_count_at_dump, std::vector<uint64_t>{0});
+    // ...and then the frame advances, which only this helper does for vkFrameBoundaryANDROID.
+    EXPECT_EQ(instance.frameCount(), 1u);
+    g_boundary_instance = nullptr;
+}
+
+TEST_F(ApiDumpInstanceTests, FrameBoundaryAndroidStillAdvancesTheFrameWithNoDriverResolved) {
+    ApiDumpInstance instance;
+    InitWithSettings(instance, {});
+    g_frame_count_at_dump.clear();
+
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+    handle_frame_boundary_android(instance, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, RecordingParamsDumper{});
+
+    // Each call is dumped into the frame it ends: 0, then 1.
+    EXPECT_EQ(g_frame_count_at_dump, (std::vector<uint64_t>{0, 1}));
+    EXPECT_EQ(instance.frameCount(), 2u);
 }
 
 // ---------------------------------------------------------------------------------------------------
